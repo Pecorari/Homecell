@@ -22,6 +22,7 @@ const delCliente = async (req, res) => {
 
 const updtCliente = async (req, res) => {
     const { id } = req.params;
+
     await clientesModel.updtCliente(id, req.body);
 
     return res.status(204).json();
