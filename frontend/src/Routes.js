@@ -12,7 +12,7 @@ function Routas() {
         <Route path="/" Component={Clientes} />
         <Route path="/cadastrar-cliente" Component={CadCli} />
         <Route path="/cadastrar-aparelho" Component={CadCell} />
-        <Route path="/perfil" Component={Perfil} />
+        <Route path="/clientes/:id" Component={Perfil} />
       </Routes>
     </Router>
     );

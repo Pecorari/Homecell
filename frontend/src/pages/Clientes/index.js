@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import clientes from '../../data/clientes';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdOutlineMoreVert, MdPersonAddAlt } from 'react-icons/md';
 import imgHomecell from '../../logo.png';
+import useApi from '../../hooks/useApi';
 
 import './stylesCli.css';
 
@@ -11,9 +11,20 @@ const Clientes = () => {
     const [nomeSearch, setNomeSearch] = useState('');
     const [cpfSearch, setCpfSearch] = useState('');
     const [search, setSearch] = useState('Nome');
+    const [clientes, setClientes] = useState([]);
+
+    useEffect(() => {
+        useApi.get('/clientes')
+            .then((resposta) => {
+                setClientes(resposta.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    });
 
     const ListCli = clientes.map(cliente =>
-        <Link to={'/perfil'}>
+        <Link to={`/clientes/${cliente.id}`} >
             <div className='cli-inf' key={cliente.id}>
                 <div>
                     <p>{cliente.nome}</p>
@@ -84,7 +95,7 @@ const Clientes = () => {
                 </div>
 
                 <Link to={'/cadastrar-cliente'}>
-                    <Button className='btnAdd' rightIcon={<MdPersonAddAlt/>} onClick={() => console.log('Adicionar um cliente novo')} colorScheme='green'>Adicionar</Button>
+                    <Button className='btnAdd' rightIcon={<MdPersonAddAlt/>} colorScheme='green'>Adicionar</Button>
                 </Link>
                 <div className='labels'>
                     <h2 className='ncpf'>Nome/CPF</h2>

@@ -6,6 +6,12 @@ const getAllAp = async (idCli) => {
     return aparelhos;
 };
 
+const getAparelho = async (idAp) => {
+    const aparelho = await connection.execute('SELECT * FROM aparelhos WHERE id=?', [idAp]);
+
+    return aparelho;
+};
+
 const addAparelho = async (idCli, dataAp) => {
     const { modelo, descricao, valor, pago, situacao } = dataAp;
 
@@ -36,6 +42,7 @@ const updtAparelho = async (id, dataAp) => {
 
 module.exports = {
     getAllAp,
+    getAparelho,
     addAparelho,
     delAparelho,
     updtAparelho

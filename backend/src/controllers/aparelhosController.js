@@ -7,6 +7,13 @@ const getAllAp = async (req, res) => {
     return res.status(200).json(aparelhos);
 };
 
+const getAparelho = async (req, res) => {
+    const { id } = req.params;
+    const aparelho = await aparelhosModel.getAparelho(id);
+
+    return res.status(200).json(aparelho);
+};
+
 const addAparelho = async (req, res) => {
     const { idCli } = req.params;
 
@@ -34,6 +41,7 @@ const updtAparelho = async (req, res) => {
 
 module.exports = {
     getAllAp,
+    getAparelho,
     addAparelho,
     delAparelho,
     updtAparelho

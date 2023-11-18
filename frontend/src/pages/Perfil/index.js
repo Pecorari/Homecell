@@ -1,16 +1,20 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdArrowForward, MdAdd, MdWest } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import imgHomecell from '../../logo.png';
 import Modal from 'react-modal';
+import useApi from '../../hooks/useApi';
 
 import './stylesPer.css';
 
 Modal.setAppElement('#root');
 
 const Perfil = () => {
+    const [cliente, setCliente] = useState({});
+    const [aparelhos, setAparelhos] = useState([]);
+
     const [modelo, setModelo] = useState('');
     const [descricao, setDescricao] = useState('');
     const [valor, setValor] = useState('');
@@ -18,9 +22,54 @@ const Perfil = () => {
     const [situacao, setSituacao] = useState('');
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const today = new Date(Date.now()).toLocaleDateString();
 
-    const today = new Date(Date.now());
-    const todayFormat = today.toLocaleDateString()
+    const params = useParams();
+    const id = params.id;
+
+    useEffect(() => {    
+        useApi.get(`/clientes/${id}`)
+            .then((res) => {
+                const [dataCli] = res.data
+                setCliente(dataCli);
+            })
+            .catch((err) => console.log(err))
+
+        useApi.get(`cliente-aparelhos/${id}`)
+            .then((res) => {
+                setAparelhos(res.data);
+            })
+            .catch((err) => console.log(err))
+    });
+
+    const ListAp = aparelhos.map(aparelho =>
+            <div className='cell-inf' key={aparelho.id}>
+                <div>
+                    <p>{aparelho.created_at}</p>
+                    <p>{aparelho.modelo}</p>
+                </div>
+                <div>
+                    <p>{aparelho.descricao}</p>
+                </div>
+                <div>
+                    <p>{aparelho.valor}</p>
+                </div>
+                <div>
+                    <p>{aparelho.pago}</p>
+                    <p>{aparelho.situacao}</p>
+                </div>
+            </div>
+    )
+
+    function delCliente() {
+        useApi.delete(`/apagar-cliente/${id}`)
+            .then((res) => {
+                console.log(res)
+            })
+            .catch((err) => console.log(err))
+
+        // <Link to='/'>
+    };
 
     function openModal() {
         setModalIsOpen(true);
@@ -32,7 +81,7 @@ const Perfil = () => {
 
     function addCell() {
         closeModal();
-        console.log(modelo, descricao, valor, pago, situacao, todayFormat);
+        console.log(modelo, descricao, valor, pago, situacao, today);
     }
 
     return(
@@ -50,45 +99,28 @@ const Perfil = () => {
 
                     <div className='perfil'>
                         <label>Nome:</label>
-                        <p>Thiago Pecorari Clemente</p>
+                        <p>{cliente.nome}</p>
                         <label>CPF:</label>
-                        <p>490.802.898-25</p>
+                        <p>{cliente.cpf}</p>
                         <label>Número do Celular:</label>
-                        <p>(19) 97401-2628</p>
+                        <p>{cliente.numeroCell}</p>
                         <label>Número Residencial:</label>
-                        <p>(19) 3629-4813</p>
+                        <p>{cliente.numeroRes}</p>
                         <label>Endereço:</label>
-                        <p>Rua Curitiba 1317, Cidade Nova, Santa Bárbara D'Oeste - SP</p>
+                        <p>{cliente.endereco}</p>
+                        <label>Cidade:</label>
+                        <p>{cliente.cidade}</p>
                     </div>
 
 
-                    <Button colorScheme='red'>
-                        Apagar
-                    </Button>
+                    <Button onClick={() => delCliente()} colorScheme='red'>Apagar</Button>
 
-                    <Button colorScheme='blue' width={100} marginLeft={150}>
-                            Editar
-                    </Button>
+                    <Button width={100} marginLeft={150} colorScheme='blue'>Editar</Button>
                 </div>
 
                 <div className="cell-details">
                     <h2>Aparelhos</h2>
-                    <div className='cell-inf'>
-                        <div>
-                            <p>23/06/2023</p>
-                            <p>Samsung S20+</p>
-                        </div>
-                        <div>
-                            <p>Troca do Touch e Software</p>
-                        </div>
-                        <div>
-                            <p>200,00</p>
-                        </div>
-                        <div>
-                            <p>true</p>
-                            <p>pronto</p>
-                        </div>
-                    </div>
+                    {ListAp}
                     
                     <Button onClick={() => openModal()} leftIcon={<MdAdd />} colorScheme='green'>Novo aparelho</Button>
                     <Modal
@@ -145,7 +177,7 @@ const Perfil = () => {
                         </div>
 
                         <div className='box2'>
-                            <label>{todayFormat}</label>
+                            <label>{today}</label>
                             <Button
                                 rightIcon={<MdArrowForward/>}
                                 onClick={addCell}
