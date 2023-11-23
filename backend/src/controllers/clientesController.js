@@ -20,6 +20,14 @@ const getCliente = async (req, res) => {
     return res.status(200).json(cliente);
 };
 
+const getSearchCliente = async (req, res) => {
+    const { value } = req.params;
+
+    const clienteSearched = await clientesModel.getSearchCliente(value);
+
+    return res.status(200).json(clienteSearched);
+};
+
 const addCliente = async (req, res) => {
     const createdCliente = await clientesModel.addCliente(req.body);
 
@@ -48,6 +56,7 @@ const updtCliente = async (req, res) => {
 module.exports = {
     getAll,
     getCliente,
+    getSearchCliente,
     addCliente,
     delCliente,
     updtCliente

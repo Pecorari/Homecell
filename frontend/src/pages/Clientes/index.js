@@ -8,9 +8,8 @@ import useApi from '../../hooks/useApi';
 import './stylesCli.css';
 
 const Clientes = () => {
-    const [nomeSearch, setNomeSearch] = useState('');
-    const [cpfSearch, setCpfSearch] = useState('');
-    const [search, setSearch] = useState('Nome');
+    const [valueSearch, setValueSearch] = useState('');
+    const [clienteSearched, setClienteSearched] = useState();
     const [clientes, setClientes] = useState([]);
 
     useEffect(() => {
@@ -20,7 +19,7 @@ const Clientes = () => {
             })
             .catch((err) => {
                 console.log(err);
-            });
+            })
     });
 
     const ListCli = clientes.map(cliente =>
@@ -50,11 +49,22 @@ const Clientes = () => {
         });;
     }
 
+    async function searchCliente() {
+        await useApi.get(`/clientes-search/${valueSearch}`)
+            .then((res) => {
+                const [result] = res.data;
+                setClienteSearched(result);
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     function submit(e) {
+        console.log(valueSearch)
+        searchCliente();
         e.preventDefault();
-        setCpfSearch('')
-        setNomeSearch('')
-        console.log(nomeSearch, cpfSearch);
+        setValueSearch('');
         reset();
     }
 
@@ -66,30 +76,15 @@ const Clientes = () => {
                 <h1>Clientes</h1>
 
                 <div className='input-container'>
-                    <label className='label'>Pesquisar pelo {search}:</label>
+                    <label className='label'>Pesquisar:</label>
                     <div className='input-button'>
-                        {search === 'Nome'
-                        ? <input
+                        <input
                             type='text'
-                            value={nomeSearch}
-                            onChange={event => setNomeSearch(event.target.value)}
-                            name='nomeSearch'
-                            label='Pesquisar pelo nome'
-                            placeholder='Thiago Pecorari Clemente'
-                            />
-                        : <input
-                            type='text'
-                            value={cpfSearch}
-                            onChange={event => setCpfSearch(event.target.value)}
-                            name='cpfSearch'
-                            label='Pesquisar pelo cpf'
-                            placeholder='xxx.xxx.xxx-xx'
-                            />
-                        }
-                        <select onChange={(e) => setSearch(e.target.value)}>
-                            <option value='Nome'>Nome</option>
-                            <option value='CPF'>CPF</option>
-                        </select>
+                            value={valueSearch}
+                            onChange={event => setValueSearch(event.target.value)}
+                            name='valueSearch'
+                            placeholder='Nome ou CPF'
+                        />
                         <Button onClick={submit} rightIcon={<MdArrowForward/>} variant='outline' colorScheme='green'>Pesquisar</Button>
                     </div>
                 </div>
@@ -105,7 +100,26 @@ const Clientes = () => {
                 </div>
 
                 <div className='lista-cliente'>
-                    {ListCli}
+                    { clienteSearched ?
+                        <Link to={`/clientes/${clienteSearched.id}`} >
+                            <div className='cli-inf' key={clienteSearched.id}>
+                                <div>
+                                    <p>{clienteSearched.nome}</p>
+                                    <p>{clienteSearched.cpf}</p>
+                                </div>
+                                <div>
+                                    <p>{clienteSearched.modelo}</p>
+                                </div>
+                                <div>
+                                    <p>{clienteSearched.pago}</p>
+                                </div>
+                                <div>
+                                    <p>{clienteSearched.status}</p>
+                                </div>
+                                <button onClick={() => console.log('abre options -delete-update')}><MdOutlineMoreVert/></button>
+                            </div>
+                        </Link>
+                    : ListCli }
                 </div>
             </div>
         </div>

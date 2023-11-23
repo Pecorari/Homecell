@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/clientes', clientesController.getAll);
 router.get('/clientes/:id', clientesController.getCliente);
+router.get('/clientes-search/:value', clientesController.getSearchCliente);
 router.post('/cadastrar-cliente', clienteMiddleware.validateBody, clientesController.addCliente);
 router.delete('/apagar-cliente/:id', clientesController.delCliente);
 router.put('/editar-cliente/:id',  clienteMiddleware.validateBody, clientesController.updtCliente);

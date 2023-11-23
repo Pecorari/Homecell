@@ -35,7 +35,7 @@ const updtAparelho = async (id, dataAp) => {
     const dateUTC = new Date(Date.now()).toUTCString();
 
     const query = 'UPDATE aparelhos SET modelo=?, descricao=?, valor=?, pago=?, situacao=?, created_at=? WHERE id=?';
-    const updatedAparelho = await connection.execute(query, [modelo, descricao, valor, pago, situacao, dateUTC, id]);
+    const updatedAparelho = await connection.execute(query, [ modelo, descricao, valor, pago, situacao, dateUTC, id]);
 
     return updatedAparelho;
 };

@@ -10,6 +10,12 @@ const getCliente = async (idCli) => {
     return cliente;
 };
 
+const getSearchCliente = async (value) => {
+    const clienteSearched = await connection.execute('SELECT * FROM clientes WHERE nome=? OR cpf=?', [value, value]);
+
+    return clienteSearched;
+};
+
 const addCliente = async (dataCli) => {
     const { nome, cpf, numeroCell, numeroRes, endereco, cidade } = dataCli;
 
@@ -41,6 +47,7 @@ const updtCliente = async (idCli, dataCli) => {
 module.exports = {
     getAll,
     getCliente,
+    getSearchCliente,
     addCliente,
     delCliente,
     updtCliente
