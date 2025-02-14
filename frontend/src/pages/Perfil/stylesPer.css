@@ -168,3 +168,59 @@
     cursor: pointer;
 }
 
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.475);
+}
+.modal-content {
+    position: absolute;
+    width: max-content;
+    height: max-content;
+    top: 250px;
+    left: 25vw;
+    right: 25vw;
+    bottom: 500px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 5%;
+    padding-right: 50px;
+    display: flex;
+    flex-direction: column;
+}
+.modal-content h1 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.modal-content .label {
+    margin-left: 2.5%;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+.modal-content .simpleText {
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: rgb(240, 240, 240);
+    padding-left: 15px;
+    height: 45px;
+    margin-bottom: 30px;
+    margin-left: 5%;
+}
+.modal-content .simpleText:focus {
+    border-color: rgb(112, 112, 112);
+    outline: 0;
+}
+.modal-content .box {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.modal-content .checkInput {
+    margin-right: 10%;
+}

@@ -276,9 +276,9 @@ const Perfil = () => {
                             rightIcon={<MdArrowForward/>}
                             onClick={() => editCliente()}
                             colorScheme='green'
-                            width={200}
-                            marginTop={25}
-                            marginLeft={'55%'}>
+                            width={250}
+                            marginTop={15}
+                            marginLeft={'15%'}>
                                 Salvar
                         </Button>
                     </Modal>
@@ -349,9 +349,9 @@ const Perfil = () => {
                             rightIcon={<MdArrowForward/>}
                             onClick={addAparelho}
                             colorScheme='green'
-                            width={200}
-                            marginTop={25}
-                            marginLeft={'55%'}>
+                            width={250}
+                            marginTop={15}
+                            marginLeft={'15%'}>
                                 Adicionar
                         </Button>
                     </Modal>
@@ -389,7 +389,7 @@ const Perfil = () => {
                         <Button onClick={() => {
                             setModalIsOpenApPerfil(false);
                             delAparelho();
-                        }} marginLeft={90} marginTop={30} colorScheme='red'>Apagar</Button>
+                        }} width={100} marginLeft={90} marginTop={30} colorScheme='red'>Apagar</Button>
                         <Button onClick={() => {
                             setModelo(aparelho.modelo);
                             setDescricao(aparelho.descricao);
@@ -462,9 +462,9 @@ const Perfil = () => {
                             rightIcon={<MdArrowForward/>}
                             onClick={() => editAparelho()}
                             colorScheme='green'
-                            width={200}
-                            marginTop={25}
-                            marginLeft={'55%'}>
+                            width={250}
+                            marginTop={15}
+                            marginLeft={'15%'}>
                                 Salvar
                         </Button>
                     </Modal>
