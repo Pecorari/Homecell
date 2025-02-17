@@ -276,9 +276,9 @@ const Perfil = () => {
                             rightIcon={<MdArrowForward/>}
                             onClick={() => editCliente()}
                             colorScheme='green'
-                            width={250}
+                            width={{base: 200, sm: 250, md: 250}}
                             marginTop={15}
-                            marginLeft={'15%'}>
+                            marginLeft={{base: 8, sm: 8, md: 50}}>
                                 Salvar
                         </Button>
                     </Modal>
@@ -351,7 +351,7 @@ const Perfil = () => {
                             colorScheme='green'
                             width={250}
                             marginTop={15}
-                            marginLeft={'15%'}>
+                            marginLeft={{base: 3, sm: 8, md: 50}}>
                                 Adicionar
                         </Button>
                     </Modal>
@@ -367,10 +367,10 @@ const Perfil = () => {
                         <h1>{aparelho.modelo}</h1>
 
                         <label className='label'>Descrição:</label>
-                        <p>{aparelho.descricao}</p>
+                        <p className='txtApPerfil'>{aparelho.descricao}</p>
 
                         <label className='label'>Valor:</label>
-                        <p>{aparelho.valor}</p>
+                        <p className='txtApPerfil'>{aparelho.valor}</p>
 
                         <div className='box'>
                             <label className='label'>Pago:</label>
@@ -385,19 +385,20 @@ const Perfil = () => {
                             <label className='label'>Situação:</label>
                             <p>{aparelho.situacao}</p>
                         </div>
-
-                        <Button onClick={() => {
-                            setModalIsOpenApPerfil(false);
-                            delAparelho();
-                        }} width={100} marginLeft={90} marginTop={30} colorScheme='red'>Apagar</Button>
-                        <Button onClick={() => {
-                            setModelo(aparelho.modelo);
-                            setDescricao(aparelho.descricao);
-                            setValor(aparelho.valor);
-                            setPago(aparelho.pago);
-                            setSituacao(aparelho.situacao);
-                            setModalIsOpenApEdit(true);
-                        }} width={100} marginLeft={100} marginTop={30} colorScheme='blue'>Editar</Button>
+                        <div className='btnApPerfil'>
+                            <Button onClick={() => {
+                                setModalIsOpenApPerfil(false);
+                                delAparelho();
+                            }} width={100} marginLeft={0} marginTop={5} colorScheme='red'>Apagar</Button>
+                            <Button onClick={() => {
+                                setModelo(aparelho.modelo);
+                                setDescricao(aparelho.descricao);
+                                setValor(aparelho.valor);
+                                setPago(aparelho.pago);
+                                setSituacao(aparelho.situacao);
+                                setModalIsOpenApEdit(true);
+                        }} width={100} marginLeft={50} marginTop={5} colorScheme='blue'>Editar</Button>
+                        </div>
                     </Modal>
                     : <p/>}
 
@@ -464,7 +465,7 @@ const Perfil = () => {
                             colorScheme='green'
                             width={250}
                             marginTop={15}
-                            marginLeft={'15%'}>
+                            marginLeft={'2.5%'}>
                                 Salvar
                         </Button>
                     </Modal>
