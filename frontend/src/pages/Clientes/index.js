@@ -17,13 +17,12 @@ const Clientes = () => {
     useEffect(() => {
         fetchClientes();
     // eslint-disable-next-line
-    }, [page]);
+    }, []);
 
     useEffect(() => {
         const intersectionObserver = new IntersectionObserver((entries) => {
             if(entries.some((entry) => entry.isIntersecting)) {
                 setPage((p) => p + 10)
-                console.log('visivel')
             }
         });
         intersectionObserver.observe(document.querySelector('#loading'));
@@ -47,7 +46,7 @@ const Clientes = () => {
                     <p>{cliente.cpf}</p>
                 </div>
                 <div className='aparelhos'>
-                    <p>1</p>
+                    <p>{cliente.total_aparelhos}</p>
                 </div>
 
             </div>
@@ -84,7 +83,6 @@ const Clientes = () => {
         e.preventDefault();
         setValueSearch('');
         reset();
-        console.log(page)
     }
 
     return(
@@ -103,7 +101,7 @@ const Clientes = () => {
                             value={valueSearch}
                             onChange={handleInputChange}
                             name='valueSearch'
-                            placeholder='Nome ou CPF'
+                            placeholder='Nome / CPF / ID'
                         />
                         <Button onClick={submit} rightIcon={<MdArrowForward/>} variant='outline' colorScheme='green'>Pesquisar</Button>
                     </div>
@@ -130,7 +128,7 @@ const Clientes = () => {
                                     <p>{clienteSearched.cpf}</p>
                                 </div>
                                 <div className='aparelhos'>
-                                    <p>{1}</p>
+                                    <p>{clienteSearched.total_aparelhos}</p>
                                 </div>
                             </div>
                         </Link>

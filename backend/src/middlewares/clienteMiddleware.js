@@ -10,12 +10,6 @@ const validateBody = (req, res, next) => {
     if (body.numeroCell == undefined || body.numeroCell == '') {
         return res.status(400).json({ message: 'O campo numero de contato é obrigatório' });
     }
-    if (body.endereco == undefined || body.endereco == '') {
-        return res.status(400).json({ message: 'O campo endereço é obrigatório' });
-    }
-    if (body.cidade == undefined || body.cidade == '') {
-        return res.status(400).json({ message: 'O campo ciadade é obrigatório' });
-    }
 
     next();
 };

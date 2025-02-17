@@ -2,8 +2,15 @@ const connection = require('../database/connection');
 
 const getAll = async (reqParams) => {
     const {limit, page} = reqParams;
+    const clientes = await connection.execute(
+        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' + 
+        'FROM clientes c ' +
+        'LEFT JOIN aparelhos a ON c.id = a.idCli ' +
+        'GROUP BY c.id ' +
+        'ORDER BY c.id DESC ' +
+        'LIMIT ? OFFSET ?', 
+        [limit, page]);
 
-    const clientes = await connection.execute('SELECT * FROM clientes ORDER BY id DESC LIMIT ? OFFSET ?', [limit, page]);
     return clientes;
 };
 
@@ -13,19 +20,23 @@ const getCliente = async (idCli) => {
 };
 
 const getSearchCliente = async (value) => {
-    const clienteSearched = await connection.execute('SELECT * FROM clientes WHERE nome=? OR cpf=?', [value, value]);
-
+    const clienteSearched = await connection.execute(
+        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' + 
+        'FROM clientes c ' +
+        'LEFT JOIN aparelhos a ON c.id = a.idCli ' +
+        'WHERE c.nome = ? OR c.cpf = ? OR c.id = ? ' +
+        'GROUP BY c.id ',
+        [value, value, value]);
+    
     return clienteSearched;
 };
 
 const addCliente = async (dataCli) => {
     const { nome, cpf, numeroCell, numeroRes, endereco, cidade } = dataCli;
 
-    const dateUTC = new Date(Date.now()).toUTCString();
+    const query = 'INSERT INTO clientes(nome, cpf, numeroCell, numeroRes, endereco, cidade) VALUES(?, ?, ?, ?, ?, ?)';
 
-    const query = 'INSERT INTO clientes(nome, cpf, numeroCell, numeroRes, endereco, cidade, created_at) VALUES(?, ?, ?, ?, ?, ?, ?)';
-
-    const createdCliente = await connection.execute(query, [nome, cpf, numeroCell, numeroRes, endereco, cidade, dateUTC]);
+    const createdCliente = await connection.execute(query, [nome, cpf, numeroCell, numeroRes, endereco, cidade]);
 
     return createdCliente;
 };
@@ -38,10 +49,9 @@ const delCliente = async (idCli) => {
 
 const updtCliente = async (idCli, dataCli) => {
     const { nome, cpf, numeroCell, numeroRes, endereco, cidade } = dataCli;
-    const dateUTC = new Date(Date.now()).toUTCString();
 
-    const query = 'UPDATE clientes SET nome=?, cpf=?, numeroCell=?, numeroRes=?, endereco=?, cidade=?, created_at=? WHERE id=?';
-    const updatedCliente = await connection.execute(query, [nome, cpf, numeroCell, numeroRes, endereco, cidade, dateUTC, idCli]);
+    const query = 'UPDATE clientes SET nome=?, cpf=?, numeroCell=?, numeroRes=?, endereco=?, cidade=? WHERE id=?';
+    const updatedCliente = await connection.execute(query, [nome, cpf, numeroCell, numeroRes, endereco, cidade, idCli]);
 
     return updatedCliente;
 };

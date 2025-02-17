@@ -24,7 +24,7 @@ const Perfil = () => {
 
     const [modelo, setModelo] = useState('');
     const [descricao, setDescricao] = useState('');
-    const [valor, setValor] = useState('');
+    const [valor, setValor] = useState();
     const [pago, setPago] = useState(false);
     const [situacao, setSituacao] = useState('Na fila');
 
@@ -159,7 +159,7 @@ const Perfil = () => {
     function reset() {
         setModelo('');
         setDescricao('');
-        setValor('');
+        setValor();
         setSituacao('Na fila');
         setPago(false);
     }

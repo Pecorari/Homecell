@@ -9,6 +9,15 @@ function formatedId(value) {
 const getAll = async (req, res) => {
     const clientes = await clientesModel.getAll(req.params);
 
+    clientes.forEach(cliente => {
+        if (cliente.created_at && !isNaN(new Date(cliente.created_at))) {
+            cliente.created_at = new Date(cliente.created_at).toISOString();
+        } else cliente.created_at = null;
+        if (cliente.updated_at && !isNaN(new Date(cliente.updated_at))) {
+            cliente.updated_at = new Date(cliente.updated_at).toISOString();
+        } else cliente.updated_at = null;
+    });
+    
     return res.status(200).json(clientes);
 };
 
