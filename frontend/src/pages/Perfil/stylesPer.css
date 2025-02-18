@@ -132,37 +132,47 @@
 
 .container .cell-details .cell-inf {
     margin: 10px;
-    padding: 10px 20px 10px 50px;
+    padding: 10px 20px 10px 25px;
     color: #4e4e4e;
     background-color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.4);
     transition: 0.3s ease-out;
     display: flex;
     flex-direction: row;
-    align-items: center;
     margin-bottom: 25px;
 
     @media (max-width: 1200px) {
         margin: auto;
         margin-bottom: 15px;
         padding: 10px 10px 10px 10px;
-        width: max-content;
+        width: 85%;
     }
     @media (max-width: 650px) {
         width: 85%;
     }
 }
+.container .cell-details .cell-inf .cellModDate{
+    width: 30%;
+    text-align: center;
 
-.container .cell-details .cell-inf .cellDesc{@media (max-width: 650px) {display: none;}}
-.container .cell-details .cell-inf .cellVal{@media (max-width: 650px) {display: none;}}
-.container .cell-details .cell-inf .cellPagSit{@media (max-width: 650px) {display: none;}}
-
-.container .cell-details .cell-inf div {
-    margin-right: 25px;
-    flex-grow: 1;
+    @media (max-width: 650px) {
+        width: 100%;
+    }
 }
-
+.container .cell-details .cell-inf .cellP{
+    width: 30%;
+    text-align: right;
+    @media (max-width: 650px) {
+        display: none;
+    }
+}
+.container .cell-details .cell-inf .cellPagSit{
+    width: 40%;
+    @media (max-width: 650px) {
+        display: none;
+    }
+}
 .container .cell-details .cell-inf:hover {
     box-shadow: 1px 4px 12px 0px rgba(68, 66, 132, 0.6);
     cursor: pointer;

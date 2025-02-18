@@ -61,26 +61,29 @@ const Perfil = () => {
         if (idAp !== '') getUniqueAp();
     });
 
-    const ListAp = aparelhos.map(aparelho =>
+    function formatDate(dataHora) {
+        const data = new Date(dataHora);
+        return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
+    };
+
+    const ListAp = aparelhos.map(aparelho => 
         <Link onClick={() => {
             setIdAp(aparelho.id);
             getUniqueAp();
             setModalIsOpenApPerfil(true);
         }}>
             <div className='cell-inf' key={aparelho.id}>
-                <div>
-                    <p className='cellCreateAt'>{aparelho.created_at}</p>
+                <div className='cellModDate'>
                     <p>{aparelho.modelo}</p>
+                    <p>{formatDate(aparelho.created_at)}</p>
                 </div>
-                <div className='cellDesc'>
-                    <p>{aparelho.descricao}</p>
-                </div>
-                <div className='cellVal'>
-                    <p>{aparelho.valor}</p>
+                <div className='cellP'>
+                    <p>Situação:</p>
+                    <p>Pago:</p>
                 </div>
                 <div className='cellPagSit'>
-                    <p>{aparelho.pago}</p>
                     <p>{aparelho.situacao}</p>
+                    <p>{aparelho.pago}</p>
                 </div>
             </div>
         </Link>
