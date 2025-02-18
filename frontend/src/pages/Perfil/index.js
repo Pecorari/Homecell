@@ -1,17 +1,19 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { MdArrowForward, MdAdd, MdWest } from 'react-icons/md';
+import { MdAdd, MdWest } from 'react-icons/md';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
-import Modal from 'react-modal';
-import InputMask from 'react-input-mask';
 import imgHomecell from '../../utils/logo.png';
-import ModalConfirm from '../Modals';
+import ModalConfirm from '../Modals/ModalConfirm';
+import ModalEditCli from '../Modals/ModalEditCli';
+import ModalApAdd from '../Modals/ModalApAdd';
+import ModalApPerfil from '../Modals/ModalApPerfil';
+import ModalApEdit from '../Modals/ModalApEdit';
 import useApi from '../../hooks/useApi';
 
 import './stylesPer.css';
 
-Modal.setAppElement('#root');
+// Modal.setAppElement('#root');
 
 const Perfil = () => {
     const [cliente, setCliente] = useState({});
@@ -121,29 +123,6 @@ const Perfil = () => {
             })
             .catch((err) => console.log(err))
     };
-        
-    async function addAparelho() {
-        let formatPago = ''
-
-        if (pago === false) {
-            formatPago = 'Não'
-        } else formatPago = 'Sim'
-
-        const dadosCell = {
-            modelo,
-            descricao,
-            valor,
-            formatPago,
-            situacao
-        }
-
-        await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell)
-            .then((res) => console.log(res.data))
-            .catch((err) => console.log(err))
-
-        reset();
-        setModalIsOpenApAdd(false);
-    }
 
     async function delAparelho() {
         await useApi.delete(`apagar-aparelhos/${idAp}`)
@@ -233,7 +212,6 @@ const Perfil = () => {
                         <p>{cliente.cidade}</p>
                     </div>
 
-
                     <Button onClick={() => {
                         setModalIsOpenConfirm(true);
                         setAction('delCli');
@@ -254,275 +232,87 @@ const Perfil = () => {
                     marginLeft={{base: 10, sm: 50, md: 150}}
                     colorScheme='blue'>Editar</Button>
 
-                    <Modal
-                        isOpen={modalIsOpenCliEdit}
-                        onRequestClose={() => setModalIsOpenCliEdit(false)}
-                        overlayClassName='modal-overlay'
-                        className='modal-content'
-                    >
-                        <h1>Alterar dados do cliente</h1>
-
-                        <label className='label'>Nome:</label>
-                        <input
-                            type='text'
-                            value={nome}
-                            onChange={event => setNome(event.target.value)}
-                            name='nome'
-                            className='simpleText'
-                        />
-                        <label className='label'>CPF:</label>
-                        <InputMask
-                            mask='999.999.999-99'
-                            value={cpf}
-                            onChange={event => setCpf(event.target.value)}
-                            name='cpf'
-                            className='simpleText'
-                        />
-                        <label className='label'>Numero do celular:</label>
-                        <InputMask
-                            mask='(99) 99999-9999'
-                            value={numeroCell}
-                            onChange={event => setNumeroCell(event.target.value)}
-                            name='numeroCell'
-                            className='simpleText'
-                        />
-                        <label className='label'>Numero residencial:</label>
-                        <InputMask
-                            mask='(99) 9999-9999'
-                            value={numeroRes}
-                            onChange={event => setNumeroRes(event.target.value)}
-                            name='numeroRes'
-                            className='simpleText'
-                        />
-                        <label className='label'>Endereco:</label>
-                        <input
-                            type='text'
-                            value={endereco}
-                            onChange={event => setEndereco(event.target.value)}
-                            name='endereco'
-                            className='simpleText'
-                        />
-                        <label className='label'>Cidade:</label>
-                        <input
-                            type='text'
-                            value={cidade}
-                            onChange={event => setCidade(event.target.value)}
-                            name='cidade'
-                            className='simpleText'
-                        />
-
-                        <Button
-                            rightIcon={<MdArrowForward/>}
-                            onClick={() => {
-                                setModalIsOpenConfirm(true);
-                                setAction('editCli');
-                            }}
-                            colorScheme='green'
-                            width={{base: 200, sm: 250, md: 250}}
-                            marginTop={15}
-                            marginLeft={{base: 8, sm: 8, md: 50}}>
-                                Salvar
-                        </Button>
-                    </Modal>
+                    <ModalEditCli 
+                        modalIsOpenCliEdit={modalIsOpenCliEdit}
+                        setModalIsOpenCliEdit={setModalIsOpenCliEdit}
+                        nome={nome}
+                        setNome={setNome}
+                        cpf={cpf}
+                        setCpf={setCpf}
+                        numeroCell={numeroCell}
+                        setNumeroCell={setNumeroCell}
+                        numeroRes={numeroRes}
+                        setNumeroRes={setNumeroRes}
+                        endereco={endereco}
+                        setEndereco={setEndereco}
+                        cidade={cidade}
+                        setCidade={setCidade}
+                        setModalIsOpenConfirm={setModalIsOpenConfirm}
+                        setAction={setAction}
+                    />
                 </div>
 
                 <div className="cell-details">
                     <h2>Aparelhos</h2>
                     {ListAp}
-                    
+
                     <Button onClick={() => setModalIsOpenApAdd(true)} leftIcon={<MdAdd />} colorScheme='green'>Novo aparelho</Button>
-                    <Modal
-                        isOpen={modalIsOpenApAdd}
-                        onRequestClose={() => setModalIsOpenApAdd(false)}
-                        overlayClassName='modal-overlay'
-                        className='modal-content'
-                    >
-                        <h1>Adicionar novo aparelho</h1>
-
-                        <label className='label'>Modelo:</label>
-                        <input
-                            type='text'
-                            value={modelo}
-                            onChange={event => setModelo(event.target.value)}
-                            name='modelo'
-                            placeholder='Samsung S20+'
-                            className='simpleText'
-                        />
-                        <label className='label'>Descrição:</label>
-                        <input
-                            type='text'
-                            value={descricao}
-                            onChange={event => setDescricao(event.target.value)}
-                            name='descricao'
-                            placeholder='Troca do Touch e Software'
-                            className='simpleText'
-                        />
-                        <label className='label'>Valor:</label>
-                        <input
-                            type='number'
-                            value={valor}
-                            onChange={event => setValor(event.target.value)}
-                            name='valor'
-                            placeholder='200,00'
-                            className='simpleText'
-                        />
-
-                        <div className='box'>
-                            <label className='label'>Pago:</label>
-                            <input
-                                type='checkbox'
-                                value={pago}
-                                onChange={() => {
-                                    setPago(!pago);
-                                }}
-                                name='pago'
-                                className='checkInput'
-                            />
-                            <label className='label'>Situação:</label>
-                            <select onChange={event => setSituacao(event.target.value)}>
-                                <option value='Na fila'>Na fila</option>
-                                <option value='Em manutenção'>Em manutenção</option>
-                                <option value='Pronto'>Pronto</option>
-                            </select>
-                        </div>
-
-
-                        <Button
-                            rightIcon={<MdArrowForward/>}
-                            onClick={addAparelho}
-                            colorScheme='green'
-                            width={250}
-                            marginTop={15}
-                            marginLeft={{base: 3, sm: 8, md: 50}}>
-                                Adicionar
-                        </Button>
-                    </Modal>
-
-
+                    <ModalApAdd
+                        modalIsOpenApAdd={modalIsOpenApAdd}
+                        setModalIsOpenApAdd={setModalIsOpenApAdd}
+                        modelo={modelo}
+                        setModelo={setModelo}
+                        descricao={descricao}
+                        setDescricao={setDescricao}
+                        valor={valor}
+                        setValor={setValor}
+                        pago={pago}
+                        setPago={setPago}
+                        situacao={situacao}
+                        setSituacao={setSituacao}
+                        id={id}
+                        reset={reset}
+                    />
                     {aparelho ? 
-                    <Modal
-                        isOpen={modalIsOpenApPerfil}
-                        onRequestClose={() => setModalIsOpenApPerfil(false)}
-                        overlayClassName='modal-overlay'
-                        className='modal-content'>
-
-                        <h1>{aparelho.modelo}</h1>
-
-                        <label className='label'>Descrição:</label>
-                        <p className='txtApPerfil'>{aparelho.descricao}</p>
-
-                        <label className='label'>Valor:</label>
-                        <p className='txtApPerfil'>R$ {aparelho.valor}</p>
-
-                        <div className='box'>
-                            <label className='label'>Pago:</label>
-                            <input
-                                type='checkbox'
-                                value={pago}
-                                name='pago'
-                                className='checkInput'
-                                checked={aparelho.pago}
-                            />
-
-                            <label className='label'>Situação:</label>
-                            <p>{aparelho.situacao}</p>
-                        </div>
-                        <div className='btnApPerfil'>
-                            <Button onClick={() => {
-                                setModalIsOpenConfirm(true);
-                                setAction('delAp');
-                            }} width={100} marginLeft={0} marginTop={5} colorScheme='red'>Apagar</Button>
-                            <Button onClick={() => {
-                                setModelo(aparelho.modelo);
-                                setDescricao(aparelho.descricao);
-                                setValor(aparelho.valor);
-                                setPago(aparelho.pago);
-                                setSituacao(aparelho.situacao);
-                                setModalIsOpenApEdit(true);
-                        }} width={100} marginLeft={50} marginTop={5} colorScheme='blue'>Editar</Button>
-                        </div>
-                    </Modal>
+                    <ModalApPerfil
+                        modalIsOpenApPerfil={modalIsOpenApPerfil}
+                        setModalIsOpenApPerfil={setModalIsOpenApPerfil}
+                        aparelho={aparelho}
+                        pago={pago}
+                        setModelo={setModelo}
+                        setValor={setValor}
+                        setPago={setPago}
+                        setSituacao={setSituacao}
+                        setDescricao={setDescricao}
+                        setAction={setAction}
+                        setModalIsOpenApEdit={setModalIsOpenApEdit}
+                        setModalIsOpenConfirm={setModalIsOpenConfirm}
+                    />
                     : <p/>}
-
-
-
-                    <Modal
-                        isOpen={modalIsOpenApEdit}
-                        onRequestClose={() => setModalIsOpenApEdit(false)}
-                        overlayClassName='modal-overlay'
-                        className='modal-content'
-                    >
-                        <h1>Editar aparelho</h1>
-
-                        <label className='label'>Modelo:</label>
-                        <input
-                            type='text'
-                            value={modelo}
-                            onChange={event => setModelo(event.target.value)}
-                            name='modelo'
-                            placeholder='Samsung S20+'
-                            className='simpleText'
-                        />
-                        <label className='label'>Descrição:</label>
-                        <input
-                            type='text'
-                            value={descricao}
-                            onChange={event => setDescricao(event.target.value)}
-                            name='descricao'
-                            placeholder='Troca do Touch e Software'
-                            className='simpleText'
-                        />
-                        <label className='label'>Valor:</label>
-                        <input
-                            type='number'
-                            value={valor}
-                            onChange={event => setValor(event.target.value)}
-                            name='valor'
-                            placeholder='200,00'
-                            className='simpleText'
-                        />
-
-                        <div className='box'>
-                            <label className='label'>Pago:</label>
-                            <input
-                                type='checkbox'
-                                value={pago}
-                                onChange={() => setPago(!pago)}
-                                name='pago'
-                                className='checkInput'
-                                checked={pago}
-                            />
-                            <label className='label'>Situação:</label>
-                            <select value={situacao} onChange={event => setSituacao(event.target.value)}>
-                                <option value='Na fila'>Na fila</option>
-                                <option value='Em manutenção'>Em manutenção</option>
-                                <option value='Pronto'>Pronto</option>
-                            </select>
-                        </div>
-
-
-                        <Button
-                            rightIcon={<MdArrowForward/>}
-                            onClick={() => {
-                                setModalIsOpenConfirm(true);
-                                setAction('editAp');
-                            }}
-                            colorScheme='green'
-                            width={250}
-                            marginTop={15}
-                            marginLeft={'2.5%'}>
-                                Salvar
-                        </Button>
-                    </Modal>
-
+                    <ModalApEdit
+                        modalIsOpenApEdit={modalIsOpenApEdit}
+                        setModalIsOpenApEdit={setModalIsOpenApEdit}
+                        modelo={modelo}
+                        setModelo={setModelo}
+                        descricao={descricao}
+                        setDescricao={setDescricao}
+                        valor={valor}
+                        setValor={setValor}
+                        pago={pago}
+                        setPago={setPago}
+                        situacao={situacao}
+                        setSituacao={setSituacao}
+                        setModalIsOpenConfirm={setModalIsOpenConfirm}
+                        setAction={setAction}
+                    />
                     <ModalConfirm 
-                    modalIsOpenConfirm={modalIsOpenConfirm}
-                    setModalIsOpenConfirm={setModalIsOpenConfirm}
-                    action={action}
-                    editCliente={editCliente}
-                    delCliente={delCliente}
-                    editAparelho={editAparelho}
-                    delAparelho={delAparelho}
+                        modalIsOpenConfirm={modalIsOpenConfirm}
+                        setModalIsOpenConfirm={setModalIsOpenConfirm}
+                        action={action}
+                        editCliente={editCliente}
+                        delCliente={delCliente}
+                        editAparelho={editAparelho}
+                        delAparelho={delAparelho}
                     />
                 </div>
             </div>
