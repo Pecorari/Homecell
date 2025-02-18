@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { MdArrowForward, MdAdd, MdWest } from 'react-icons/md';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
-import imgHomecell from '../../utils/logo.png';
 import Modal from 'react-modal';
+import imgHomecell from '../../utils/logo.png';
+import ModalConfirm from '../Modals';
 import useApi from '../../hooks/useApi';
 
 import './stylesPer.css';
@@ -28,10 +29,13 @@ const Perfil = () => {
     const [pago, setPago] = useState(false);
     const [situacao, setSituacao] = useState('Na fila');
 
+    const [action, setAction] = useState('');
+
     const [modalIsOpenApAdd, setModalIsOpenApAdd] = useState(false);
     const [modalIsOpenApPerfil, setModalIsOpenApPerfil] = useState(false);
     const [modalIsOpenApEdit, setModalIsOpenApEdit] = useState(false);
     const [modalIsOpenCliEdit, setModalIsOpenCliEdit] = useState(false);
+    const [modalIsOpenConfirm, setModalIsOpenConfirm] = useState(false);
 
     const [idAp, setIdAp] = useState('');
     const [aparelho, setAparelho] = useState({});
@@ -91,18 +95,22 @@ const Perfil = () => {
             endereco,
             cidade
         }
-
+    
         await useApi.put(`/editar-cliente/${id}`, dadosCli)
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
         
         setModalIsOpenCliEdit(false);
+        setAction('');
     };
 
     async function delCliente() {
         await useApi.delete(`/apagar-cliente/${id}`)
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
+        
+        navigate('/');
+        setAction('');
     };
 
     async function getUniqueAp() {
@@ -136,7 +144,9 @@ const Perfil = () => {
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
         
-            reset();
+        setModalIsOpenApPerfil(false);
+        setAction('');
+        reset();
     };
 
     async function editAparelho() {
@@ -196,8 +206,8 @@ const Perfil = () => {
 
 
                     <Button onClick={() => {
-                        navigate('/');
-                        delCliente();
+                        setModalIsOpenConfirm(true);
+                        setAction('delCli');
                     }}
                     width={{base: 100, sm: 150, md: 150}}
                     colorScheme='red'>Apagar</Button>
@@ -274,7 +284,10 @@ const Perfil = () => {
 
                         <Button
                             rightIcon={<MdArrowForward/>}
-                            onClick={() => editCliente()}
+                            onClick={() => {
+                                setModalIsOpenConfirm(true);
+                                setAction('editCli');
+                            }}
                             colorScheme='green'
                             width={{base: 200, sm: 250, md: 250}}
                             marginTop={15}
@@ -283,8 +296,6 @@ const Perfil = () => {
                         </Button>
                     </Modal>
                 </div>
-
-
 
                 <div className="cell-details">
                     <h2>Aparelhos</h2>
@@ -387,8 +398,8 @@ const Perfil = () => {
                         </div>
                         <div className='btnApPerfil'>
                             <Button onClick={() => {
-                                setModalIsOpenApPerfil(false);
-                                delAparelho();
+                                setModalIsOpenConfirm(true);
+                                setAction('delAp');
                             }} width={100} marginLeft={0} marginTop={5} colorScheme='red'>Apagar</Button>
                             <Button onClick={() => {
                                 setModelo(aparelho.modelo);
@@ -461,7 +472,10 @@ const Perfil = () => {
 
                         <Button
                             rightIcon={<MdArrowForward/>}
-                            onClick={() => editAparelho()}
+                            onClick={() => {
+                                setModalIsOpenConfirm(true);
+                                setAction('editAp');
+                            }}
                             colorScheme='green'
                             width={250}
                             marginTop={15}
@@ -469,6 +483,16 @@ const Perfil = () => {
                                 Salvar
                         </Button>
                     </Modal>
+
+                    <ModalConfirm 
+                    modalIsOpenConfirm={modalIsOpenConfirm}
+                    setModalIsOpenConfirm={setModalIsOpenConfirm}
+                    action={action}
+                    editCliente={editCliente}
+                    delCliente={delCliente}
+                    editAparelho={editAparelho}
+                    delAparelho={delAparelho}
+                    />
                 </div>
             </div>
         </div>
