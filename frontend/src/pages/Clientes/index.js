@@ -43,7 +43,7 @@ const Clientes = () => {
                 </div>
                 <div className='nomeCpf'>
                     <p>{cliente.nome}</p>
-                    <p>{cliente.cpf}</p>
+                    <p>{formatCPF(cliente.cpf)}</p>
                 </div>
                 <div className='aparelhos'>
                     <p>{cliente.total_aparelhos}</p>
@@ -52,6 +52,11 @@ const Clientes = () => {
             </div>
         </Link>
     )
+
+    function formatCPF(cpf) {
+        cpf = cpf.replace(/[^\d]/g, ""); // Tira os elementos indesejados
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Realiza a formatação
+    };
 
     const handleInputChange = (e) => {
         const searchValue = e.target.value

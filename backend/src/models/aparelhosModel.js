@@ -13,11 +13,11 @@ const getAparelho = async (idAp) => {
 };
 
 const addAparelho = async (idCli, dataAp) => {
-    const { modelo, descricao, valor, pago, situacao } = dataAp;
+    const { modelo, descricao, valor, formatPago, situacao } = dataAp;
 
     const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao) VALUES(?, ?, ?, ?, ?, ?)';
 
-    const createdAparelho = connection.execute(query, [idCli, modelo, descricao, valor, pago, situacao]);
+    const createdAparelho = connection.execute(query, [idCli, modelo, descricao, valor, pago = formatPago, situacao]);
     
     return createdAparelho;
 };

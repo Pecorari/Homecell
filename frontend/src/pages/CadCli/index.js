@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdWest } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
+import InputMask from 'react-input-mask';
 import imgHomecell from '../../utils/logo.png';
 import useApi from '../../hooks/useApi';
 
@@ -69,31 +70,31 @@ const CadCli = () => {
                         value={nome}
                         onChange={event => setNome(event.target.value)}
                         name='nome'
-                        placeholder='Thiago Pecorari Clemente'
+                        placeholder='Nome do cliente'
                     />
                     <label className='label'>CPF:</label>
-                    <input
-                        type='text'
+                    <InputMask
+                        mask='999.999.999-99'
                         value={cpf}
                         onChange={event => setCpf(event.target.value)}
                         name='cpf'
-                        placeholder='xxx.xxx.xxx.xx'
+                        placeholder='___.___.___-__'
                     />
                     <label className='label'>Numero do Celular:</label>
-                    <input
-                        type='text'
+                    <InputMask
+                        mask='(99) 99999-9999'
                         value={numeroCell}
                         onChange={event => setNumeroCell(event.target.value)}
                         name='numeroCelular'
-                        placeholder='(xx) xxxxx-xxxx'
+                        placeholder='(__) _____-____'
                     />
                     <label className='label'>Numero Residencial:</label>
-                    <input
-                        type='text'
+                    <InputMask
+                        mask='(99) 9999-9999'
                         value={numeroRes}
                         onChange={event => setNumeroRes(event.target.value)}
                         name='numeroResidencial'
-                        placeholder='(xx) xxxxx-xxxxx'
+                        placeholder='(__) ____-____'
                     />
                     <label className='label'>Endereço:</label>
                     <input
@@ -101,7 +102,7 @@ const CadCli = () => {
                         value={endereco}
                         onChange={event => setEndereco(event.target.value)}
                         name='endereco'
-                        placeholder='Rua Curitiba 1317, Cidade Nova'
+                        placeholder='Endereço do cliente'
                     />
                     <label className='label'>Cidade:</label>
                     <input
@@ -109,7 +110,7 @@ const CadCli = () => {
                         value={cidade}
                         onChange={event => setCidade(event.target.value)}
                         name='cidade'
-                        placeholder='Santa Barbara do Oeste'
+                        placeholder='Cidade do cliente'
                     />
                 </div>
 

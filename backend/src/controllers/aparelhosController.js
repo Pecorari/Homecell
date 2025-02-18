@@ -19,7 +19,7 @@ const addAparelho = async (req, res) => {
 
     const createdAparelho = await aparelhosModel.addAparelho(idCli, req.body);
     console.log({ insertId: createdAparelho.insertId });
-
+    
     return res.status(201).json({ message: 'created' });
 };
 

@@ -4,6 +4,7 @@ import { MdArrowForward, MdAdd, MdWest } from 'react-icons/md';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import Modal from 'react-modal';
+import InputMask from 'react-input-mask';
 import imgHomecell from '../../utils/logo.png';
 import ModalConfirm from '../Modals';
 import useApi from '../../hooks/useApi';
@@ -61,11 +62,7 @@ const Perfil = () => {
         if (idAp !== '') getUniqueAp();
     });
 
-    function formatDate(dataHora) {
-        const data = new Date(dataHora);
-        return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
-    };
-
+    
     const ListAp = aparelhos.map(aparelho => 
         <Link onClick={() => {
             setIdAp(aparelho.id);
@@ -88,7 +85,7 @@ const Perfil = () => {
             </div>
         </Link>
     )
-
+    
     async function editCliente() {
         const dadosCli = {
             nome,
@@ -111,26 +108,32 @@ const Perfil = () => {
         await useApi.delete(`/apagar-cliente/${id}`)
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
-        
-        navigate('/');
+            
+            navigate('/');
         setAction('');
     };
-
+    
     async function getUniqueAp() {
         await useApi.get(`/cliente-aparelhos/${id}/${idAp}`)
             .then((res) => {
-                const [result] = res.data;
+                let [result] = res.data;
                 setAparelho(result);
             })
             .catch((err) => console.log(err))
     };
         
     async function addAparelho() {
+        let formatPago = ''
+
+        if (pago === false) {
+            formatPago = 'Não'
+        } else formatPago = 'Sim'
+
         const dadosCell = {
             modelo,
             descricao,
             valor,
-            pago,
+            formatPago,
             situacao
         }
 
@@ -162,7 +165,7 @@ const Perfil = () => {
         }
 
         await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit)
-            .then((res) => console.log(res.data))
+        .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
         
         reset();
@@ -176,6 +179,29 @@ const Perfil = () => {
         setSituacao('Na fila');
         setPago(false);
     }
+
+    function formatDate(dataHora) {
+        const data = new Date(dataHora);
+        return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
+    };
+    function formatCPF(cpf) {
+        if (cpf) {
+            cpf = cpf.replace(/[^\d]/g, ""); // Tira os elementos indesejados
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Realiza a formatação
+        }
+    };
+    function formatNumCell(numCell) {
+        if(numCell) {
+            numCell = numCell.replace(/[^\d]/g, "");
+            return numCell.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+        }
+    };
+    function formatNumRes(numRes) {
+        if(numRes) {
+            numRes = numRes.replace(/[^\d]/g, "");
+            return numRes.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+        }
+    };
 
     return(
         <div className='container'>
@@ -196,11 +222,11 @@ const Perfil = () => {
                         <label>Nome:</label>
                         <p>{cliente.nome}</p>
                         <label>CPF:</label>
-                        <p>{cliente.cpf}</p>
+                        <p>{formatCPF(cliente.cpf)}</p>
                         <label>Número do Celular:</label>
-                        <p>{cliente.numeroCell}</p>
+                        <p>{formatNumCell(cliente.numeroCell)}</p>
                         <label>Número Residencial:</label>
-                        <p>{cliente.numeroRes}</p>
+                        <p>{formatNumRes(cliente.numeroRes)}</p>
                         <label>Endereço:</label>
                         <p>{cliente.endereco}</p>
                         <label>Cidade:</label>
@@ -245,24 +271,24 @@ const Perfil = () => {
                             className='simpleText'
                         />
                         <label className='label'>CPF:</label>
-                        <input
-                            type='text'
+                        <InputMask
+                            mask='999.999.999-99'
                             value={cpf}
                             onChange={event => setCpf(event.target.value)}
                             name='cpf'
                             className='simpleText'
                         />
                         <label className='label'>Numero do celular:</label>
-                        <input
-                            type='text'
+                        <InputMask
+                            mask='(99) 99999-9999'
                             value={numeroCell}
                             onChange={event => setNumeroCell(event.target.value)}
                             name='numeroCell'
                             className='simpleText'
                         />
                         <label className='label'>Numero residencial:</label>
-                        <input
-                            type='text'
+                        <InputMask
+                            mask='(99) 9999-9999'
                             value={numeroRes}
                             onChange={event => setNumeroRes(event.target.value)}
                             name='numeroRes'
@@ -346,7 +372,9 @@ const Perfil = () => {
                             <input
                                 type='checkbox'
                                 value={pago}
-                                onChange={() => setPago(!pago)}
+                                onChange={() => {
+                                    setPago(!pago);
+                                }}
                                 name='pago'
                                 className='checkInput'
                             />
@@ -384,7 +412,7 @@ const Perfil = () => {
                         <p className='txtApPerfil'>{aparelho.descricao}</p>
 
                         <label className='label'>Valor:</label>
-                        <p className='txtApPerfil'>{aparelho.valor}</p>
+                        <p className='txtApPerfil'>R$ {aparelho.valor}</p>
 
                         <div className='box'>
                             <label className='label'>Pago:</label>
