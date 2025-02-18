@@ -2,6 +2,7 @@ import Modal from 'react-modal';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 
+Modal.setAppElement('#root');
 
 const ModalApEdit = (params) => {
   const {

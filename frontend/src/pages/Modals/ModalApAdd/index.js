@@ -3,6 +3,8 @@ import { Button } from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 import useApi from '../../../hooks/useApi';
 
+Modal.setAppElement('#root');
+
 const ModalApAdd = (params) => {
   const {
     modalIsOpenApAdd, setModalIsOpenApAdd,

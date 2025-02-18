@@ -1,6 +1,7 @@
 import Modal from 'react-modal';
 import { Button } from '@chakra-ui/react';
 
+Modal.setAppElement('#root');
 
 const ModalApPerfil = (params) => {
   const {

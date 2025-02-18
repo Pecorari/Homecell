@@ -1,7 +1,8 @@
 import Modal from 'react-modal';
 import { Button } from '@chakra-ui/react';
-
 import './stylesConfirm.css'
+
+Modal.setAppElement('#root');
 
 const ModalConfirm = ({modalIsOpenConfirm, setModalIsOpenConfirm, action, editCliente, delCliente, editAparelho, delAparelho}) => {
   return (

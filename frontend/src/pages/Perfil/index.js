@@ -10,10 +10,11 @@ import ModalApAdd from '../Modals/ModalApAdd';
 import ModalApPerfil from '../Modals/ModalApPerfil';
 import ModalApEdit from '../Modals/ModalApEdit';
 import useApi from '../../hooks/useApi';
+import Modal from 'react-modal';
 
 import './stylesPer.css';
 
-// Modal.setAppElement('#root');
+Modal.setAppElement('#root');
 
 const Perfil = () => {
     const [cliente, setCliente] = useState({});
@@ -132,6 +133,7 @@ const Perfil = () => {
         setModalIsOpenApPerfil(false);
         setAction('');
         reset();
+        window.location.reload();
     };
 
     async function editAparelho() {

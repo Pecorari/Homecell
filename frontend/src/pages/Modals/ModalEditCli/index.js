@@ -3,6 +3,8 @@ import { Button } from '@chakra-ui/react'
 import { MdArrowForward } from 'react-icons/md';
 import InputMask from 'react-input-mask';
 
+Modal.setAppElement('#root');
+
 const ModalEditCli = (params) => {
   const {
     modalIsOpenCliEdit, setModalIsOpenCliEdit,
