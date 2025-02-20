@@ -1,0 +1,105 @@
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.475);
+  overflow: scroll;
+}
+.modal-content-ApPerfil {
+  position: relative;
+  width: min-content;
+  height: max-content;
+  margin: auto;
+  margin-top: 200px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 2.1%;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 700px) {
+     margin-top: 150px;
+     margin-bottom: 50px;
+     padding: 5%;
+  }
+  
+  @media (max-width: 425px) {
+     margin-top: 100px;
+     margin-bottom: 50px;
+     padding: 8%;
+  }
+}
+.modal-content-ApPerfil h1 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 30px;
+
+  @media (max-width: 700px) {
+      font-size: 28px;
+  }
+   
+  @media (max-width: 425px) {
+      font-size: 24px;
+  }
+}
+.modal-content-ApPerfil .txtApPerfil {
+  padding-left: 15px;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+.modal-content-ApPerfil .label {
+  margin-bottom: 10px;
+  font-weight: 500;
+
+  @media (max-width: 700px) {
+      margin-bottom: 8px;
+  }
+   
+  @media (max-width: 425px) {
+      margin-bottom: 6px;
+  }
+}
+.modal-content-ApPerfil .box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+.modal-content-ApPerfil .box p {
+  font-size: 16px;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1;
+}
+.modal-content-ApPerfil .checkInput {
+  font-size: 18px;
+}
+.modal-content-ApPerfil .btnApPerfil {
+  display: flex;
+}
+
+
+.createdUpdated {
+  margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+}
+.createdUpdated div {
+    margin-right: 40px;
+    width: 100%;
+}
+.createdUpdated label {
+  display: block;
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+}
+.createdUpdated p {
+  text-align: center;
+  font-weight: 100;
+}

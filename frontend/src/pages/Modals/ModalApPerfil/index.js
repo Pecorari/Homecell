@@ -1,6 +1,8 @@
 import Modal from 'react-modal';
 import { Button } from '@chakra-ui/react';
 
+import './stylesApPerfil.css';
+
 Modal.setAppElement('#root');
 
 const ModalApPerfil = (params) => {
@@ -19,12 +21,17 @@ const ModalApPerfil = (params) => {
     setModalIsOpenConfirm
   } = params
 
+  function formatDate(dataHora) {
+    const data = new Date(dataHora);
+    return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
+  };
+
   return (
       <Modal
         isOpen={modalIsOpenApPerfil}
         onRequestClose={() => setModalIsOpenApPerfil(false)}
         overlayClassName='modal-overlay'
-        className='modal-content'>
+        className='modal-content-ApPerfil'>
 
         <h1>{aparelho.modelo}</h1>
 
@@ -43,9 +50,20 @@ const ModalApPerfil = (params) => {
                 className='checkInput'
                 checked={aparelho.pago}
             />
-
+        </div>
+        <div className='box'>
             <label className='label'>Situação:</label>
-            <p>{aparelho.situacao}</p>
+            <p className='situacao'>{aparelho.situacao}</p>
+        </div>
+        <div className='createdUpdated'>
+            <div>
+            <label>Criado em:</label>
+            <p>{formatDate(aparelho.created_at)}</p>
+            </div>
+            <div>
+            <label>Ultima edição:</label>
+            <p>{formatDate(aparelho.updated_at)}</p>
+            </div>
         </div>
         <div className='btnApPerfil'>
             <Button onClick={() => {

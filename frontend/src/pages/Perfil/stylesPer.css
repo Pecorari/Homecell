@@ -48,6 +48,7 @@
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     border-radius: 12px;
     height: min-content;
+    position: relative;
 
     @media (max-width: 650px) {
         width: max-content;
@@ -58,6 +59,44 @@
     display: flex;
     justify-content: row;
     align-items: center;
+}
+
+.container .container-perfil .createdUpdated {
+    position: absolute;
+    top: 110px;
+    left: 470px;
+    width: max-content;
+    flex-direction: column;
+
+    @media (max-width: 650px) {
+        left: 300px;
+    }
+    @media (max-width: 480px) {
+        position: relative;
+        top: 0px;
+        left: 0px;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+.container .container-perfil .createdUpdated div {
+    @media (max-width: 480px) {
+        margin-right: 40px;
+        width: 100%;
+    }
+}
+.container .container-perfil .createdUpdated label {
+    display: block;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+}
+.container .container-perfil .createdUpdated p {
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 100;
 }
 
 .container .container-perfil h1 {
@@ -79,6 +118,10 @@
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 50px;
+
+    @media (max-width: 480px) {
+        margin-bottom: 20px;
+    }
 }
 
 .container .container-perfil .perfil label {
@@ -88,10 +131,19 @@
     margin-bottom: 8px;
     font-weight: 500;
     margin-top: 20px;
+    margin-left: 60px;
+
+    @media (max-width: 650px) {
+        margin-left: 0;
+    }
 }
 
 .container .container-perfil .perfil p {
-    margin-left: 20px;
+    margin-left: 70px;
+
+    @media (max-width: 650px) {
+        margin-left: 20px;
+    }
 }
 
 
@@ -102,7 +154,7 @@
     background: linear-gradient(90deg, rgba(225,236,199,0.4) 0%, rgb(225, 236, 199, 0.9) 100%);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
     border-radius: 12px;
-    height: 655px;
+    height: 715px;
     width: 500px;
     margin-left: 50px;
 
