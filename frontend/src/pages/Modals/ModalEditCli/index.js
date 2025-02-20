@@ -14,12 +14,16 @@ const ModalEditCli = (params) => {
     numeroRes, setNumeroRes,
     endereco, setEndereco,
     cidade, setCidade,
-    setModalIsOpenConfirm, setAction } = params
+    setModalIsOpenConfirm, setAction,
+    error, setError } = params
 
   return (
     <Modal
       isOpen={modalIsOpenCliEdit}
-      onRequestClose={() => setModalIsOpenCliEdit(false)}
+      onRequestClose={() => {
+        setModalIsOpenCliEdit(false);
+        setError('');
+      }}
       overlayClassName='modal-overlay'
       className='modal-content'
     >
@@ -73,6 +77,8 @@ const ModalEditCli = (params) => {
           name='cidade'
           className='simpleText'
       />
+
+      <p id='error'>{error}</p>
 
       <Button
           rightIcon={<MdArrowForward/>}

@@ -6,26 +6,23 @@ Modal.setAppElement('#root');
 
 const ModalApEdit = (params) => {
   const {
-    modalIsOpenApEdit,
-    setModalIsOpenApEdit,
-    modelo,
-    setModelo,
-    descricao,
-    setDescricao,
-    valor,
-    setValor,
-    pago,
-    setPago,
-    situacao,
-    setSituacao,
-    setModalIsOpenConfirm,
-    setAction
+    modalIsOpenApEdit, setModalIsOpenApEdit,
+    modelo, setModelo,
+    descricao, setDescricao,
+    valor, setValor,
+    pago, setPago,
+    situacao, setSituacao,
+    setModalIsOpenConfirm, setAction,
+    error, setError
   } = params
 
   return (
     <Modal
       isOpen={modalIsOpenApEdit}
-      onRequestClose={() => setModalIsOpenApEdit(false)}
+      onRequestClose={() => {
+        setModalIsOpenApEdit(false);
+        setError('');
+      }}
       overlayClassName='modal-overlay'
       className='modal-content'
     >
@@ -77,6 +74,7 @@ const ModalApEdit = (params) => {
           </select>
       </div>
 
+      <p id='error'>{error}</p>
 
       <Button
           rightIcon={<MdArrowForward/>}

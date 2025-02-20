@@ -2,18 +2,29 @@ const validateBody = (req, res, next) => {
     const { body } = req;
 
     if (body.nome == undefined || body.nome == '') {
-        return res.status(400).json({ message: 'O campo nome é obrigatório' });
+        return res.status(400).json({ message: 'Nome é obrigatório' });
     }
     if (body.cpf == undefined || body.cpf == '') {
-        return res.status(400).json({ message: 'O campo cpf é obrigatório' });
+        return res.status(400).json({ message: 'CPF é obrigatório' });
     }
     if (body.numeroCell == undefined || body.numeroCell == '') {
-        return res.status(400).json({ message: 'O campo numero de contato é obrigatório' });
+        return res.status(400).json({ message: 'Número de celular é obrigatório' });
+    }
+
+    next();
+};
+
+const validateSearch = (req, res, next) => {
+    const { value } = req.query;
+
+    if (value == undefined || value == '') {
+        return res.status(400).json({ message: 'Campo pesquisa vazio' });
     }
 
     next();
 };
 
 module.exports = {
-    validateBody
+    validateBody,
+    validateSearch
 };

@@ -30,7 +30,7 @@ const getCliente = async (req, res) => {
 };
 
 const getSearchCliente = async (req, res) => {
-    const { value } = req.params;
+    const { value } = req.query;
 
     const clienteSearched = await clientesModel.getSearchCliente(value);
 

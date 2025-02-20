@@ -18,46 +18,45 @@ const CadCli = () => {
     const [cidade, setCidade] = useState('');
     const [id, setId] = useState('');
 
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
 
     useEffect(() => {
         if(id !== '') {
             navigate('/clientes/' + id);
         }
-    });
-    
-    async function addCli(dados) {
-        await useApi.post('/cadastrar-cliente', dados)
-        .then((resposta) => {
+    }, [id, navigate]);
+
+    async function submit() {
+        const dados = { nome, cpf, numeroCell, numeroRes, endereco, cidade }
+        
+        try {
+            const resposta = await useApi.post('/cadastrar-cliente', dados);
             setId(resposta.data);
-        })
-        .catch((err) => console.log(err));
-    }
-
-    function submit() {
-        const dados = {
-            nome,
-            cpf,
-            numeroCell,
-            numeroRes,
-            endereco,
-            cidade
+            reset();
+            setError('');
+        } catch (err) {
+            console.log(err.response.data.message)
+            setError(err.response.data.message);
         }
-
-        addCli(dados);
-        reset();
     }
 
     function reset() {
-        Array.from(document.querySelectorAll('input')).forEach(input => {
-            input.value = ('');
-        });
+        setNome('');
+        setCpf('');
+        setNumeroCell('');
+        setNumeroRes('');
+        setEndereco('');
+        setCidade('');
     }
 
     return(
         <div className='container'>
             <div className='divLogo'>
-                <img className='logo' src={imgHomecell} alt='HOME CELL' />
+                <Link to={'/'}>
+                    <img className='logo' src={imgHomecell} alt='HOME CELL' />
+                </Link>
             </div>
 
             <div className='container-form'>
@@ -114,9 +113,11 @@ const CadCli = () => {
                     />
                 </div>
 
+                { error && <p id='error'>{error}</p> }
+
                 <div className='divButtons'>
                     <Link to={'/'}>
-                        <Button className='back' rightIcon={<MdWest/>} variant='outline'>
+                        <Button className='back' rightIcon={<MdWest/>} variant='outline' aria-label="Voltar">
                             Voltar
                         </Button>
                     </Link>
@@ -125,7 +126,8 @@ const CadCli = () => {
                         className='cadastrar'
                         rightIcon={<MdArrowForward/>}
                         onClick={submit}
-                        colorScheme='green'>
+                        colorScheme='green'
+                        aria-label="Cadastrar Cliente">
                             Cadastrar
                     </Button>
                 </div>

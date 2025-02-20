@@ -44,6 +44,8 @@ const Perfil = () => {
     const [idAp, setIdAp] = useState('');
     const [aparelho, setAparelho] = useState({});
 
+    const [error, setError] = useState('');
+
     const navigate = useNavigate();
     const params = useParams();
     const id = params.id;
@@ -71,8 +73,8 @@ const Perfil = () => {
             setIdAp(aparelho.id);
             getUniqueAp();
             setModalIsOpenApPerfil(true);
-        }}>
-            <div className='cell-inf' key={aparelho.id}>
+        }} key={aparelho.id}>
+            <div className='cell-inf'>
                 <div className='cellModDate'>
                     <p>{aparelho.modelo}</p>
                     <p>{formatDate(aparelho.created_at)}</p>
@@ -100,11 +102,16 @@ const Perfil = () => {
         }
     
         await useApi.put(`/editar-cliente/${id}`, dadosCli)
-            .then((res) => console.log(res.data))
-            .catch((err) => console.log(err))
-        
-        setModalIsOpenCliEdit(false);
-        setAction('');
+            .then((res) => {
+                console.log(res.data)
+                setModalIsOpenCliEdit(false);
+                setAction('');
+                setError('');
+            })
+            .catch((err) => {
+                console.log(err.response.data.message);
+                setError(err.response.data.message);
+            })
     };
 
     async function delCliente() {
@@ -146,11 +153,16 @@ const Perfil = () => {
         }
 
         await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit)
-        .then((res) => console.log(res.data))
-            .catch((err) => console.log(err))
-        
-        reset();
-        setModalIsOpenApEdit(false);
+            .then((res) => {
+                console.log(res.data);
+                reset();
+                setError('');
+                setModalIsOpenApEdit(false);
+            })
+            .catch((err) => {
+                console.log(err.response.data.message);
+                setError(err.response.data.message);
+            })
     }
 
     function reset() {
@@ -187,7 +199,9 @@ const Perfil = () => {
     return(
         <div className='container'>
             <div className='divLogo'>
-                <img className='logo' src={imgHomecell} alt='HOME CELL' />
+                <Link to={'/'}>
+                    <img className='logo' src={imgHomecell} alt='HOME CELL' />
+                </Link>
             </div>
 
             <div className='divs'>
@@ -251,6 +265,8 @@ const Perfil = () => {
                         setCidade={setCidade}
                         setModalIsOpenConfirm={setModalIsOpenConfirm}
                         setAction={setAction}
+                        error={error}
+                        setError={setError}
                     />
                 </div>
 
@@ -274,6 +290,8 @@ const Perfil = () => {
                         setSituacao={setSituacao}
                         id={id}
                         reset={reset}
+                        error={error}
+                        setError={setError}
                     />
                     {aparelho ? 
                     <ModalApPerfil
@@ -306,6 +324,8 @@ const Perfil = () => {
                         setSituacao={setSituacao}
                         setModalIsOpenConfirm={setModalIsOpenConfirm}
                         setAction={setAction}
+                        error={error}
+                        setError={setError}
                     />
                     <ModalConfirm 
                         modalIsOpenConfirm={modalIsOpenConfirm}

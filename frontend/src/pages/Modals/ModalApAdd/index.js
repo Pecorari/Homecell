@@ -13,7 +13,8 @@ const ModalApAdd = (params) => {
     valor, setValor,
     pago, setPago,
     situacao, setSituacao,
-    id, reset
+    id, reset,
+    error, setError
   } = params
 
   async function addAparelho() {
@@ -32,17 +33,25 @@ const ModalApAdd = (params) => {
     }
 
     await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell)
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err))
-
-    reset();
-    setModalIsOpenApAdd(false);
+        .then((res) => {
+          console.log(res.data);
+          setModalIsOpenApAdd(false);
+          setError('');
+          reset();
+        })
+        .catch((err) => {
+          console.log(err.response.data.message);
+          setError(err.response.data.message);
+        })   
 }
 
   return (
     <Modal
       isOpen={modalIsOpenApAdd}
-      onRequestClose={() => setModalIsOpenApAdd(false)}
+      onRequestClose={() => {
+        setModalIsOpenApAdd(false);
+        setError('')
+      }}
       overlayClassName='modal-overlay'
       className='modal-content'
     >
@@ -95,6 +104,7 @@ const ModalApAdd = (params) => {
           </select>
       </div>
 
+      <p id='error'>{error}</p>
 
       <Button
           rightIcon={<MdArrowForward/>}
