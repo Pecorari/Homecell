@@ -1,0 +1,234 @@
+.nota-container {
+  width: 80%;
+  margin: auto;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  display: none;
+  margin-top: 20px;
+}
+.nota-container .viaUm .logo {
+  width: 120px;
+  height: auto;
+  position: absolute;
+  top: -20px;
+  left: 35px;
+}
+.nota-container .viaUm h1 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 35px;
+}
+
+.nota-container .viaUm .info .dadosEmpresa {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaUm .info .dadosEmpresa div {
+  text-align: left;
+}
+.nota-container .viaUm .info .dadosCliente h1{
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.nota-container .viaUm .info .dadosCliente2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaUm .info .dadosCliente2 div {
+  text-align: left;
+}
+.nota-container .viaUm .info .dadosAparelho h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.nota-container .viaUm .info .dadosAparelho2 {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaUm .info .dadosAparelho2 div {
+  text-align: left;
+}
+
+.nota-container .viaUm .info .dadosAparelho2 .descFlutuante {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 550px;
+}
+
+.nota-container .viaUm .termo {
+  margin-top: 20px;
+  text-align: left;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaUm .termo h1 {
+  font-size: 14px;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+.nota-container .viaUm .termo .lastP {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.nota-container .viaUm .assinatura {
+  text-align: center;
+}
+.nota-container .viaUm .assinatura p {
+  border-top: 1px solid black;
+  width: 50%;
+  margin-left: 45%;
+}
+
+
+/* ViaDois começa aqui! */
+
+.nota-container .viaDois .logo {
+  width: 120px;
+  height: auto;
+  position: absolute;
+  top: 520px;
+  left: 35px;
+}
+.nota-container .viaDois h1 {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 35px;
+  margin-top: 0px;
+}
+
+.nota-container .viaDois .info .dadosEmpresa {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaDois .info .dadosEmpresa div {
+  text-align: left;
+}
+.nota-container .viaDois .info .dadosCliente h1{
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.nota-container .viaDois .info .dadosCliente2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaDois .info .dadosCliente2 div {
+  text-align: left;
+}
+.nota-container .viaDois .info .dadosAparelho h1 {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.nota-container .viaDois .info .dadosAparelho2 {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaDois .info .dadosAparelho2 div {
+  text-align: left;
+}
+
+.nota-container .viaDois .info .dadosAparelho2 .descFlutuante {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 550px;
+}
+
+.nota-container .viaDois .termo {
+  margin-top: 20px;
+  text-align: left;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.nota-container .viaDois .termo h1 {
+  font-size: 14px;
+  text-align: left;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+.nota-container .viaDois .termo .lastP {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.nota-container .viaDois .assinatura {
+  text-align: center;
+}
+.nota-container .viaDois .assinatura p {
+  border-top: 1px solid black;
+  width: 50%;
+  margin-left: 45%;
+}
+.nota-container .viaDois .testadoRestirado {
+  text-align: left;
+  margin-left: 30px;
+  margin-top: 20px;
+}
+
+
+
+
+/* Esconde tudo na impressão exceto a nota */
+@media print {
+  .nota-container {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      border: none;
+      box-shadow: none;
+  }
+  body * {
+      visibility: hidden;
+  }
+  .nota-container, .nota-container * {
+      visibility: visible;
+  }
+  @page {
+      margin: 0;
+  }
+  body {
+      margin: 0;
+      padding: 0;
+  }
+}

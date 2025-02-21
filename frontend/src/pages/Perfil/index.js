@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { MdAdd, MdWest } from 'react-icons/md';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
@@ -13,7 +13,6 @@ import useApi from '../../hooks/useApi';
 import Modal from 'react-modal';
 
 import './stylesPer.css';
-import './notaCliente.css';
 
 Modal.setAppElement('#root');
 
@@ -46,7 +45,6 @@ const Perfil = () => {
     const [aparelho, setAparelho] = useState({});
 
     const [error, setError] = useState('');
-    const notaRef = useRef(null);
 
     const navigate = useNavigate();
     const params = useParams();
@@ -240,14 +238,6 @@ const Perfil = () => {
                         </div>
                     </div>
 
-                    <div>
-                    <Button onClick={() => {window.print()}}
-                    width={{base: 235, sm: 350, md: 450}}
-                    marginBottom={15}
-                    colorScheme='green'
-                    variant={'outline'}>Imprimir</Button>
-                    </div>
-
                     <Button onClick={() => {
                         setModalIsOpenConfirm(true);
                         setAction('delCli');
@@ -290,29 +280,6 @@ const Perfil = () => {
                     />
                 </div>
 
-
-                {/* Seção da nota que será impressa */}
-                <div ref={notaRef} className="nota-container">
-                    <h2>Nota do Cliente</h2>
-                    <p><strong>Nome:</strong> {cliente.nome}</p>
-                    <p><strong>CPF:</strong> {cliente.cpf}</p>
-                    <p><strong>Endereço:</strong> {cliente.endereco}, {cliente.cidade}</p>
-                    <p><strong>Telefone:</strong> {cliente.numeroCell}</p>
-
-                    <h3>Aparelhos</h3>
-                    <ul>
-                        {aparelhos.map((aparelho) => (
-                            <li key={aparelho.id}>
-                                <p><strong>Modelo:</strong> {aparelho.modelo}</p>
-                                <p><strong>Descrição:</strong> {aparelho.descricao}</p>
-                                <p><strong>Valor:</strong> R$ {aparelho.valor}</p>
-                                <p><strong>Situação:</strong> {aparelho.situacao}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-
                 <div className="cell-details">
                     <h2>Aparelhos</h2>
                     {ListAp}
@@ -350,6 +317,7 @@ const Perfil = () => {
                         setAction={setAction}
                         setModalIsOpenApEdit={setModalIsOpenApEdit}
                         setModalIsOpenConfirm={setModalIsOpenConfirm}
+                        cliente={cliente}
                     />
                     : <p/>}
                     <ModalApEdit

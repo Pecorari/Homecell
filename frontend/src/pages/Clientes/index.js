@@ -33,13 +33,12 @@ const Clientes = () => {
         intersectionObserver.observe(loadingRef.current);
 
         return () => intersectionObserver.disconnect();
-    // eslint-disable-next-line
-    }, [loadingRef.current])
+    })
 
     const fetchClientes = async () => {
         try {
             const response = await useApi.get(`/clientes/10/${page}`);
-            setClientes([...clientes, ...response.data]);
+            setClientes((prevClientes) => [...prevClientes, ...response.data]);
         } catch (err) {
             console.log('Erro ao buscar clientes:', err);
         }
@@ -47,7 +46,7 @@ const Clientes = () => {
 
     function formatCPF(cpf) {
         if (!cpf) return '';
-        return cpf.replace(/[^\d]/g, "") // Tira os elementos indesejados
+        return cpf.replace(/[^\d]/g, "").padStart(11, '0') // Tira os elementos indesejados
                   .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Realiza a formatação
     };
 
@@ -55,6 +54,8 @@ const Clientes = () => {
         try {
             const res = await useApi.get(`/clientes-search?value=${valueSearch}`)
             setClientesSearched(Array.isArray(res.data) ? res.data : []);
+            setClientes([]);
+            setPage(0);
         } catch (err) {
             console.log(err.response.data.message);
             setClientesSearched([]);
@@ -71,7 +72,11 @@ const Clientes = () => {
     return(
         <div className='container'>
             <div className='divLogo'>
-                <Link to={'/'} onClick={() => window.location.reload()}>
+                <Link to={'/'} onClick={() => {
+                    setClientes([]);
+                    setClientesSearched([]);
+                    setPage(0);
+                }}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>
             </div>
