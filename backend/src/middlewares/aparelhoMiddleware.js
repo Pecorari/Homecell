@@ -10,7 +10,7 @@ const validateBody = (req, res, next) => {
     if (body.valor == undefined || body.valor == '') {
         return res.status(400).json({ message: 'Valor é obrigatório' });
     }
-    if (body.descricao.length > 100 ) {
+    if (body.descricao.length > 200 ) {
         return res.status(400).json({ message: 'Descrição muito longa!' });
     }
 
