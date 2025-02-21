@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdPersonAddAlt } from 'react-icons/md';
@@ -13,13 +13,25 @@ const Clientes = () => {
     const [clientesSearched, setClientesSearched] = useState([]);
     const [clientes, setClientes] = useState([]);
     const [page, setPage] = useState(0);
+    const [isSearching, setIsSearching] = useState(false);
 
     const loadingRef = useRef(null);
+
+    const fetchClientes = useCallback(async () => {
+        if (isSearching) return;
+
+        try {
+            const response = await useApi.get(`/clientes/10/${page}`);
+            setClientes((prevClientes) => [...prevClientes, ...response.data]);
+        } catch (err) {
+            console.log('Erro ao buscar clientes:', err);
+        }
+    }, [page, isSearching]);
 
     useEffect(() => {
         fetchClientes();
     // eslint-disable-next-line
-    }, [page]);
+    }, [fetchClientes]);
 
     useEffect(() => {
         if (!loadingRef.current) return;
@@ -33,16 +45,7 @@ const Clientes = () => {
         intersectionObserver.observe(loadingRef.current);
 
         return () => intersectionObserver.disconnect();
-    })
-
-    const fetchClientes = async () => {
-        try {
-            const response = await useApi.get(`/clientes/10/${page}`);
-            setClientes((prevClientes) => [...prevClientes, ...response.data]);
-        } catch (err) {
-            console.log('Erro ao buscar clientes:', err);
-        }
-    };
+    }, [])
 
     function formatCPF(cpf) {
         if (!cpf) return '';
@@ -51,15 +54,23 @@ const Clientes = () => {
     };
 
     async function searchCliente() {
+        if (!valueSearch) return;
+        
         try {
-            const res = await useApi.get(`/clientes-search?value=${valueSearch}`)
-            setClientesSearched(Array.isArray(res.data) ? res.data : []);
+            setIsSearching(true);
             setClientes([]);
             setPage(0);
+
+            const res = await useApi.get(`/clientes-search?value=${valueSearch}`);
+
+            if (Array.isArray(res.data) && res.data.length > 0) {
+                setClientesSearched(res.data);
+            } else {
+                setClientesSearched([]);
+            }
         } catch (err) {
             console.log(err.response.data.message);
             setClientesSearched([]);
-            setPage(0);
         }
     };
 
@@ -76,6 +87,7 @@ const Clientes = () => {
                     setClientes([]);
                     setClientesSearched([]);
                     setPage(0);
+                    setIsSearching(false);
                 }}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>

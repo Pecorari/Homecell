@@ -57,15 +57,23 @@ const Perfil = () => {
                 setCliente(dataCli);
             })
             .catch((err) => console.log(err))
+    // eslint-disable-next-line
+    }, [id]);
 
+    useEffect(() => {
         useApi.get(`cliente-aparelhos/${id}`)
-            .then((res) => {
-                setAparelhos(res.data);
-            })
-            .catch((err) => console.log(err))
-        
-        if (idAp !== '') getUniqueAp();
-    });
+        .then((res) => {
+            setAparelhos(res.data);
+        })
+        .catch((err) => console.log(err))
+    }, [idAp, modalIsOpenApPerfil, modalIsOpenApAdd]);
+
+    useEffect(() => {
+        if (idAp) {
+            // eslint-disable-next-line
+            getUniqueAp();
+        }
+    }, [idAp]);
     
     const ListAp = aparelhos.map(aparelho => 
         <Link onClick={() => {
@@ -302,6 +310,7 @@ const Perfil = () => {
                         reset={reset}
                         error={error}
                         setError={setError}
+                        setAparelhos={setAparelhos}
                     />
                     {aparelho ? 
                     <ModalApPerfil

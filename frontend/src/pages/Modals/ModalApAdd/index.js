@@ -14,7 +14,8 @@ const ModalApAdd = (params) => {
     pago, setPago,
     situacao, setSituacao,
     id, reset,
-    error, setError
+    error, setError,
+    setAparelhos
   } = params
 
   async function addAparelho() {
@@ -35,6 +36,7 @@ const ModalApAdd = (params) => {
     await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell)
         .then((res) => {
           console.log(res.data);
+          setAparelhos(prevAparelho => [...prevAparelho, res.data]);
           setModalIsOpenApAdd(false);
           setError('');
           reset();
