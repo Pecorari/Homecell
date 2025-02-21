@@ -55,7 +55,7 @@ const updtCliente = async (idCli, dataCli) => {
 
     return updatedCliente;
 };
-
+// Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 module.exports = {
     getAll,
     getCliente,

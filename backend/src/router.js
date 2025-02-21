@@ -20,4 +20,5 @@ router.post('/cadastrar-aparelhos/:idCli', aparelhoMiddleware.validateBody, apar
 router.delete('/apagar-aparelhos/:id', aparelhosController.delAparelho);
 router.put('/editar-aparelhos/:id', aparelhoMiddleware.validateBody, aparelhosController.updtAparelho);
 
+// Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 module.exports = router;

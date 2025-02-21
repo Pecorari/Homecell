@@ -61,7 +61,7 @@ const updtCliente = async (req, res) => {
 
     return res.status(204).json();
 };
-
+// Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 module.exports = {
     getAll,
     getCliente,

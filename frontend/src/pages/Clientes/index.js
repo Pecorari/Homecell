@@ -154,6 +154,6 @@ const Clientes = () => {
         </div>
     );
 }
-
+// Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 export default Clientes;
 
