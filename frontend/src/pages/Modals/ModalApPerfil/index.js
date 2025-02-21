@@ -233,6 +233,7 @@ const ModalApPerfil = (params) => {
             <p>Eu <strong>{cliente.nome}</strong> acima qualificado aprovo e autorizo a realização de manutenção do equipamento descriminado e individualizado <strong>{aparelho.modelo}</strong> de minha propriedade.</p>
             <p>Neste ato, tomo conhecimento de que a não retirada do equipamento no prazo de até 90 dias acarretará a adoção das medidas judiciais cabíveis para integral do pagamento do valor referente ao conserto, podendo o prestador de serviço valer-se do disposto nos artigos 1.170 a 1.176 do Código de Processo Civil, para tal fim.</p>
             <p>Além do valor devido pela manutenção, fico ciente do cumprimento do certificado de que responderei por perdas e danos, pela guarda do aparelho com o pagamento de aluguel e pelas demais despesas necessárias à realização de notificações e cobranças, inclusive despesas judiciais e honorários advocatícios.</p>
+            <p>Em Manutenção referente a troca de frontal a garantia é de 90 dias e não cobre o mal uso como "risco, impacto, umidade, entre outros"</p>
             <p className='lastP'><strong>Santa Bárbara D’Oeste, {dataNota.toLocaleDateString('pt-BR')}</strong></p>
           </div>
 
