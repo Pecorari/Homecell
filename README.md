@@ -4,8 +4,45 @@
 
 ## 🚀 Começando
 
-Essas instruções permitirão que você obtenha uma cópia do projeto em operação na sua máquina local para fins de desenvolvimento e teste.
+Essas instruções permitirão que você obtenha uma cópia do projeto em operação na sua máquina local para fins de desenvolvimento.
 
+### 🔧 Instalação
+
+Depois de já ter clonado o repositório siga essas etapas para terminar a instalação e começar a execução
+
+Instale os módulos necessarios na pasta do *backend* e também no *frontend*:
+
+```
+npm install
+```
+
+Navegue até *Homecell/backend/src/server.js* e altere o valor de *PORT* para a porta de preferência, Exemplo:
+
+```
+const PORT = 3333;
+
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
+});
+```
+
+Agora vá até *Homecell/backend/src/database/connection.js* e altere os dados de acordo com a sua conexão ao MariaDB, Exemplo:
+
+```
+const pool = mariadb.createPool({
+    host: localhost,
+    user: root,
+    password: 12345,
+    database: homecell, 
+});
+```
+
+
+Agora no terminal tanto do *backend* quanto o *frontend*, execute o seguinte comando:
+
+```
+npm start
+```
 ### 📋 Pré-requisitos
 
 #### Banco de dados ultilizado: MariaDB
@@ -44,44 +81,6 @@ CREATE TABLE `aparelhos` (
 	INDEX `FK1_idCli` (`idCli`) USING BTREE,
 	CONSTRAINT `FK1_idCli` FOREIGN KEY (`idCli`) REFERENCES `clientes` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 );
-```
-
-### 🔧 Instalação
-
-Depois de já ter clonado o repositório siga essas etapas para terminar a instalação e começar a execução
-
-Instale os módulos necessarios na pasta do *backend* e também no *frontend*:
-
-```
-npm install
-```
-
-Navegue até *Homecell/backend/src/server.js* e altere o valor de *PORT* para a porta de preferência, Exemplo:
-
-```
-const PORT = 3333;
-
-app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`);
-});
-```
-
-Agora vá até *Homecell/backend/src/database/connection.js* e altere os dados de acordo com a sua conexão ao MariaDB, Exemplo:
-
-```
-const pool = mariadb.createPool({
-    host: localhost,
-    user: root,
-    password: 12345,
-    database: homecell, 
-});
-```
-
-
-Agora no terminal tanto do *backend* quanto o *frontend*, execute o seguinte comando:
-
-```
-npm start
 ```
 
 ## 🛠️ Construído com
