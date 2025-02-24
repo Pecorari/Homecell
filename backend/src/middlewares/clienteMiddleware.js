@@ -7,9 +7,6 @@ const validateBody = (req, res, next) => {
     if (body.cpf == undefined || body.cpf == '') {
         return res.status(400).json({ message: 'CPF é obrigatório' });
     }
-    if (body.numeroCell == undefined || body.numeroCell == '') {
-        return res.status(400).json({ message: 'Número de celular é obrigatório' });
-    }
 
     next();
 };
