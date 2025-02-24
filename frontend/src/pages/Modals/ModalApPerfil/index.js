@@ -20,6 +20,7 @@ const ModalApPerfil = (params) => {
     setPago,
     setSituacao,
     setDescricao,
+    setObservacao,
     setAction,
     setModalIsOpenApEdit,
     setModalIsOpenConfirm,
@@ -47,6 +48,8 @@ const ModalApPerfil = (params) => {
 
         <label className='label'>Descrição:</label>
         <p className='txtApPerfil'>{aparelho.descricao}</p>
+        <label className='label'>Observação:</label>
+        <p className='txtApPerfil'>{aparelho.observacao}</p>
 
         <label className='label'>Valor:</label>
         <p className='txtApPerfil'>R$ {aparelho.valor}</p>
@@ -95,6 +98,7 @@ const ModalApPerfil = (params) => {
                 setValor(aparelho.valor);
                 setPago(aparelho.pago);
                 setSituacao(aparelho.situacao);
+                setObservacao(aparelho.observacao);
                 setModalIsOpenApEdit(true);
         }} width={100} marginLeft={50} colorScheme='blue'>Editar</Button>
         </div>

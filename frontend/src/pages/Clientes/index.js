@@ -22,16 +22,23 @@ const Clientes = () => {
 
         try {
             const response = await useApi.get(`/clientes/10/${page}`);
-            setClientes((prevClientes) => [...prevClientes, ...response.data]);
+            setClientes((prevClientes) => {
+                const newClientes = response.data.filter(cliente => 
+                    !prevClientes.some(prev => prev.id === cliente.id)
+                )
+                return [...prevClientes, ...newClientes]});
         } catch (err) {
             console.log('Erro ao buscar clientes:', err);
         }
     }, [page, isSearching]);
 
     useEffect(() => {
-        fetchClientes();
+        if (!isSearching) {
+            setClientes([]);
+            fetchClientes();
+        }
     // eslint-disable-next-line
-    }, [fetchClientes]);
+    }, [page, isSearching]);
 
     useEffect(() => {
         if (!loadingRef.current) return;
@@ -54,8 +61,14 @@ const Clientes = () => {
     };
 
     async function searchCliente() {
-        if (!valueSearch) return;
-        
+        if (valueSearch === '') {
+            setIsSearching(false);
+            setClientes([]);
+            setPage(0);
+            fetchClientes();
+            return;
+        }
+            
         try {
             setIsSearching(true);
             setClientes([]);
@@ -77,7 +90,6 @@ const Clientes = () => {
     function submit(e) {
         e.preventDefault();
         searchCliente();
-        setValueSearch('');
     }
 
     return(
@@ -88,6 +100,7 @@ const Clientes = () => {
                     setClientesSearched([]);
                     setPage(0);
                     setIsSearching(false);
+                    setValueSearch('');
                 }}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>
@@ -158,9 +171,11 @@ const Clientes = () => {
                         </Link>
                     )) }
 
-                    <div id="loading" ref={loadingRef}>
-                        <img src={loading} alt='Loading'/>
-                    </div>
+                    {(clientes.length > 0 || clientesSearched.length > 0) && (
+                        <div id="loading" ref={loadingRef}>
+                            <img src={loading} alt='Loading'/>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

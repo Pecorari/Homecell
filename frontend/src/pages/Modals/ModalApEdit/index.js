@@ -12,6 +12,7 @@ const ModalApEdit = (params) => {
     valor, setValor,
     pago, setPago,
     situacao, setSituacao,
+    observacao, setObservacao,
     setModalIsOpenConfirm, setAction,
     error, setError
   } = params
@@ -44,6 +45,15 @@ const ModalApEdit = (params) => {
           onChange={event => setDescricao(event.target.value)}
           name='descricao'
           placeholder='Troca do Touch e Software'
+          className='simpleText'
+      />
+      <label className='label'>Observação:</label>
+      <input
+          type='text'
+          value={observacao}
+          onChange={event => setObservacao(event.target.value)}
+          name='observacao'
+          placeholder='Obs.'
           className='simpleText'
       />
       <label className='label'>Valor:</label>

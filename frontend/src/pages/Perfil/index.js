@@ -32,6 +32,7 @@ const Perfil = () => {
     const [valor, setValor] = useState();
     const [pago, setPago] = useState(false);
     const [situacao, setSituacao] = useState('Na fila');
+    const [observacao, setObservacao] = useState('');
 
     const [action, setAction] = useState('');
 
@@ -70,7 +71,7 @@ const Perfil = () => {
 
     useEffect(() => {
         if (idAp) {
-            // eslint-disable-next-line
+        // eslint-disable-next-line
             getUniqueAp();
         }
     }, [idAp]);
@@ -156,7 +157,8 @@ const Perfil = () => {
             descricao,
             valor,
             pago,
-            situacao
+            situacao,
+            observacao
         }
 
         await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit)
@@ -306,6 +308,8 @@ const Perfil = () => {
                         setPago={setPago}
                         situacao={situacao}
                         setSituacao={setSituacao}
+                        observacao={observacao}
+                        setObservacao={setObservacao}
                         id={id}
                         reset={reset}
                         error={error}
@@ -323,6 +327,7 @@ const Perfil = () => {
                         setPago={setPago}
                         setSituacao={setSituacao}
                         setDescricao={setDescricao}
+                        setObservacao={setObservacao}
                         setAction={setAction}
                         setModalIsOpenApEdit={setModalIsOpenApEdit}
                         setModalIsOpenConfirm={setModalIsOpenConfirm}
@@ -342,6 +347,8 @@ const Perfil = () => {
                         setPago={setPago}
                         situacao={situacao}
                         setSituacao={setSituacao}
+                        observacao={observacao}
+                        setObservacao={setObservacao}
                         setModalIsOpenConfirm={setModalIsOpenConfirm}
                         setAction={setAction}
                         error={error}

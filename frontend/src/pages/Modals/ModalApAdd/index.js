@@ -13,6 +13,7 @@ const ModalApAdd = (params) => {
     valor, setValor,
     pago, setPago,
     situacao, setSituacao,
+    observacao, setObservacao,
     id, reset,
     error, setError,
     setAparelhos
@@ -30,7 +31,8 @@ const ModalApAdd = (params) => {
         descricao,
         valor,
         formatPago,
-        situacao
+        situacao,
+        observacao
     }
 
     await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell)
@@ -75,6 +77,15 @@ const ModalApAdd = (params) => {
           onChange={event => setDescricao(event.target.value)}
           name='descricao'
           placeholder='Troca do Touch e Software'
+          className='simpleText'
+      />
+      <label className='label'>observação:</label>
+      <input
+          type='text'
+          value={observacao}
+          onChange={event => setObservacao(event.target.value)}
+          name='observacao'
+          placeholder='Obs.'
           className='simpleText'
       />
       <label className='label'>Valor:</label>

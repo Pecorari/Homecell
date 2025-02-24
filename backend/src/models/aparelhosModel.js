@@ -13,11 +13,11 @@ const getAparelho = async (idAp) => {
 };
 
 const addAparelho = async (idCli, dataAp) => {
-    const { modelo, descricao, valor, formatPago, situacao } = dataAp;
+    const { modelo, descricao, valor, formatPago, situacao, observacao } = dataAp;
 
-    const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao) VALUES(?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao, observacao) VALUES(?, ?, ?, ?, ?, ?, ?)';
 
-    const createdAparelho = connection.execute(query, [idCli, modelo, descricao, valor, pago = formatPago, situacao]);
+    const createdAparelho = connection.execute(query, [idCli, modelo, descricao, valor, pago = formatPago, situacao, observacao]);
     
     return createdAparelho;
 };
@@ -29,10 +29,10 @@ const delAparelho = async (id) => {
 };
 
 const updtAparelho = async (id, dataAp) => {
-    const { modelo, descricao, valor, pago, situacao } = dataAp;
+    const { modelo, descricao, valor, pago, situacao, observacao } = dataAp;
 
-    const query = 'UPDATE aparelhos SET modelo=?, descricao=?, valor=?, pago=?, situacao=? WHERE id=?';
-    const updatedAparelho = await connection.execute(query, [ modelo, descricao, valor, pago, situacao, id]);
+    const query = 'UPDATE aparelhos SET modelo=?, descricao=?, valor=?, pago=?, situacao=?, observacao=? WHERE id=?';
+    const updatedAparelho = await connection.execute(query, [ modelo, descricao, valor, pago, situacao, observacao, id]);
 
     return updatedAparelho;
 };

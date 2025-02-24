@@ -127,7 +127,8 @@ const CadCli = () => {
                         rightIcon={<MdArrowForward/>}
                         onClick={submit}
                         colorScheme='green'
-                        aria-label="Cadastrar Cliente">
+                        aria-label="Cadastrar Cliente"
+                        marginLeft={{base: 10, sm: 50, md: 150}}>
                             Cadastrar
                     </Button>
                 </div>
