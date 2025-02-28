@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 
-const SECRET_KEY = process.env.SECRET_KEY || 'minha_chave_super_secreta';
-const VALID_CODE = '553642';
+const SECRET_KEY = process.env.SECRET_KEY;
+const VALID_CODE = process.env.VALID_CODE;
 
 const login = async (req, res) => {
   const { codigo } = req.body;
