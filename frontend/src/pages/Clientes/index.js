@@ -5,6 +5,7 @@ import { MdArrowForward, MdPersonAddAlt } from 'react-icons/md';
 import imgHomecell from '../../utils/logo.png';
 import loading from '../../utils/loading.webp';
 import useApi from '../../hooks/useApi';
+import useAuth from '../../utils/auth';
 
 import './stylesCli.css';
 
@@ -16,6 +17,8 @@ const Clientes = () => {
     const [isSearching, setIsSearching] = useState(false);
 
     const loadingRef = useRef(null);
+
+    useAuth();
 
     const fetchClientes = useCallback(async () => {
         if (isSearching) return;

@@ -54,7 +54,7 @@ const CadCli = () => {
     return(
         <div className='container'>
             <div className='divLogo'>
-                <Link to={'/'}>
+                <Link to={'/clientes'}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>
             </div>
@@ -116,7 +116,7 @@ const CadCli = () => {
                 { error && <p id='error'>{error}</p> }
 
                 <div className='divButtons'>
-                    <Link to={'/'}>
+                    <Link to={'/clientes'}>
                         <Button className='back' rightIcon={<MdWest/>} variant='outline' aria-label="Voltar">
                             Voltar
                         </Button>

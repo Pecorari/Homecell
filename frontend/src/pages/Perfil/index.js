@@ -208,7 +208,7 @@ const Perfil = () => {
     return(
         <div className='container'>
             <div className='divLogo'>
-                <Link to={'/'}>
+                <Link to={'/clientes'}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>
             </div>
@@ -216,7 +216,7 @@ const Perfil = () => {
             <div className='divs'>
                 <div className='container-perfil'>
                     <div className='top'>
-                        <Link to={'/'}>
+                        <Link to={'/clientes'}>
                             <MdWest className='icon'/>
                         </Link>
                         <h1>Perfil</h1>
