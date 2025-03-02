@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdPersonAddAlt } from 'react-icons/md';
 import imgHomecell from '../../utils/logo.png';
-import loading from '../../utils/loading.webp';
+import loadingImg from '../../utils/loadingImg.webp';
+import useAuth from '../../utils/useAuth';
 import useApi from '../../hooks/useApi';
-import useAuth from '../../utils/auth';
 
 import './stylesCli.css';
 
@@ -17,8 +17,6 @@ const Clientes = () => {
     const [isSearching, setIsSearching] = useState(false);
 
     const loadingRef = useRef(null);
-
-    useAuth();
 
     const fetchClientes = useCallback(async () => {
         if (isSearching) return;
@@ -95,11 +93,19 @@ const Clientes = () => {
         searchCliente();
     }
 
+    async function logout() {
+        const response = await useApi.post('/logout');
+        window.location.href = '/';
+        console.log(response.data.message);
+    }
+
+    const { loading, user } = useAuth();
+    if(loading) return <p>CARREGANDO...</p>
+
     return(
         <div className='container'>
             <div className='divLogo'>
-                <Link to={'/'} onClick={() => {
-                    setClientes([]);
+                <Link to={'/clientes'} onClick={() => {
                     setClientesSearched([]);
                     setPage(0);
                     setIsSearching(false);
@@ -107,6 +113,11 @@ const Clientes = () => {
                 }}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
                 </Link>
+            </div>
+            
+            <div className='divUser'>
+                <p>Olá, {user}</p>
+                <Button onClick={logout} variant='outline' colorScheme='red' className='logout'>Sair</Button>
             </div>
 
             <div className='container-clientes'>
@@ -175,8 +186,8 @@ const Clientes = () => {
                     )) }
 
                     {(clientes.length > 0 || clientesSearched.length > 0) && (
-                        <div id="loading" ref={loadingRef}>
-                            <img src={loading} alt='Loading'/>
+                        <div id="loadingImg" ref={loadingRef}>
+                            <img src={loadingImg} alt='Loading-image'/>
                         </div>
                     )}
                 </div>

@@ -10,6 +10,9 @@ const aparelhoMiddleware = require('./middlewares/aparelhoMiddleware');
 const router = express.Router();
 
 router.post('/login', loginController.login);
+router.post('/logout', loginController.logout);
+
+router.get('/check-auth', loginMiddleware.verifyToken, (req, res) => { res.status(200).json({ message: req.user.user }) });
 
 router.get('/clientes/:limit/:page', loginMiddleware.verifyToken, clientesController.getAll);
 router.get('/clientes/:id', loginMiddleware.verifyToken, clientesController.getCliente);

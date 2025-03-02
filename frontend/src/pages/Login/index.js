@@ -14,13 +14,16 @@ const Login = () => {
   const navigate = useNavigate();
 
   async function submit() {
+    if (!codigo) return setError('Campo vazio!');
+    
     try {
       const response = await useApi.post('/login', { codigo });
-      localStorage.setItem('token', response.data.token);
       setError('');
       navigate('/clientes');
+      console.log(response.data.message);
     } catch (err) {
-      setError(err);
+      console.log(err)
+      setError(err.response.data.message);
     }
   }
 
@@ -47,7 +50,7 @@ const Login = () => {
         <Button className='btnLogin' rightIcon={<MdArrowForward/>} colorScheme='green' onClick={submit}>Acessar</Button>
       </div>
 
-      <footer className="footer-login">Desenvolvido por Thiago Pecorari Clemente</footer>
+      <footer className="footer-login">Desenvolvido por <a target='_blank' href='https://github.com/Pecorari'>Thiago Pecorari Clemente</a></footer>
     </div>
   );
 }

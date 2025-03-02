@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import imgHomecell from '../../utils/logo.png';
 import useApi from '../../hooks/useApi';
+import useAuth from '../../utils/useAuth';
 
 import './stylesCadCli.css';
 
@@ -50,6 +51,9 @@ const CadCli = () => {
         setEndereco('');
         setCidade('');
     }
+
+    const { loading } = useAuth();
+    if(loading) return <p>CARREGANDO...</p>;
 
     return(
         <div className='container'>

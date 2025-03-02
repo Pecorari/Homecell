@@ -11,6 +11,7 @@ import ModalApPerfil from '../Modals/ModalApPerfil';
 import ModalApEdit from '../Modals/ModalApEdit';
 import useApi from '../../hooks/useApi';
 import Modal from 'react-modal';
+import useAuth from '../../utils/useAuth';
 
 import './stylesPer.css';
 
@@ -127,7 +128,7 @@ const Perfil = () => {
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
             
-            navigate('/');
+            navigate('/clientes');
         setAction('');
     };
     
@@ -204,6 +205,9 @@ const Perfil = () => {
             return numRes.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
         }
     };
+
+    const { loading } = useAuth();
+    if(loading) return <p>CARREGANDO...</p>;
 
     return(
         <div className='container'>
