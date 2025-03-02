@@ -3,6 +3,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.SECRET_KEY;
+
 const VALID_CODE_DAN = process.env.VALID_CODE_DAN;
 const VALID_CODE_QUE = process.env.VALID_CODE_QUE;
 const VALID_CODE_ADMIN = process.env.VALID_CODE_ADMIN;
