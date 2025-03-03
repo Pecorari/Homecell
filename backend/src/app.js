@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const router = require('./router');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 const app = express();
 
@@ -11,7 +12,7 @@ BigInt.prototype.toJSON = function () {
 
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.ENDERECO_FRONT,
   credentials: true
 }));
 app.use(cookieParser());
