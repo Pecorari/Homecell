@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
-import { MdArrowForward } from 'react-icons/md';
+import { MdArrowForward, MdArrowBackIosNew } from 'react-icons/md';
 import useApi from '../../hooks/useApi';
 import imgHomecell from '../../utils/logo.png';
 
@@ -29,6 +29,8 @@ const Login = () => {
 
   return(
     <div className='container-login'>
+      <Button className='back' leftIcon={<MdArrowBackIosNew/>} variant='outline' colorScheme='green' onClick={() => navigate('/')}>Voltar</Button>
+
       <div className='divLogo-login'>
         <img className='logo-login' src={imgHomecell} alt='HOME CELL' />
       </div>
@@ -50,7 +52,7 @@ const Login = () => {
         <Button className='btnLogin' rightIcon={<MdArrowForward/>} colorScheme='green' onClick={submit}>Acessar</Button>
       </div>
 
-      <footer className="footer-login">Desenvolvido por <a target='_blank' href='https://github.com/Pecorari'>Thiago Pecorari Clemente</a></footer>
+      <footer className="footer-login">Desenvolvido por <a target='_blank' rel="noopener noreferrer" href='https://github.com/Pecorari'>Thiago Pecorari Clemente</a></footer>
     </div>
   );
 }

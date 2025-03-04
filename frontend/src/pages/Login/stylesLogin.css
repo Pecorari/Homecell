@@ -16,6 +16,13 @@
     padding: 20px;
   } */
 }
+
+.container-login .back {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+
 .container-login .divLogo-login .logo-login {
   width: 420px;
   height: 300px;

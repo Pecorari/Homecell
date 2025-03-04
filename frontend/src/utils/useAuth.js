@@ -15,7 +15,7 @@ const useAuth = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        navigate('/');
+        navigate('/login');
       }
     };
 

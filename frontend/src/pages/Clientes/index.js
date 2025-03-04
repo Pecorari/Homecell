@@ -95,7 +95,7 @@ const Clientes = () => {
 
     async function logout() {
         const response = await useApi.post('/logout');
-        window.location.href = '/';
+        window.location.href = '/login';
         console.log(response.data.message);
     }
 

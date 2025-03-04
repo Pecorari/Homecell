@@ -1,0 +1,139 @@
+html, body {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+.container {
+  background: url('../../utils/imgFundo.png') no-repeat center ;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container::after {
+  content: "";
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 70%, #000000 100%);
+}
+
+.container .login {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.container .logo {
+  margin: auto;
+  width: 400px;
+  height: 290px;
+}
+
+.container .socialNetwork {
+  display: flex;
+  color: white;
+  margin-bottom: 40px;
+  margin-right: 60px;
+  align-self: flex-end;
+  justify-content: space-between;
+  gap: 60px;
+  z-index: 10;
+}
+.container .socialNetwork svg{
+  width: 40px;
+  height: 40px;
+}
+
+.container .nextSection{
+  color: white;
+  width: 200px;
+  height: 100px;
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translate(-50%);
+  z-index: 10;
+}
+
+.container1 {
+  background-color: whitesmoke;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container1 h2 {
+  font-size: 4rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 10px;
+  margin-top: 70px;
+}
+
+.container1 p {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+.container1 .sobre {
+  margin-top: 20px;
+  margin-bottom: 50px;
+  width: 1000px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+}
+.container1 .sobre .sobreTxt {
+  text-align: justify;
+  padding: 32px;
+  background-color: white;
+}
+.container1 .sobre .sobreTxt h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  text-align: left;
+}
+.container1 .sobre .sobreImg {
+  width: 55%;
+}
+
+.container1 .services {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  margin-top: 25px;
+}
+
+.container1 .service-item {
+  background: white;
+  padding: 20px;
+  border-radius: 7px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 250px;
+}
+
+.container1 .service-icon {
+  font-size: 3rem;
+  color: rgb(4, 123, 66);
+  margin: auto;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  .container1 .services {
+    flex-direction: column;
+    align-items: center;
+  }
+}
