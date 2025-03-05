@@ -16,8 +16,8 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'none',
-      sameSite: 'Strict',
+      // sameSite: 'Strict',
+      sameSite: 'none',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login do Administrador bem-sucedido!' )
@@ -27,7 +27,7 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
+      sameSite: 'none',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Quenia bem-sucedido!')
@@ -37,7 +37,7 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
+      sameSite: 'none',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Daniel bem-sucedido!')
@@ -51,7 +51,7 @@ const logout = async (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict'
+    sameSite: 'none'
   });
   return res.json({ message: 'Logout realizado com sucesso!' });
 };
