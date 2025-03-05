@@ -1,33 +1,21 @@
-const mariadb = require('mariadb');
+const mysql = require('mysql2');
+
 require('dotenv').config();
 
-const pool = mariadb.createPool({
-    host: process.env.MARIADB_HOST,
-    port: process.env.MARIADB_PORT,
-    user: process.env.MARIADB_USER,
-    password: process.env.MARIADB_PASSWD,
-    database: process.env.MARIADB_NAME,
-    connectionLimit: 10,
-    connectTimeout: 30000,
+const connection = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWD,
+    database: process.env.MYSQL_NAME,
+    port: process.env.MYSQL_PORT,
 });
 
-pool.getConnection((err, conn) => {
-    if(err) {
-        if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-            console.log('Database connection lose');
-        }
-        if(err.code === 'ER_CON_COUNT_ERROR') {
-            console.log('Database has too many connections');
-        }
-        if(err.code === 'ECONNREFUSED') {
-            console.log('Database connection was refused');
-        }
+connection.connect((err) => {
+    if (err) {
+        console.error('Erro ao conectar ao MySQL:', err);
+        return;
     }
-    if(conn) {
-        conn.release();
-    }
-
-    return;
+    console.log('Conectado ao MySQL com sucesso!');
 });
 
-module.exports = pool;
+module.exports = connection;

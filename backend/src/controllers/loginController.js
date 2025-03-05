@@ -16,10 +16,11 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      // sameSite: 'none',
       sameSite: 'Strict',
       maxAge: 60 * 60 * 1000
     });
-    console.log('Login do administrador bem-sucedido!' )
+    console.log('Login do Administrador bem-sucedido!' )
     return res.status(200).json({ message: 'Login do administrador bem-sucedido!' })
   } else if (codigo === VALID_CODE_QUE) {
     const token = jwt.sign({ user: 'Quenia' }, SECRET_KEY, { expiresIn: '1h' });
@@ -29,7 +30,7 @@ const login = async (req, res) => {
       sameSite: 'Strict',
       maxAge: 60 * 60 * 1000
     });
-    console.log('Login de quenia bem-sucedido!')
+    console.log('Login de Quenia bem-sucedido!')
     return res.status(200).json({ message: 'Login de quenia bem-sucedido!' })
   } else if (codigo === VALID_CODE_DAN) {
     const token = jwt.sign({ user: 'Daniel' }, SECRET_KEY, { expiresIn: '1h' });
@@ -39,7 +40,7 @@ const login = async (req, res) => {
       sameSite: 'Strict',
       maxAge: 60 * 60 * 1000
     });
-    console.log('Login de daniel bem-sucedido!')
+    console.log('Login de Daniel bem-sucedido!')
     return res.status(200).json({ message: 'Login de daniel bem-sucedido!' })
   } else {
     return res.status(401).json({ message: 'Código inválido!' });

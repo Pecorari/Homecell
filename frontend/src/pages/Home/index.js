@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion'
 import './stylesHome.css';
 import logo from '../../utils/logo.png';
 import { Button } from '@chakra-ui/react';
@@ -8,8 +10,33 @@ import LojaSquare from '../../utils/LojaSquare.jpeg';
 import CapaSquare from '../../utils/CapasSquare.jpeg';
 import AssistenciaTecnica from '../../utils/AssistenciaTecnica.jpg';
 
-const Home = () =>  {
+const Home = () =>  {// eslint-disable-next-line
   const navigate = useNavigate();
+  const sectionsRef = useRef([]);
+
+  useEffect(() => {
+    const myObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if(entry.isIntersecting) {
+          entry.target.classList.add('sobre-show');
+          console.log(entry.isIntersecting);
+        } else {
+          entry.target.classList.remove('sobre-show');
+        }
+      });
+    });
+
+    sectionsRef.current.forEach((section) => {
+      if(section) myObserver.observe(section);
+    });
+    
+    return () => {
+// eslint-disable-next-line
+      sectionsRef.current.forEach((section) => {
+        if(section) myObserver.unobserve(section);
+      });
+    };
+  }, []);
   
   return (
     <>
@@ -33,35 +60,50 @@ const Home = () =>  {
 
         </div>
 
-        <a href='#section-1'><SlArrowDown className='nextSection'/></a>
+        <motion.div className='motion'
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <a href='#section-1'><SlArrowDown className='nextSection'/></a>
+        </motion.div>
       </div>
 
       <div id="section-1" className='container1'>
         <h2>Bem-vindo à Homecell</h2>
         <p>Oferecemos assistência técnica especializada para seu celular. Qualidade, rapidez e preço justo!</p>
 
-        <div className='sobre'>
-          <div className='sobreTxt'>
-            <h3>Sobre Nós</h3>
-            <p>Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos.</p>
-          </div>
-          <img className='sobreImg' src={LojaSquare} />
-        </div>
-        <div className='sobre'>
-          <img className='sobreImg' src={AssistenciaTecnica} />
-          <div className='sobreTxt'>
-            <h3>Assistencia Técnica</h3>
-            <p>Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos.</p>
+        <div className='sobre' ref={(el) => sectionsRef.current[0] = el}>
+          <div className='content'>
+            <div className='sobreTxt'>
+              <h3>Sobre Nós</h3>
+              <p>A Homecell nasceu com a missão de oferecer soluções rápidas e eficientes para o conserto de dispositivos eletrônicos. Trabalhamos com transparência e compromisso, garantindo que cada cliente receba um atendimento de qualidade e seu aparelho em perfeito funcionamento. Com profissionalismo e um processo ágil, buscamos sempre a melhor experiência para você.</p>
+            </div>
+            <img alt='FotoLoja' className='sobreImg' src={LojaSquare} />
           </div>
         </div>
-        <div className='sobre'>
-          <div className='sobreTxt'>
-            <h3>Acessórios</h3>
-            <p>Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos.</p>
+        <div className='sobre' ref={(el) => sectionsRef.current[1] = el}>
+          <div className='content'>
+            <img alt='fotoAssistencia' className='sobreImg' src={AssistenciaTecnica} />
+            <div className='sobreTxt'>
+              <h3>Assistencia Técnica</h3>
+              <p>cuidamos do seu aparelho com profissionalismo e agilidade. Nosso profissional realiza reparos em smartphones, tablets e outros dispositivos, utilizando peças de qualidade e garantindo um serviço confiável. Traga seu dispositivo para um diagnóstico e tenha a certeza de um conserto seguro e eficiente!</p>
+            </div>
           </div>
-          <img className='sobreImg' src={CapaSquare} />
+        </div>
+        <div className='sobre' ref={(el) => sectionsRef.current[2] = el}>
+          <div className='content'>
+            <div className='sobreTxt'>
+              <h3>Acessórios</h3>
+              <p>Aqui você encontra uma linha completa de acessórios para seu dispositivo! Oferecemos capinhas, películas, carregadores, fones de ouvido e muito mais, tudo com qualidade garantida. Proteja e personalize seu aparelho com os melhores produtos do mercado.</p>
+            </div>
+            <img alt='fotoAcessorios' className='sobreImg' src={CapaSquare} />
+          </div>
         </div>
 
+        <div className='contato'>
+          <p>Endereço: Rua do Algodão 1181, Jardim Europa <br/> Cidade: Santa Bárbara D'Oeste | 13.454-175 </p>
+          <p>Telefone: (19) 3629-4813 <br/> Email: contato@homecellofficial.com.br</p>
+        </div>
 
         <div className="services">
           <div className="service-item">
