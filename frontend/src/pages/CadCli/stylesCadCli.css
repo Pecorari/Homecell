@@ -4,7 +4,7 @@
     background-color:whitesmoke ;
 }
 
-.container {
+.containerCadCliente {
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -12,7 +12,7 @@
     justify-content: flex-start;
     flex-direction: column;
 }
-.container .logo {
+.containerCadCliente .logo {
     width: 350px;
     height: 240px;
     margin-bottom: 4%;
@@ -28,7 +28,7 @@
     }
 }
 
-.container .container-form {
+.containerCadCliente .container-form {
     width: 630px;
     background-color: white;
     padding: 32px;
@@ -48,7 +48,7 @@
     }
 }
 
-.container .container-form h1 {
+.containerCadCliente .container-form h1 {
     font-size: 32px;
     margin-top: 15px;
     margin-bottom: 20px;
@@ -61,7 +61,7 @@
     }
 }
 
-.container .container-form .input-container {
+.containerCadCliente .container-form .input-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -72,13 +72,13 @@
     }
 }
 
-.container .container-form .input-container .label {
+.containerCadCliente .container-form .input-container .label {
     @media (max-width: 700px) {
         font-size: 14px;
     }
 }
 
-.container .container-form .input-container input {
+.containerCadCliente .container-form .input-container input {
     border-radius: 10px;
     border-width: 2px;
     border-color: rgb(240, 240, 240);
@@ -96,24 +96,24 @@
     }
 }
 
-.container .container-form .input-container input:focus {
+.containerCadCliente .container-form .input-container input:focus {
     border-color: rgb(112, 112, 112);
     outline: 0;
 }
 
-.container .container-form .divButtons {
+.containerCadCliente .container-form .divButtons {
     @media (max-width: 700px) {
         display: flex;
     }
 }
-.container .container-form .divButtons .back {
+.containerCadCliente .container-form .divButtons .back {
     @media (max-width: 425px) {
         font-size: 12px;
         padding: 15px;
     }
 
 }
-.container .container-form .divButtons .cadastrar {
+.containerCadCliente .container-form .divButtons .cadastrar {
     margin-left: 150px;
     width: 300px;
 

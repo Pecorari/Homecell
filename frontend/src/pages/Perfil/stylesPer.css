@@ -4,7 +4,7 @@
     background-color:whitesmoke ;
 }
 
-.container {
+.containerPerfil {
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -14,7 +14,7 @@
     overflow: auto;
 }
 
-.container .divLogo .logo {
+.containerPerfil .divLogo .logo {
     width: 320px;
     height: 210px;
     margin-bottom: 5%;
@@ -30,7 +30,7 @@
     }
 }
 
-.container .divs {
+.containerPerfil .divs {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -40,7 +40,7 @@
     }
 }
 
-.container .container-perfil {
+.containerPerfil .container-perfil {
     width: 630px;
     background-color: white;
     padding: 32px;
@@ -55,13 +55,13 @@
     }
 }
 
-.container .container-perfil .top {
+.containerPerfil .container-perfil .top {
     display: flex;
     justify-content: row;
     align-items: center;
 }
 
-.container .container-perfil .createdUpdated {
+.containerPerfil .container-perfil .createdUpdated {
     position: absolute;
     top: 110px;
     left: 470px;
@@ -81,25 +81,25 @@
         margin-bottom: 20px;
     }
 }
-.container .container-perfil .createdUpdated div {
+.containerPerfil .container-perfil .createdUpdated div {
     @media (max-width: 480px) {
         margin-right: 40px;
         width: 100%;
     }
 }
-.container .container-perfil .createdUpdated label {
+.containerPerfil .container-perfil .createdUpdated label {
     display: block;
     text-align: left;
     font-weight: 500;
     font-size: 12px;
 }
-.container .container-perfil .createdUpdated p {
+.containerPerfil .container-perfil .createdUpdated p {
     text-align: center;
     margin-bottom: 10px;
     font-weight: 100;
 }
 
-.container .container-perfil h1 {
+.containerPerfil .container-perfil h1 {
     font-size: 32px;
     margin-top: 15px;
     margin-bottom: 20px;
@@ -113,7 +113,7 @@
     }
 }
 
-.container .container-perfil .perfil {
+.containerPerfil .container-perfil .perfil {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -124,7 +124,7 @@
     }
 }
 
-.container .container-perfil .perfil label {
+.containerPerfil .container-perfil .perfil label {
     font-size: 16px;
     text-align: start;
     width: 100%;
@@ -138,7 +138,7 @@
     }
 }
 
-.container .container-perfil .perfil p {
+.containerPerfil .container-perfil .perfil p {
     margin-left: 70px;
 
     @media (max-width: 650px) {
@@ -149,7 +149,7 @@
 
 
 
-.container .cell-details {
+.containerPerfil .cell-details {
     padding: 24px;
     background: linear-gradient(90deg, rgba(225,236,199,0.4) 0%, rgb(225, 236, 199, 0.9) 100%);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
@@ -169,7 +169,7 @@
     }
 }
   
-.container .cell-details h2 {
+.containerPerfil .cell-details h2 {
     text-align: start;
     font-size: 30px;
     color: #555555;
@@ -182,7 +182,7 @@
     }
 }
 
-.container .cell-details .cell-inf {
+.containerPerfil .cell-details .cell-inf {
     margin: 10px;
     padding: 10px 20px 10px 25px;
     color: #4e4e4e;
@@ -204,7 +204,7 @@
         width: 85%;
     }
 }
-.container .cell-details .cell-inf .cellModDate{
+.containerPerfil .cell-details .cell-inf .cellModDate{
     width: 30%;
     text-align: center;
 
@@ -212,20 +212,20 @@
         width: 100%;
     }
 }
-.container .cell-details .cell-inf .cellP{
+.containerPerfil .cell-details .cell-inf .cellP{
     width: 30%;
     text-align: right;
     @media (max-width: 650px) {
         display: none;
     }
 }
-.container .cell-details .cell-inf .cellPagSit{
+.containerPerfil .cell-details .cell-inf .cellPagSit{
     width: 40%;
     @media (max-width: 650px) {
         display: none;
     }
 }
-.container .cell-details .cell-inf:hover {
+.containerPerfil .cell-details .cell-inf:hover {
     box-shadow: 1px 4px 12px 0px rgba(68, 66, 132, 0.6);
     cursor: pointer;
 }

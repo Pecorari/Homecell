@@ -210,7 +210,7 @@ const Perfil = () => {
     if(loading) return <p>CARREGANDO...</p>;
 
     return(
-        <div className='container'>
+        <div className='containerPerfil'>
             <div className='divLogo'>
                 <Link to={'/clientes'}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />

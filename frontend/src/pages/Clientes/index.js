@@ -103,7 +103,7 @@ const Clientes = () => {
     if(loading) return <p>CARREGANDO...</p>
 
     return(
-        <div className='container'>
+        <div className='containerCli'>
             <div className='divLogo'>
                 <Link to={'/clientes'} onClick={() => {
                     setClientesSearched([]);

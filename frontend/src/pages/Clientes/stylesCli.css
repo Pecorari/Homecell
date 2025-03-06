@@ -4,7 +4,7 @@
     background-color:whitesmoke ;
 }
 
-.container {
+.containerCli {
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -12,7 +12,7 @@
     justify-content: flex-start;
     flex-direction: column;
 }
-.container .divLogo .logo {
+.containerCli .divLogo .logo {
     width: 320px;
     height: 210px;
     margin-bottom: 5%;
@@ -28,18 +28,18 @@
     }
 }
 
-.container .divUser {
+.containerCli .divUser {
     position: absolute;
     top: 10px;
     right: 25px;
     text-align: left;
 }
-.container .divUser .logout {
+.containerCli .divUser .logout {
     margin-top: 10px;
     width: 100px;
 }
 
-.container .container-clientes {
+.containerCli .container-clientes {
     width: 630px;
     background-color: white;
     padding: 32px;
@@ -57,7 +57,7 @@
     }
 }
 
-.container .container-clientes h1 {
+.containerCli .container-clientes h1 {
     font-size: 32px;
     margin-top: 15px;
     margin-bottom: 20px;
@@ -68,7 +68,7 @@
     }
 }
 
-.container .container-clientes .btnAdd {
+.containerCli .container-clientes .btnAdd {
     width: 100%;
     margin-bottom: 30px;
 
@@ -80,7 +80,7 @@
 
 
 
-.container .container-clientes .labels {
+.containerCli .container-clientes .labels {
     display: flex;
     flex-direction: row;
     color: #646464;
@@ -92,14 +92,14 @@
         font-size: 10px;
     }
 }
-.container .container-clientes .labels .id {
+.containerCli .container-clientes .labels .id {
     width: 25%;
     margin-left: 2%;
     @media (max-width: 425px) {
         margin-left: 2%;
     }
 }
-.container .container-clientes .labels .ncpf {
+.containerCli .container-clientes .labels .ncpf {
     width: 40%;
     margin-left: 1%;
     text-align: left;
@@ -108,7 +108,7 @@
         margin-left: 2%;
     }
 }
-.container .container-clientes .labels .ap {
+.containerCli .container-clientes .labels .ap {
     width: 30%;
     text-align: left;
     margin-left: 20%;
@@ -120,7 +120,7 @@
 
 ::-webkit-scrollbar { width: 0px; }
 
-.container .container-clientes .lista-cliente {
+.containerCli .container-clientes .lista-cliente {
     overflow: auto;
     margin-top: 15px;
     height: 70%;
@@ -137,7 +137,7 @@
     }
 }
 
-.container .container-clientes .lista-cliente .cli-inf {
+.containerCli .container-clientes .lista-cliente .cli-inf {
     margin: 10px;
     padding: 10px 20px 10px 50px;
     color: #4e4e4e;
@@ -157,31 +157,31 @@
         font-size: 10px;
     }
 }
-.container .container-clientes .lista-cliente .cli-inf:hover {
+.containerCli .container-clientes .lista-cliente .cli-inf:hover {
     box-shadow: 1px 4px 12px 0px rgba(68, 66, 132, 0.6);
     cursor: pointer;
 }
-.container .container-clientes .lista-cliente .cli-inf div {
+.containerCli .container-clientes .lista-cliente .cli-inf div {
     flex-grow: 1;
 }
-.container .container-clientes .lista-cliente .cli-inf .id {
+.containerCli .container-clientes .lista-cliente .cli-inf .id {
     text-align: left;
     width: 0px;
 }
-.container .container-clientes .lista-cliente .cli-inf .nomeCpf {
+.containerCli .container-clientes .lista-cliente .cli-inf .nomeCpf {
     text-align: left;
     width: 40%;
 }
-.container .container-clientes .lista-cliente .cli-inf .aparelhos {
+.containerCli .container-clientes .lista-cliente .cli-inf .aparelhos {
     width: 15%;
 }
 
 
 
-.container .container-clientes .lista-cliente #loadingImg {
+.containerCli .container-clientes .lista-cliente #loadingImg {
     margin-top: 20px;
 }
-.container .container-clientes .lista-cliente #loadingImg img {
+.containerCli .container-clientes .lista-cliente #loadingImg img {
     width: 30px;
     margin: auto;
 }
@@ -190,14 +190,14 @@
 
 
 
-.container .container-clientes .input-container {
+.containerCli .container-clientes .input-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 20px;
 }
 
-.container .container-clientes .input-container .input-button {
+.containerCli .container-clientes .input-container .input-button {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -207,7 +207,7 @@
     }
 }
 
-.container .container-clientes .input-container .input-button input {
+.containerCli .container-clientes .input-container .input-button input {
     border-radius: 10px;
     border-width: 2px;
     border-color: rgb(240, 240, 240);
@@ -222,11 +222,11 @@
         font-size: 14px;
     }
 }
-.container .container-clientes .input-container .input-button input:focus {
+.containerCli .container-clientes .input-container .input-button input:focus {
     border-color: rgb(112, 112, 112);
     outline: 0;
 }
-.container .container-clientes .input-container .input-button select{
+.containerCli .container-clientes .input-container .input-button select{
     background-color: rgb(230, 230, 230);
     padding-left: 10px;
     padding-right: 6px;
@@ -234,10 +234,10 @@
     outline: white;
     border-radius: 0px 7px 7px 0px;
 }
-.container .container-clientes .input-container .input-button select:hover{
+.containerCli .container-clientes .input-container .input-button select:hover{
     background-color: rgb(220, 220, 220);
 }
-.container .container-clientes .input-container .input-button Button {
+.containerCli .container-clientes .input-container .input-button Button {
     padding-left: 30px;
     padding-right: 30px;
     margin-left: 15px;

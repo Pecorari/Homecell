@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion'
-import './stylesHome.css';
+import './Home.Styles.css';
 import logo from '../../utils/logo.png';
 import { Button } from '@chakra-ui/react';
 import { SlArrowDown , SlSocialInstagram , SlSocialFacebook, SlSocialGoogle  } from "react-icons/sl";
@@ -40,7 +40,7 @@ const Home = () =>  {// eslint-disable-next-line
   
   return (
     <>
-      <div className='container'>
+      <div className='containerHome'>
         <div className='login'>
           <Button colorScheme='whiteAlpha' variant='outline' onClick={() => navigate('/login')}>Login</Button>
         </div>

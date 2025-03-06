@@ -56,7 +56,7 @@ const CadCli = () => {
     if(loading) return <p>CARREGANDO...</p>;
 
     return(
-        <div className='container'>
+        <div className='containerCadCliente'>
             <div className='divLogo'>
                 <Link to={'/clientes'}>
                     <img className='logo' src={imgHomecell} alt='HOME CELL' />
