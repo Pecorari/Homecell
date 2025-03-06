@@ -15,9 +15,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ user: 'Administrador' }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'Strict',
-      sameSite: 'none',
+      // secure: false,
+      sameSite: 'Lax',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login do Administrador bem-sucedido!' )
@@ -26,8 +25,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ user: 'Quenia' }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      // secure: false,
+      sameSite: 'Lax',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Quenia bem-sucedido!')
@@ -36,8 +35,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ user: 'Daniel' }, SECRET_KEY, { expiresIn: '1h' });
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      // secure: false,
+      sameSite: 'Lax',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Daniel bem-sucedido!')
@@ -50,8 +49,8 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none'
+    // secure: false,
+    sameSite: 'Lax'
   });
   return res.json({ message: 'Logout realizado com sucesso!' });
 };
