@@ -6,7 +6,6 @@ const getAll = async (limit, page) => {
         [Number(limit), Number(page)]);
         
     console.log('RESULTO DO clientesModel.getAll:', clientes);
-    console.log('TIPO DO RESULT DO clientesModel.getAll:', typeof clientes);
     return clientes;
 };
 

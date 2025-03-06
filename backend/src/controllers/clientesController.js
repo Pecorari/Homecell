@@ -2,7 +2,7 @@ const clientesModel = require('../models/clientesModel');
 
 const getAll = async (req, res) => {
     const { limit, page } = req.params;
-    const [clientes, metadata] = await clientesModel.getAll(limit, page);
+    const clientes = await clientesModel.getAll(limit, page);
 
     if(clientes && Array.isArray(clientes)) {
         clientes.forEach(cliente => {
