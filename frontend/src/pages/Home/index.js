@@ -19,7 +19,6 @@ const Home = () =>  {// eslint-disable-next-line
       entries.forEach((entry) => {
         if(entry.isIntersecting) {
           entry.target.classList.add('sobre-show');
-          console.log(entry.isIntersecting);
         } else {
           entry.target.classList.remove('sobre-show');
         }
