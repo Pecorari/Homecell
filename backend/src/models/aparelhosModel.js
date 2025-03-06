@@ -17,7 +17,7 @@ const addAparelho = async (idCli, dataAp) => {
 
     const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao, observacao) VALUES(?, ?, ?, ?, ?, ?, ?)';
 
-    const [createdAparelho] = await connection.execute(query, [idCli, modelo, descricao, valor, formatPago, situacao, observacao]);
+    const [createdAparelho] = await connection.execute(query, [idCli, modelo, descricao, valor, pago = formatPago, situacao, observacao]);
     
     return createdAparelho;
 };
