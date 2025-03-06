@@ -1,27 +1,27 @@
 const connection = require('../database/connection');
 
-const getAll = async (reqParams) => {
-    const {limit, page} = reqParams;
-    const [clientes] = await connection.execute(
-        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' + 
+const getAll = async (limit, page) => {
+    const clientes = await connection.execute(
+        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' +
         'FROM clientes c ' +
         'LEFT JOIN aparelhos a ON c.id = a.idCli ' +
         'GROUP BY c.id ' +
         'ORDER BY c.id DESC ' +
-        'LIMIT ? OFFSET ?', 
+        'LIMIT ? OFFSET ?',
         [Number(limit), Number(page)]);
-
+        
+    console.log('clientesModels: limit e page', limit, page);
     return clientes;
 };
 
 const getCliente = async (idCli) => {
-    const [cliente] = await connection.execute('SELECT * FROM clientes WHERE id=?', [idCli]);
+    const cliente = await connection.execute('SELECT * FROM clientes WHERE id=?', [idCli]);
     return cliente;
 };
 
 const getSearchCliente = async (value) => {
-    const [clienteSearched] = await connection.execute(
-        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' + 
+    const clienteSearched = await connection.execute(
+        'SELECT c.*, COUNT(a.id) AS total_aparelhos ' +
         'FROM clientes c ' +
         'LEFT JOIN aparelhos a ON c.id = a.idCli ' +
         'WHERE LOWER(TRIM(c.nome)) LIKE ? OR c.cpf = ? OR c.id = ? ' +

@@ -1,13 +1,8 @@
 const clientesModel = require('../models/clientesModel');
 
-const replacer = (key, value) => typeof value === 'bigint' ? value.toString() : value;
-function formatedId(value) {
-    const formatedId = value.replaceAll("\"", "");
-    return formatedId;
-}
-
 const getAll = async (req, res) => {
-    const clientes = await clientesModel.getAll(req.params);
+    const { limit, page } = req.params;
+    const clientes = await clientesModel.getAll(limit, page);
 
     clientes.forEach(cliente => {
         if (cliente.created_at && !isNaN(new Date(cliente.created_at))) {
@@ -17,7 +12,7 @@ const getAll = async (req, res) => {
             cliente.updated_at = new Date(cliente.updated_at).toISOString();
         } else cliente.updated_at = null;
     });
-    
+    console.log('clientesController: limit e page', limit, page);
     return res.status(200).json(clientes);
 };
 
@@ -40,10 +35,7 @@ const getSearchCliente = async (req, res) => {
 const addCliente = async (req, res) => {
     const createdCliente = await clientesModel.addCliente(req.body);
 
-    const stringified = JSON.stringify(createdCliente.insertId, replacer);
-    const id = formatedId(stringified);
-  
-    return res.status(201).json(id);
+    return res.status(201).json(createdCliente.insertId);
 };
 
 const delCliente = async (req, res) => {
