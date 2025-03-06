@@ -16,7 +16,7 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'None',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login do Administrador bem-sucedido!' )
@@ -26,7 +26,7 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'None',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Quenia bem-sucedido!')
@@ -36,7 +36,7 @@ const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'None',
       maxAge: 60 * 60 * 1000
     });
     console.log('Login de Daniel bem-sucedido!')
@@ -50,7 +50,7 @@ const logout = async (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: true,
-    sameSite: 'none'
+    sameSite: 'None'
   });
   return res.json({ message: 'Logout realizado com sucesso!' });
 };
