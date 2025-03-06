@@ -11,13 +11,30 @@ BigInt.prototype.toJSON = function () {
 };
 
 app.use(express.json());
-app.use(cors({
+
+const corsOptions = {
   origin: 'https://homecellofficial.com.br',
   credentials: true,
-  methods: 'GET,POST,PUT,DELETE, OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization'
-}));
+  methods: 'GET,POST,PUT,DELETE,OPTIONS'
+};
+
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://homecellofficial.com.br');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 app.use(cookieParser());
+
 app.use(router);
 
 module.exports = app;
