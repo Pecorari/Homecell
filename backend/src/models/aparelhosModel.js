@@ -7,7 +7,7 @@ const getAllAp = async (idCli) => {
 };
 
 const getAparelho = async (idAp) => {
-    const [[aparelho]] = await connection.execute('SELECT * FROM aparelhos WHERE id=?', [idAp]);
+    const [aparelho] = await connection.execute('SELECT * FROM aparelhos WHERE id=?', [idAp]);
 
     return aparelho;
 };
