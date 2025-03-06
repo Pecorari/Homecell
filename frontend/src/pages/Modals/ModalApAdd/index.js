@@ -22,7 +22,7 @@ const ModalApAdd = (params) => {
   async function addAparelho() {
     let formatPago = ''
 
-    if (pago === false) {
+    if (pago === 0) {
         formatPago = 'Não'
     } else formatPago = 'Sim'
 

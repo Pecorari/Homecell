@@ -81,7 +81,7 @@ const Home = () =>  {// eslint-disable-next-line
           </div>
         </div>
         <div className='sobre' ref={(el) => sectionsRef.current[1] = el}>
-          <div className='content'>
+          <div id='assistencia' className='content'>
             <img alt='fotoAssistencia' className='sobreImg' src={AssistenciaTecnica} />
             <div className='sobreTxt'>
               <h3>Assistencia Técnica</h3>
