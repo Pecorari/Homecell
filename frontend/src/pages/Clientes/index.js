@@ -22,7 +22,7 @@ const Clientes = () => {
         if (isSearching) return;
 
         try {
-            const response = await useApi.get(`/clientes/10/${page}`);
+            const response = await useApi.get(`/clientes/10/${page}`, { withCredentials: true });
             setClientes((prevClientes) => {
                 const newClientes = response.data.filter(cliente => 
                     !prevClientes.some(prev => prev.id === cliente.id)
@@ -75,7 +75,7 @@ const Clientes = () => {
             setClientes([]);
             setPage(0);
 
-            const res = await useApi.get(`/clientes-search?value=${valueSearch}`);
+            const res = await useApi.get(`/clientes-search?value=${valueSearch}`, { withCredentials: true });
 
             if (Array.isArray(res.data) && res.data.length > 0) {
                 setClientesSearched(res.data);
@@ -94,7 +94,7 @@ const Clientes = () => {
     }
 
     async function logout() {
-        const response = await useApi.post('/logout');
+        const response = await useApi.post('/logout', { withCredentials: true });
         window.location.href = '/login';
         console.log(response.data.message);
     }

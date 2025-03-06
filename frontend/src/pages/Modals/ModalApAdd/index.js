@@ -35,7 +35,7 @@ const ModalApAdd = (params) => {
         observacao
     }
 
-    await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell)
+    await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, { withCredentials: true })
         .then((res) => {
           console.log(res.data);
           setAparelhos(prevAparelho => [...prevAparelho, res.data]);

@@ -53,7 +53,7 @@ const Perfil = () => {
     const id = params.id;
 
     useEffect(() => {    
-        useApi.get(`/clientes/${id}`)
+        useApi.get(`/clientes/${id}`, { withCredentials: true })
             .then((res) => {
                 const [dataCli] = res.data
                 setCliente(dataCli);
@@ -63,7 +63,7 @@ const Perfil = () => {
     }, [id]);
 
     useEffect(() => {
-        useApi.get(`cliente-aparelhos/${id}`)
+        useApi.get(`cliente-aparelhos/${id}`, { withCredentials: true })
         .then((res) => {
             setAparelhos(res.data);
         })
@@ -110,7 +110,7 @@ const Perfil = () => {
             cidade
         }
     
-        await useApi.put(`/editar-cliente/${id}`, dadosCli)
+        await useApi.put(`/editar-cliente/${id}`, dadosCli, { withCredentials: true })
             .then((res) => {
                 console.log(res.data)
                 setModalIsOpenCliEdit(false);
@@ -124,7 +124,7 @@ const Perfil = () => {
     };
 
     async function delCliente() {
-        await useApi.delete(`/apagar-cliente/${id}`)
+        await useApi.delete(`/apagar-cliente/${id}`, { withCredentials: true })
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
             
@@ -133,7 +133,7 @@ const Perfil = () => {
     };
     
     async function getUniqueAp() {
-        await useApi.get(`/cliente-aparelhos/${id}/${idAp}`)
+        await useApi.get(`/cliente-aparelhos/${id}/${idAp}`, { withCredentials: true })
             .then((res) => {
                 let [result] = res.data;
                 setAparelho(result);
@@ -142,7 +142,7 @@ const Perfil = () => {
     };
 
     async function delAparelho() {
-        await useApi.delete(`apagar-aparelhos/${idAp}`)
+        await useApi.delete(`apagar-aparelhos/${idAp}`, { withCredentials: true })
             .then((res) => console.log(res.data))
             .catch((err) => console.log(err))
         
@@ -162,7 +162,7 @@ const Perfil = () => {
             observacao
         }
 
-        await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit)
+        await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit, { withCredentials: true })
             .then((res) => {
                 console.log(res.data);
                 reset();

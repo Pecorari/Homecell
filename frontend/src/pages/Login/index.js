@@ -17,7 +17,7 @@ const Login = () => {
     if (!codigo) return setError('Campo vazio!');
     
     try {
-      const response = await useApi.post('/login', { codigo });
+      const response = await useApi.post('/login', { codigo }, { withCredentials: true });
       setError('');
       navigate('/clientes');
       console.log(response.data.message);

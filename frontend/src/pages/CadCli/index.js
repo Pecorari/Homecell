@@ -33,7 +33,7 @@ const CadCli = () => {
         const dados = { nome, cpf, numeroCell, numeroRes, endereco, cidade }
         
         try {
-            const resposta = await useApi.post('/cadastrar-cliente', dados);
+            const resposta = await useApi.post('/cadastrar-cliente', dados, { withCredentials: true });
             setId(resposta.data);
             reset();
             setError('');
