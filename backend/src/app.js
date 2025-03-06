@@ -12,8 +12,10 @@ BigInt.prototype.toJSON = function () {
 
 app.use(express.json());
 app.use(cors({
-  origin: process.env.ENDERECO_FRONT,
-  credentials: true
+  origin: 'https://homecellofficial.com.br',
+  credentials: true,
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
 }));
 app.use(cookieParser());
 app.use(router);
