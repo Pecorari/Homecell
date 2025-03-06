@@ -2,16 +2,22 @@ const clientesModel = require('../models/clientesModel');
 
 const getAll = async (req, res) => {
     const { limit, page } = req.params;
-    const clientes = await clientesModel.getAll(limit, page);
+    const [clientes, metadata] = await clientesModel.getAll(limit, page);
 
-    clientes.forEach(cliente => {
-        if (cliente.created_at && !isNaN(new Date(cliente.created_at))) {
-            cliente.created_at = new Date(cliente.created_at).toISOString();
-        } else cliente.created_at = null;
-        if (cliente.updated_at && !isNaN(new Date(cliente.updated_at))) {
-            cliente.updated_at = new Date(cliente.updated_at).toISOString();
-        } else cliente.updated_at = null;
-    });
+    if(clientes && Array.isArray(clientes)) {
+        clientes.forEach(cliente => {
+            if (cliente.created_at && !isNaN(new Date(cliente.created_at))) {
+                cliente.created_at = new Date(cliente.created_at).toISOString();
+            } else cliente.created_at = null;
+            if (cliente.updated_at && !isNaN(new Date(cliente.updated_at))) {
+                cliente.updated_at = new Date(cliente.updated_at).toISOString();
+            } else cliente.updated_at = null;
+        });
+    } else {
+        console.error('clientes não é um array:', clientes);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
     console.log('clientesController: limit e page', limit, page);
     return res.status(200).json(clientes);
 };

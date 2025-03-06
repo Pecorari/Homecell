@@ -5,7 +5,8 @@ const getAll = async (limit, page) => {
         'SELECT c.*, COUNT(a.id) AS total_aparelhos FROM clientes c LEFT JOIN aparelhos a ON c.id = a.idCli GROUP BY c.id ORDER BY c.id DESC LIMIT ? OFFSET ?',
         [Number(limit), Number(page)]);
         
-    console.log('clientesModel resultado sql:', clientes);
+    console.log('RESULTO DO clientesModel.getAll:', clientes);
+    console.log('TIPO DO RESULT DO clientesModel.getAll:', typeof clientes);
     return clientes;
 };
 
