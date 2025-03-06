@@ -17,7 +17,7 @@ const getAparelho = async (req, res) => {
 const addAparelho = async (req, res) => {
     const { idCli } = req.params;
 
-    const [createdAparelho] = await aparelhosModel.addAparelho(idCli, req.body);
+    const createdAparelho = await aparelhosModel.addAparelho(idCli, req.body);
     console.log({ insertId: createdAparelho.insertId });
     
     return res.status(201).json({ message: 'created' });
