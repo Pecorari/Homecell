@@ -59,7 +59,7 @@ const Perfil = () => {
                 setCliente(dataCli);
             })
             .catch((err) => console.log(err))
-    // eslint-disable-next-line
+// eslint-disable-next-line
     }, [id]);
 
     useEffect(() => {
@@ -68,13 +68,15 @@ const Perfil = () => {
             setAparelhos(res.data);
         })
         .catch((err) => console.log(err))
+// eslint-disable-next-line
     }, [idAp, modalIsOpenApPerfil, modalIsOpenApAdd]);
 
     useEffect(() => {
         if (idAp) {
-        // eslint-disable-next-line
+// eslint-disable-next-line
             getUniqueAp();
         }
+// eslint-disable-next-line
     }, [idAp]);
     
     const ListAp = aparelhos.map(aparelho => 
@@ -153,11 +155,13 @@ const Perfil = () => {
     };
 
     async function editAparelho() {
+        const pagoString = pago ? 'Sim' : 'Não';
+
         const dadosCellEdit = {
             modelo,
             descricao,
             valor,
-            pago,
+            pago: pagoString,
             situacao,
             observacao
         }
@@ -325,7 +329,6 @@ const Perfil = () => {
                         modalIsOpenApPerfil={modalIsOpenApPerfil}
                         setModalIsOpenApPerfil={setModalIsOpenApPerfil}
                         aparelho={aparelho}
-                        pago={pago}
                         setModelo={setModelo}
                         setValor={setValor}
                         setPago={setPago}

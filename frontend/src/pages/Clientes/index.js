@@ -35,10 +35,9 @@ const Clientes = () => {
 
     useEffect(() => {
         if (!isSearching) {
-            setClientes([]);
             fetchClientes();
         }
-    // eslint-disable-next-line
+// eslint-disable-next-line
     }, [page, isSearching]);
 
     useEffect(() => {
@@ -46,41 +45,48 @@ const Clientes = () => {
 
         const intersectionObserver = new IntersectionObserver((entries) => {
             if(entries.some((entry) => entry.isIntersecting)) {
-                setPage((p) => p + 10)
+                setPage((p) => p + 10);
             }
         });
-        
         intersectionObserver.observe(loadingRef.current);
 
         return () => intersectionObserver.disconnect();
-    }, [])
+// eslint-disable-next-line
+    }, [loadingRef.current]);
 
     function formatCPF(cpf) {
         if (!cpf) return '';
-        return cpf.replace(/[^\d]/g, "").padStart(11, '0') // Tira os elementos indesejados
-                  .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Realiza a formatação
+        return cpf.replace(/[^\d]/g, "").padStart(11, '0')
+                  .replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
     };
 
     async function searchCliente() {
-        if (valueSearch === '') {
-            setIsSearching(false);
-            setClientes([]);
-            setPage(0);
-            fetchClientes();
-            return;
-        }
-            
         try {
+            if (valueSearch === '') {
+                setIsSearching(false);
+                setClientesSearched([]);
+                setPage(0);
+                fetchClientes();
+                return;
+            }
+
             setIsSearching(true);
             setClientes([]);
             setPage(0);
 
-            const res = await useApi.get(`/clientes-search?value=${valueSearch}`, { withCredentials: true });
+            if (valueSearch.length === 11 && parseInt(valueSearch)) {
+                const res = await useApi.get(`/clientes-search?value=${formatCPF(valueSearch)}`, { withCredentials: true });
 
-            if (Array.isArray(res.data) && res.data.length > 0) {
-                setClientesSearched(res.data);
+                if (Array.isArray(res.data) && res.data.length > 0) {
+                    setClientesSearched(res.data);
+                } else setClientesSearched([])
+                return;
             } else {
-                setClientesSearched([]);
+                const res = await useApi.get(`/clientes-search?value=${valueSearch}`, { withCredentials: true });
+
+                if (Array.isArray(res.data) && res.data.length > 0) {
+                    setClientesSearched(res.data);
+                } else setClientesSearched([])
             }
         } catch (err) {
             console.log(err.response.data.message);
@@ -132,6 +138,7 @@ const Clientes = () => {
                             name='valueSearch'
                             placeholder='Nome / CPF / ID'
                             autoComplete='off'
+                            onKeyDown={(e) => e.key === 'Enter' && submit(e)}
                         />
                         <Button onClick={submit}
                         rightIcon={<MdArrowForward/>}

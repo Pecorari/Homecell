@@ -14,7 +14,6 @@ const ModalApPerfil = (params) => {
     modalIsOpenApPerfil,
     setModalIsOpenApPerfil,
     aparelho,
-    pago,
     setModelo,
     setValor,
     setPago,
@@ -58,10 +57,9 @@ const ModalApPerfil = (params) => {
             <label className='label'>Pago:</label>
             <input
                 type='checkbox'
-                value={pago}
                 name='pago'
                 className='checkInput'
-                checked={aparelho.pago}
+                checked={aparelho.pago === 'Sim'}
             />
         </div>
         <div className='box'>

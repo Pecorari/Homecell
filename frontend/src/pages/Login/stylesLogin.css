@@ -11,10 +11,9 @@
   justify-content: center;
   flex-direction: row;
 
-  /* @media (max-width: 768px) {
+  @media (max-width: 450px) {
     flex-direction: column;
-    padding: 20px;
-  } */
+  }
 }
 
 .container-login .back {
@@ -36,6 +35,9 @@
     width: 320px;
     height: 150px;
   }
+  @media (max-width: 450px) {
+    width: 200px;
+  }
 }
 
 .container-login .container-input-login {
@@ -52,6 +54,9 @@
   @media (max-width: 600px) {
     width: 500px;
     height: 160px;
+  }
+  @media (max-width: 450px) {
+    width: 250px;
   }
 }
 
@@ -110,7 +115,7 @@
   font-size: 16px;
   color: rgb(100, 100, 100);
 
-  @media (max-height: 800px) {
-    bottom: 75px;
+  @media (max-width: 450px) {
+    bottom: 100px;
   }
 }

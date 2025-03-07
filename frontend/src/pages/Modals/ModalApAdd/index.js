@@ -19,12 +19,12 @@ const ModalApAdd = (params) => {
     setAparelhos
   } = params
 
-  async function addAparelho() {
-    let formatPago = ''
+  function formatPagoValue(pagoValue) {
+    return pagoValue ? 'Sim' : 'Não';
+  }
 
-    if (pago === 0) {
-        formatPago = 'Não'
-    } else formatPago = 'Sim'
+  async function addAparelho() {
+    const formatPago = formatPagoValue(pago);
 
     const dadosCell = {
         modelo,
@@ -102,10 +102,8 @@ const ModalApAdd = (params) => {
           <label className='label'>Pago:</label>
           <input
               type='checkbox'
-              value={pago}
-              onChange={() => {
-                  setPago(!pago);
-              }}
+              checked={pago}
+              onChange={(e) => setPago(e.target.checked)}
               name='pago'
               className='checkInput'
           />

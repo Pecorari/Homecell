@@ -70,11 +70,10 @@ const ModalApEdit = (params) => {
           <label className='label'>Pago:</label>
           <input
               type='checkbox'
-              value={pago}
-              onChange={() => setPago(!pago)}
+              checked={pago === 'Sim'}
+              onChange={(e) => setPago(e.target.checked)}
               name='pago'
               className='checkInput'
-              checked={pago}
           />
           <label className='label'>Situação:</label>
           <select value={situacao} onChange={event => setSituacao(event.target.value)}>
