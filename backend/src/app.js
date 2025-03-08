@@ -13,14 +13,12 @@ BigInt.prototype.toJSON = function () {
 app.use(express.json());
 
 const corsOptions = {
-  origin: true,
+  origin: process.env.CORS_ORIGIN,
   credentials: true,
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type',
-  preflightContinue: false
 };
 
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
