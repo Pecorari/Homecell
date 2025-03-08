@@ -16,7 +16,7 @@ const corsOptions = {
   origin: 'https://homecellofficial.com.br',
   credentials: true,
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  allowedHeaders: 'Content-Type',
   preflightContinue: false
 };
 
