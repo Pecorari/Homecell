@@ -13,7 +13,7 @@ BigInt.prototype.toJSON = function () {
 app.use(express.json());
 
 const corsOptions = {
-  origin: 'https://homecellofficial.com.br',
+  origin: true,
   credentials: true,
   methods: 'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type',
