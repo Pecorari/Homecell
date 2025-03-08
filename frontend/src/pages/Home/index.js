@@ -100,7 +100,7 @@ const Home = () =>  {// eslint-disable-next-line
         </div>
 
         <div className='contato'>
-          <p>Endereço: Rua do Algodão 1181, Jardim Europa <br/> Cidade: Santa Bárbara D'Oeste | 13.454-175 </p>
+          <p>Endereço: Rua do Algodão 1181, Cidade Nova <br/> Cidade: Santa Bárbara D'Oeste | 13.454-175 </p>
           <p>Telefone: (19) 3629-4813 <br/> Email: contato@homecellofficial.com.br</p>
         </div>
 

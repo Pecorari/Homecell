@@ -1,5 +1,9 @@
-const validateBody = (req, res, next) => {
+const connection = require('../database/connection');
+
+const validateBody = async (req, res, next) => {
     const { body } = req;
+    
+    const [cliCadastrado] = await connection.execute('SELECT COUNT(*) FROM clientes WHERE cpf=?', [body.cpf]);
 
     if (body.nome == undefined || body.nome == '') {
         return res.status(400).json({ message: 'Nome é obrigatório' });
@@ -7,7 +11,10 @@ const validateBody = (req, res, next) => {
     if (body.cpf == undefined || body.cpf == '') {
         return res.status(400).json({ message: 'CPF é obrigatório' });
     }
-
+    if (cliCadastrado > 0) {
+        return res.status(400).json({ message: 'CPF já cadastrado' });
+    }
+    
     next();
 };
 

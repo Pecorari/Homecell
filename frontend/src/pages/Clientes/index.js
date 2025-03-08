@@ -22,7 +22,7 @@ const Clientes = () => {
         if (isSearching) return;
 
         try {
-            const response = await useApi.get(`/clientes/10/${page}`, { withCredentials: true });
+            const response = await useApi.get(`/clientes/20/${page}`, { withCredentials: true });
             setClientes((prevClientes) => {
                 const newClientes = response.data.filter(cliente => 
                     !prevClientes.some(prev => prev.id === cliente.id)
@@ -40,19 +40,19 @@ const Clientes = () => {
 // eslint-disable-next-line
     }, [page, isSearching]);
 
-    useEffect(() => {
-        if (!loadingRef.current) return;
+useEffect(() => {
+    if (!loadingRef.current) return;
 
-        const intersectionObserver = new IntersectionObserver((entries) => {
-            if(entries.some((entry) => entry.isIntersecting)) {
-                setPage((p) => p + 10);
-            }
-        });
-        intersectionObserver.observe(loadingRef.current);
+    const intersectionObserver = new IntersectionObserver((entries) => {
+        if(entries.some((entry) => entry.isIntersecting)) {
+            setPage((p) => p + 10);
+        }
+    });
+    intersectionObserver.observe(loadingRef.current);
 
-        return () => intersectionObserver.disconnect();
+    return () => intersectionObserver.disconnect();
 // eslint-disable-next-line
-    }, [loadingRef.current]);
+}, [loadingRef.current]);
 
     function formatCPF(cpf) {
         if (!cpf) return '';
