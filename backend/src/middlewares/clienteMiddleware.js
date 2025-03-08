@@ -3,12 +3,12 @@ const connection = require('../database/connection');
 const validateBody = async (req, res, next) => {
     const { body } = req;
     
-    const [cliCadastrado] = await connection.execute('SELECT COUNT(*) FROM clientes WHERE cpf=?', [body.cpf]);
+    const [[{cliCadastrado}]] = await connection.execute('SELECT COUNT(*) FROM clientes WHERE cpf=?', [body.cpf]);
 
-    if (body.nome == undefined || body.nome == '') {
+    if (body.nome == undefined || body.nome.trim() == '') {
         return res.status(400).json({ message: 'Nome é obrigatório' });
     }
-    if (body.cpf == undefined || body.cpf == '') {
+    if (body.cpf == undefined || body.cpf.trim() == '') {
         return res.status(400).json({ message: 'CPF é obrigatório' });
     }
     if (cliCadastrado > 0) {
