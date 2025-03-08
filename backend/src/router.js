@@ -9,13 +9,7 @@ const aparelhoMiddleware = require('./middlewares/aparelhoMiddleware');
 
 const router = express.Router();
 
-router.post('/login', router.get('/', function(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://homecellofficial.com.br/');
-  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  // res.setHeader('Access-Control-Allow-Headers', 'content-type');
-  // res.setHeader('Access-Control-Allow-Credentials', true);
-}), loginController.login);
-
+router.post('/login', loginController.login);
 router.post('/logout', loginController.logout);
 
 router.get('/check-auth', loginMiddleware.verifyToken, (req, res) => { res.status(200).json({ message: req.user.user }) });
