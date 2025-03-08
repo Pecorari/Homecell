@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies?.token;
+  const token = req.cookies.token;
 
   if (!token) return res.status(403).json({ message: 'Token não fornecido!' });
 
