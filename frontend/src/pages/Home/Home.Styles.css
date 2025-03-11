@@ -203,18 +203,23 @@ html, body {
 .container1 .contato {
   text-align: left;
   display: flex;
+  margin-left: 65px;
   gap: 90px;
 
   @media (max-width: 1020px) {
-    gap: 75px;
+    gap: 15px;
   }
   @media (max-width: 768px) {
     flex-direction: column;
+    margin-left: 0px;
     gap: 0;
+  }
+  @media (max-width: 510px) {
+    margin-left: 110px;
   }
 }
 .container1 .contato p {
-  width: 100%;
+  width: 400px;
 
   @media (max-width: 510px) {
     font-size: 14px;

@@ -117,7 +117,7 @@ const CadCli = () => {
                     />
                 </div>
 
-                { error && <p id='error'>{error}</p> }
+                { error && <p className='error-cadCli'>{error}</p> }
 
                 <div className='divButtons'>
                     <Link to={'/clientes'}>
