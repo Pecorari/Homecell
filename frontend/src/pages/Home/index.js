@@ -131,6 +131,8 @@ const Home = () =>  {// eslint-disable-next-line
             Solicitar Orçamento
           </Button>
         </a>
+
+        <footer className="footer-home">Desenvolvido por <a target='_blank' rel="noopener noreferrer" href='https://github.com/Pecorari'>Thiago Pecorari Clemente</a></footer>
       </div>
     </>
   );

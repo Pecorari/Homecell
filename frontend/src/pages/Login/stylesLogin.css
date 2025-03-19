@@ -116,6 +116,6 @@
   color: rgb(100, 100, 100);
 
   @media (max-width: 450px) {
-    bottom: 100px;
+    bottom: 150px;
   }
 }

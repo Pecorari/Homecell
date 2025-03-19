@@ -137,7 +137,7 @@ html, body {
   opacity: 1;
   filter: blur(0);
   transform: translateX(0);
-  transition: all 1.9s;
+  transition: all 1.7s;
 }
 .container1 .sobre .content {
   margin-top: 20px;
@@ -255,5 +255,18 @@ html, body {
   .container1 .services {
     flex-direction: column;
     align-items: center;
+  }
+}
+
+.footer-home {
+  margin-bottom: 15px;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  color: rgb(100, 100, 100);
+  background-color: whitesmoke;
+
+  @media (max-width: 450px) {
+    margin-bottom: 100px;
   }
 }
