@@ -183,7 +183,7 @@ useEffect(() => {
                                 </div>
                                 <div className='nomeCpf'>
                                     <p>{cliente.nome}</p>
-                                    <p>{formatCPF(cliente.cpf)}</p>
+                                    <p>{(cliente.cpf && cliente.cpf.length > 0) ? formatCPF(cliente.cpf) : '000.000.000-00'}</p>
                                 </div>
                                 <div className='aparelhos'>
                                     <p>{cliente.total_aparelhos}</p>

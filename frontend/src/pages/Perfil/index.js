@@ -234,7 +234,7 @@ const Perfil = () => {
                         <label>Nome:</label>
                         <p>{cliente.nome}</p>
                         <label>CPF:</label>
-                        <p>{formatCPF(cliente.cpf)}</p>
+                        <p>{(cliente.cpf && cliente.cpf.length > 0) ? formatCPF(cliente.cpf) : '000.000.000-00'}</p>
                         <label>Número do Celular:</label>
                         <p>{formatNumCell(cliente.numeroCell)}</p>
                         <label>Número Residencial:</label>
