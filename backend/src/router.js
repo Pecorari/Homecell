@@ -17,9 +17,9 @@ router.get('/check-auth', loginMiddleware.verifyToken, (req, res) => { res.statu
 router.get('/clientes/:limit/:page', loginMiddleware.verifyToken, clientesController.getAll);
 router.get('/clientes/:id', loginMiddleware.verifyToken, clientesController.getCliente);
 router.get('/clientes-search', loginMiddleware.verifyToken, clienteMiddleware.validateSearch, clientesController.getSearchCliente);
-router.post('/cadastrar-cliente', loginMiddleware.verifyToken, clienteMiddleware.validateBody, clientesController.addCliente);
+router.post('/cadastrar-cliente', loginMiddleware.verifyToken, clienteMiddleware.validateNome, clientesController.addCliente);
 router.delete('/apagar-cliente/:id', loginMiddleware.verifyToken, clientesController.delCliente);
-router.put('/editar-cliente/:id',  loginMiddleware.verifyToken, clienteMiddleware.validateBody, clientesController.updtCliente);
+router.put('/editar-cliente/:id',  loginMiddleware.verifyToken, clienteMiddleware.validateNome, clientesController.updtCliente);
 
 router.get('/cliente-aparelhos/:idCli', loginMiddleware.verifyToken, aparelhosController.getAllAp);
 router.get('/cliente-aparelhos/:idCli/:id', loginMiddleware.verifyToken, aparelhosController.getAparelho);
