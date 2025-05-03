@@ -189,12 +189,19 @@ const Perfil = () => {
 
     function formatDate(dataHora) {
         const data = new Date(dataHora);
-        return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
+        return data.toLocaleDateString("pt-br", {
+            timeZone: "UTC",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
     };
     function formatCPF(cpf) {
         if (cpf) {
-            cpf = cpf.replace(/[^\d]/g, ""); // Tira os elementos indesejados
-            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Realiza a formatação
+            cpf = cpf.replace(/[^\d]/g, "");
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
         }
     };
     function formatNumCell(numCell) {

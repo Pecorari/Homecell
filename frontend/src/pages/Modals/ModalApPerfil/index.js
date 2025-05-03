@@ -30,7 +30,14 @@ const ModalApPerfil = (params) => {
 
   function formatDate(dataHora) {
     const data = new Date(dataHora);
-    return data.toLocaleDateString("pt-br", { timeZone: "UTC" });
+    return data.toLocaleDateString("pt-br", {
+      timeZone: "UTC",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+  });
   };
 
   const dataNota = new Date();
