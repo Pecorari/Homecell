@@ -87,7 +87,7 @@ const Perfil = () => {
         }} key={aparelho.id}>
             <div className='cell-inf'>
                 <div className='cellModDate'>
-                    <p>{aparelho.modelo}</p>
+                    <p><strong>{aparelho.modelo}</strong></p>
                     <p>{formatDate(aparelho.created_at)}</p>
                 </div>
                 <div className='cellP'>

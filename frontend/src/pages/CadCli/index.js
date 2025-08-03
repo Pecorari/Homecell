@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdWest } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import InputMask from 'react-input-mask';
 import imgHomecell from '../../utils/logo.png';
 import useApi from '../../hooks/useApi';
@@ -22,12 +22,26 @@ const CadCli = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const valueSearch = location?.state?.valueSearch || '';
 
     useEffect(() => {
         if(id !== '') {
             navigate('/clientes/' + id);
         }
     }, [id, navigate]);
+
+    useEffect(() => {
+        const valueSearchLimpo = valueSearch.replace(/\D/g, '');
+        
+        if (valueSearchLimpo.length === 11 && !isNaN(valueSearchLimpo)) {
+            setCpf(valueSearchLimpo);
+        } else if (/[a-zA-Z]/.test(valueSearch)) {
+            setNome(valueSearch);
+        } else {
+            return;
+        }
+    }, []);
 
     async function submit() {
         const dados = { nome, cpf, numeroCell, numeroRes, endereco, cidade }

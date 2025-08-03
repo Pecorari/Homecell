@@ -10,7 +10,7 @@
 }
 .modal-content-ApPerfil {
   position: relative;
-  width: min-content;
+  width: max-content;
   height: max-content;
   margin: auto;
   margin-top: 200px;
@@ -79,8 +79,12 @@
 .modal-content-ApPerfil .checkInput {
   font-size: 18px;
 }
+.btnFichaCli {
+  margin: auto;
+}
 .modal-content-ApPerfil .btnApPerfil {
   display: flex;
+  justify-content: center;
 }
 
 

@@ -83,7 +83,7 @@ const ModalApPerfil = (params) => {
             <p>{formatDate(aparelho.updated_at)}</p>
             </div>
         </div>
-        <div>
+        <div className='btnFichaCli'>
             <Button onClick={() => {window.print()}}
             width={250}
             marginBottom={3}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@chakra-ui/react';
 import { MdArrowForward, MdPersonAddAlt } from 'react-icons/md';
 import imgHomecell from '../../utils/logo.png';
@@ -17,6 +17,7 @@ const Clientes = () => {
     const [isSearching, setIsSearching] = useState(false);
 
     const loadingRef = useRef(null);
+    const navigate = useNavigate();
 
     const fetchClientes = useCallback(async () => {
         if (isSearching) return;
@@ -99,6 +100,16 @@ useEffect(() => {
         searchCliente();
     }
 
+    function goCadCli() {
+        if(clientesSearched.length === 0 && valueSearch !== '') {
+            navigate('/cadastrar-cliente', { state: { valueSearch } });
+            return;
+        } else {
+            navigate('/cadastrar-cliente');
+            return;
+        }
+    }
+
     async function logout() {
         const response = await useApi.post('/logout', { withCredentials: true });
         window.location.href = '/login';
@@ -148,9 +159,7 @@ useEffect(() => {
                     </div>
                 </div>
 
-                <Link to={'/cadastrar-cliente'}>
-                    <Button className='btnAdd' rightIcon={<MdPersonAddAlt/>} colorScheme='green' aria-label='Adicionar'>Adicionar</Button>
-                </Link>
+                <Button onClick={() => goCadCli()} className='btnAdd' rightIcon={<MdPersonAddAlt/>} colorScheme='green' aria-label='Adicionar'>Adicionar</Button>
                 <div className='labels'>
                     <h2 className='id'>ID</h2>
                     <h2 className='ncpf'>Nome/CPF</h2>

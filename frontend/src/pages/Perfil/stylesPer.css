@@ -3,6 +3,9 @@
     text-align: center;
     background-color:whitesmoke ;
 }
+strong {
+    font-weight: 500;
+}
 
 .containerPerfil {
     height: 100vh;
@@ -63,13 +66,13 @@
 
 .containerPerfil .container-perfil .createdUpdated {
     position: absolute;
-    top: 110px;
-    left: 470px;
+    top: 90px;
+    left: 425px;
     width: max-content;
     flex-direction: column;
 
     @media (max-width: 650px) {
-        left: 300px;
+        left: 250px;
     }
     @media (max-width: 480px) {
         position: relative;
@@ -131,7 +134,7 @@
     margin-bottom: 8px;
     font-weight: 500;
     margin-top: 20px;
-    margin-left: 60px;
+    margin-left: 30px;
 
     @media (max-width: 650px) {
         margin-left: 0;
@@ -139,7 +142,7 @@
 }
 
 .containerPerfil .container-perfil .perfil p {
-    margin-left: 70px;
+    margin-left: 50px;
 
     @media (max-width: 650px) {
         margin-left: 20px;
@@ -191,6 +194,7 @@
     box-shadow: 1px 2px 8px 0px rgba(0, 0, 0, 0.4);
     transition: 0.3s ease-out;
     display: flex;
+    justify-content: space-between;
     flex-direction: row;
     margin-bottom: 25px;
 
@@ -205,7 +209,7 @@
     }
 }
 .containerPerfil .cell-details .cell-inf .cellModDate{
-    width: 30%;
+    width: max-content;
     text-align: center;
 
     @media (max-width: 650px) {
@@ -213,14 +217,14 @@
     }
 }
 .containerPerfil .cell-details .cell-inf .cellP{
-    width: 30%;
+    width: max-content;
     text-align: right;
     @media (max-width: 650px) {
         display: none;
     }
 }
 .containerPerfil .cell-details .cell-inf .cellPagSit{
-    width: 40%;
+    width: max-content;
     @media (max-width: 650px) {
         display: none;
     }
