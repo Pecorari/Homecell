@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '@chakra-ui/react';
+import { Flex, Box, Text, Image, Button, Input, Stack, HStack, Grid } from '@chakra-ui/react';
 import { MdArrowForward, MdPersonAddAlt } from 'react-icons/md';
-import imgHomecell from '../../utils/logo.png';
+import Header from '../../components/Header';
 import loadingImg from '../../utils/loadingImg.webp';
 import useAuth from '../../utils/useAuth';
 import useApi from '../../hooks/useApi';
-
-import './stylesCli.css';
 
 const Clientes = () => {
     const [valueSearch, setValueSearch] = useState('');
@@ -117,100 +115,99 @@ useEffect(() => {
     }
 
     const { loading, user } = useAuth();
-    if(loading) return <p>CARREGANDO...</p>
+    if(loading) return <Text>CARREGANDO...</Text>
 
     return(
-        <div className='containerCli'>
-            <div className='divLogo'>
-                <Link to={'/clientes'} onClick={() => {
-                    setClientesSearched([]);
-                    setPage(0);
-                    setIsSearching(false);
-                    setValueSearch('');
-                }}>
-                    <img className='logo' src={imgHomecell} alt='HOME CELL' />
-                </Link>
-            </div>
-            
-            <div className='divUser'>
-                <p>Olá, {user}</p>
-                <Button onClick={logout} variant='outline' colorScheme='red' className='logout'>Sair</Button>
-            </div>
+        <Flex minH="100dvh" direction="column" bg="gray.100">
+            <Header user={user} onLogout={logout} />
 
-            <div className='container-clientes'>
-                <h1>Clientes</h1>
+            <Flex flex="1" justify="center" px={4} py={6}>
+                <Box bg="white" w="100%" maxW="700px" maxH="calc(100dvh - 250px)" minH={620} p={6} borderRadius="xl" boxShadow="lg" display="flex" flexDirection="column">
+                    <Text fontSize="2xl" fontWeight="bold" mb={4}>
+                        Clientes
+                    </Text>
 
-                <div className='input-container'>
-                    <div className='input-button'>
-                        <input
-                            type='text'
-                            value={valueSearch}
-                            onChange={(e) => setValueSearch(e.target.value)}
-                            name='valueSearch'
-                            placeholder='Nome / CPF / ID'
-                            autoComplete='off'
-                            onKeyDown={(e) => e.key === 'Enter' && submit(e)}
-                        />
-                        <Button onClick={submit}
-                        rightIcon={<MdArrowForward/>}
-                        variant='outline'
-                        colorScheme='green'
-                        aria-label='Pesquisar Clientes'>Pesquisar</Button>
-                    </div>
-                </div>
+                    {/* Busca */}
+                    <Stack spacing={4} mb={4}>
+                        <HStack spacing={3}>
+                            <Input
+                                placeholder="Nome / CPF / ID"
+                                value={valueSearch}
+                                onChange={(e) => setValueSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && submit(e)}
+                            />
 
-                <Button onClick={() => goCadCli()} className='btnAdd' rightIcon={<MdPersonAddAlt/>} colorScheme='green' aria-label='Adicionar'>Adicionar</Button>
-                <div className='labels'>
-                    <h2 className='id'>ID</h2>
-                    <h2 className='ncpf'>Nome/CPF</h2>
-                    <h2 className='ap'>Aparelhos</h2>
-                </div>
+                            <Button rightIcon={<MdArrowForward />} px={6} variant="outline" onClick={submit}>Pesquisar</Button>
+                        </HStack>
 
-                <div className='lista-cliente'>
+                        <Button rightIcon={<MdPersonAddAlt />} alignSelf="flex-start" w="100%" onClick={goCadCli}>
+                            Adicionar
+                        </Button>
+                    </Stack>
 
-                    { clientesSearched.length > 0 ? clientesSearched.map(cliSearched => (
-                        <Link to={`/clientes/${cliSearched.id}`} key={`search-${cliSearched.id}`}>
-                            <div className='cli-inf'>
-                                <div className='id'>
-                                    <p>{cliSearched.id}</p>
-                                </div>
-                                <div className='nomeCpf'>
-                                    <p>{cliSearched.nome}</p>
-                                    <p>{cliSearched.cpf}</p>
-                                </div>
-                                <div className='aparelhos'>
-                                    <p>{cliSearched.total_aparelhos}</p>
-                                </div>
-                            </div>
-                        </Link>
-                    ))
-                    : clientes.map(cliente => (
-                        <Link to={`/clientes/${cliente.id}`} key={`cliente-${cliente.id}`} >
-                            <div className='cli-inf'>
-                                <div className='id'>
-                                    <p>{cliente.id}</p>
-                                </div>
-                                <div className='nomeCpf'>
-                                    <p>{cliente.nome}</p>
-                                    <p>{(cliente.cpf && cliente.cpf.length > 0) ? formatCPF(cliente.cpf) : '000.000.000-00'}</p>
-                                </div>
-                                <div className='aparelhos'>
-                                    <p>{cliente.total_aparelhos}</p>
-                                </div>
-                            </div>
-                        </Link>
-                    )) }
+                    {/* Cabeçalho da lista */}
+                    <Grid templateColumns="auto 1fr auto" fontSize="sm" color="gray.500" px={4} mb={2} gap={14}>
+                        <Text>ID</Text>
+                        <Text textAlign="left">Nome / CPF</Text>
+                        <Text display={{ base: 'none', md: 'block' }}>Aparelhos</Text>
+                    </Grid>
 
-                    {(clientes.length > 0 || clientesSearched.length > 0) && (
-                        <div id="loadingImg" ref={loadingRef}>
-                            <img src={loadingImg} alt='Loading-image'/>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                    {/* Lista */}
+                    <Box flex="1" overflowY="auto" pr={2} css={{ scrollbarWidth: 'none' }}>
+                        {(clientesSearched.length > 0 ? clientesSearched : clientes).map(
+                            (cliente) => (
+                                <Link key={cliente.id} to={`/clientes/${cliente.id}`}>
+                                    <Flex
+                                        p={4}
+                                        mb={2}
+                                        borderRadius="md"
+                                        borderBottomWidth="2px"
+                                        borderBottomColor="gray.100"
+                                        _hover={{ boxShadow: 'md', bg: 'gray.50' }}
+                                        align="center"
+                                    >
+                                        <Grid
+                                            w="100%"
+                                            templateColumns={{ base: 'auto 1fr', md: 'auto 1fr 25px' }}
+                                            alignItems="center"
+                                            gap={10}
+                                        >
+                                            {/* ID */}
+                                            <Text fontWeight="medium">
+                                                {cliente.id}
+                                            </Text>
+
+                                            {/* Nome / CPF */}
+                                            <Box textAlign="left">
+                                                <Text fontWeight="medium" noOfLines={1}>
+                                                    {cliente.nome}
+                                                </Text>
+                                                <Text fontSize="sm" color="gray.500">
+                                                    {cliente.cpf ? formatCPF(cliente.cpf) : '000.000.000-00'}
+                                                </Text>
+                                            </Box>
+
+                                            {/* Aparelhos */}
+                                            <Text fontWeight="medium" textAlign="left" display={{ base: 'none', md: 'block' }}>
+                                                {cliente.total_aparelhos}
+                                            </Text>
+                                        </Grid>
+                                    </Flex>
+                                </Link>
+                            )
+                        )}
+
+                        {(clientes.length > 0 || clientesSearched.length > 0) && (
+                            <Box ref={loadingRef} textAlign="center" py={4}>
+                                <Image src={loadingImg} w="28px" mx="auto" />
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+            </Flex>
+        </Flex>
     );
 }
+
 // Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 export default Clientes;
-

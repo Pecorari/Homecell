@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useState } from 'react';
-import { Button } from '@chakra-ui/react';
+import { Flex, Box, Text, Button, Input, Stack, FormControl, FormLabel, } from '@chakra-ui/react';
 import { MdArrowForward, MdWest } from 'react-icons/md';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import InputMask from 'react-input-mask';
-import imgHomecell from '../../utils/logo.png';
+import Header from '../../components/Header';
 import useApi from '../../hooks/useApi';
 import useAuth from '../../utils/useAuth';
-
-import './stylesCadCli.css';
 
 const CadCli = () => {
     const [nome, setNome] = useState('');
@@ -41,7 +39,7 @@ const CadCli = () => {
         } else {
             return;
         }
-    }, []);
+    }, [valueSearch]);
 
     async function submit() {
         const dados = { nome, cpf, numeroCell, numeroRes, endereco, cidade }
@@ -66,93 +64,119 @@ const CadCli = () => {
         setCidade('');
     }
 
-    const { loading } = useAuth();
-    if(loading) return <p>CARREGANDO...</p>;
+    async function logout() {
+        const response = await useApi.post('/logout', { withCredentials: true });
+        window.location.href = '/login';
+        console.log(response.data.message);
+    }
+
+    const { loading, user } = useAuth();
+    if(loading) return <Text>CARREGANDO...</Text>;
 
     return(
-        <div className='containerCadCliente'>
-            <div className='divLogo'>
-                <Link to={'/clientes'}>
-                    <img className='logo' src={imgHomecell} alt='HOME CELL' />
-                </Link>
-            </div>
+        <Flex minH="100dvh" bg="gray.100" direction="column">
+            <Header user={user} onLogout={logout} />
 
-            <div className='container-form'>
-                <h1>Cadastrar Cliente</h1>
+            <Flex flex="1" justify="center" px={4} py={6}>
+                <Box
+                    bg="white"
+                    w="100%"
+                    maxW="700px"
+                    h="100%"
+                    maxH="100%"
+                    p={6}
+                    borderRadius="xl"
+                    boxShadow="lg"
+                    display="flex"
+                    flexDirection="column"
+                    overflow="hidden"
+                >
+                    <Text fontSize="2xl" fontWeight="bold" mb={6}>
+                        Cadastrar Cliente
+                    </Text>
 
-                <div className='input-container'>
-                    <label className='label'>Nome Completo:</label>
-                    <input
-                        type='text'
-                        value={nome}
-                        onChange={event => setNome(event.target.value)}
-                        name='nome'
-                        placeholder='Nome do cliente'
-                    />
-                    <label className='label'>CPF:</label>
-                    <InputMask
-                        mask='999.999.999-99'
-                        value={cpf}
-                        onChange={event => setCpf(event.target.value)}
-                        name='cpf'
-                        placeholder='___.___.___-__'
-                    />
-                    <label className='label'>Numero do Celular:</label>
-                    <InputMask
-                        mask='(99) 99999-9999'
-                        value={numeroCell}
-                        onChange={event => setNumeroCell(event.target.value)}
-                        name='numeroCelular'
-                        placeholder='(__) _____-____'
-                    />
-                    <label className='label'>Numero Residencial:</label>
-                    <InputMask
-                        mask='(99) 9999-9999'
-                        value={numeroRes}
-                        onChange={event => setNumeroRes(event.target.value)}
-                        name='numeroResidencial'
-                        placeholder='(__) ____-____'
-                    />
-                    <label className='label'>Endereço:</label>
-                    <input
-                        type='text'
-                        value={endereco}
-                        onChange={event => setEndereco(event.target.value)}
-                        name='endereco'
-                        placeholder='Endereço do cliente'
-                    />
-                    <label className='label'>Cidade:</label>
-                    <input
-                        type='text'
-                        value={cidade}
-                        onChange={event => setCidade(event.target.value)}
-                        name='cidade'
-                        placeholder='Cidade do cliente'
-                    />
-                </div>
+                    <Stack spacing={{ base: '1', md: '4' }}>
+                        <FormControl>
+                            <FormLabel>Nome Completo</FormLabel>
+                            <Input
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                                placeholder="Nome do cliente"
+                            />
+                        </FormControl>
 
-                { error && <p className='error-cadCli'>{error}</p> }
+                        <FormControl>
+                            <FormLabel>CPF</FormLabel>
+                            <Input
+                                as={InputMask}
+                                mask="999.999.999-99"
+                                value={cpf}
+                                onChange={(e) => setCpf(e.target.value)}
+                                placeholder="___.___.___-__"
+                            />
+                        </FormControl>
 
-                <div className='divButtons'>
-                    <Link to={'/clientes'}>
-                        <Button className='back' rightIcon={<MdWest/>} variant='outline' aria-label="Voltar">
+                        <FormControl>
+                            <FormLabel>Celular</FormLabel>
+                            <Input
+                                as={InputMask}
+                                mask="(99) 99999-9999"
+                                value={numeroCell}
+                                onChange={(e) => setNumeroCell(e.target.value)}
+                                placeholder="(__) ____-_____"
+                            />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Telefone Residencial</FormLabel>
+                            <Input
+                                as={InputMask}
+                                mask="(99) 9999-9999"
+                                value={numeroRes}
+                                onChange={(e) => setNumeroRes(e.target.value)}
+                                placeholder="(__) ____-____"
+                            />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Endereço</FormLabel>
+                            <Input
+                                value={endereco}
+                                onChange={(e) => setEndereco(e.target.value)}
+                                placeholder="Endereço do cliente"
+                            />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel>Cidade</FormLabel>
+                            <Input
+                                value={cidade}
+                                onChange={(e) => setCidade(e.target.value)}
+                                placeholder="Cidade do cliente"
+                            />
+                        </FormControl>
+                    </Stack>
+
+                    {error && (
+                        <Text color="red.500" mt={4}>{error}</Text>
+                    )}
+
+                    <Flex mt={8} justify="space-between" flexWrap="wrap" gap={3}>
+                        <Link to="/clientes">
+                            <Button variant="outline" leftIcon={<MdWest />}>
                             Voltar
-                        </Button>
-                    </Link>
+                            </Button>
+                        </Link>
 
-                    <Button
-                        className='cadastrar'
-                        rightIcon={<MdArrowForward/>}
-                        onClick={submit}
-                        colorScheme='green'
-                        aria-label="Cadastrar Cliente"
-                        marginLeft={{base: 10, sm: 50, md: 150}}>
+                        <Button rightIcon={<MdArrowForward />} onClick={submit}>
                             Cadastrar
-                    </Button>
-                </div>
-            </div>
-        </div>
+                        </Button>
+                    </Flex>
+                </Box>
+            </Flex>
+        </Flex>
     );
 }
+
 // Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 export default CadCli;

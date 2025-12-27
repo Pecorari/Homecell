@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion'
-import './Home.Styles.css';
+import './HomeStyles.css';
 import logo from '../../utils/logo.png';
 import { Button } from '@chakra-ui/react';
 import { SlArrowDown , SlSocialInstagram , SlSocialFacebook, SlSocialGoogle  } from "react-icons/sl";
