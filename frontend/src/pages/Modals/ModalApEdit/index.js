@@ -1,104 +1,138 @@
-import Modal from 'react-modal';
-import { Button } from '@chakra-ui/react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Checkbox,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 
-Modal.setAppElement('#root');
-
-const ModalApEdit = (params) => {
-  const {
-    modalIsOpenApEdit, setModalIsOpenApEdit,
-    modelo, setModelo,
-    descricao, setDescricao,
-    valor, setValor,
-    pago, setPago,
-    situacao, setSituacao,
-    observacao, setObservacao,
-    setModalIsOpenConfirm, setAction,
-    error, setError
-  } = params
-
+const ModalApEdit = ({
+  isOpen,
+  onClose,
+  modelo, setModelo,
+  descricao, setDescricao,
+  valor, setValor,
+  pago, setPago,
+  situacao, setSituacao,
+  observacao, setObservacao,
+  setModalIsOpenConfirm,
+  setAction,
+  error,
+  setError,
+}) => {
   return (
     <Modal
-      isOpen={modalIsOpenApEdit}
-      onRequestClose={() => {
-        setModalIsOpenApEdit(false);
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
         setError('');
       }}
-      overlayClassName='modal-overlay'
-      className='modal-content'
+      isCentered
+      size='lg'
+      scrollBehavior="inside"
     >
-      <h1>Editar aparelho</h1>
+      <ModalOverlay bg="blackAlpha.600" />
 
-      <label className='label'>Modelo:</label>
-      <input
-          type='text'
-          value={modelo}
-          onChange={event => setModelo(event.target.value)}
-          name='modelo'
-          placeholder='Samsung S20+'
-          className='simpleText'
-      />
-      <label className='label'>Descrição:</label>
-      <input
-          type='text'
-          value={descricao}
-          onChange={event => setDescricao(event.target.value)}
-          name='descricao'
-          placeholder='Troca do Touch e Software'
-          className='simpleText'
-      />
-      <label className='label'>Observação:</label>
-      <input
-          type='text'
-          value={observacao}
-          onChange={event => setObservacao(event.target.value)}
-          name='observacao'
-          placeholder='Obs.'
-          className='simpleText'
-      />
-      <label className='label'>Valor:</label>
-      <input
-          type='number'
-          value={valor}
-          onChange={event => setValor(event.target.value)}
-          name='valor'
-          placeholder='200,00'
-          className='simpleText'
-      />
+      <ModalContent
+        borderRadius="xl"
+        mx={{ base: 4, sm: 0 }}
+      >
+        <ModalHeader textAlign="center">
+          Editar aparelho
+        </ModalHeader>
 
-      <div className='box'>
-          <label className='label'>Pago:</label>
-          <input
-              type='checkbox'
-              checked={pago === 'Sim'}
-              onChange={(e) => setPago(e.target.checked)}
-              name='pago'
-              className='checkInput'
-          />
-          <label className='label'>Situação:</label>
-          <select value={situacao} onChange={event => setSituacao(event.target.value)}>
-              <option value='Na fila'>Na fila</option>
-              <option value='Em manutenção'>Em manutenção</option>
-              <option value='Pronto'>Pronto</option>
-          </select>
-      </div>
+        <ModalBody>
+          <Stack spacing={4}>
+            <FormControl>
+              <FormLabel>Modelo</FormLabel>
+              <Input
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                placeholder="Samsung S20+"
+              />
+            </FormControl>
 
-      <p id='error'>{error}</p>
+            <FormControl>
+              <FormLabel>Descrição</FormLabel>
+              <Input
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+                placeholder="Troca do touch e software"
+              />
+            </FormControl>
 
-      <Button
-          rightIcon={<MdArrowForward/>}
-          onClick={() => {
+            <FormControl>
+              <FormLabel>Observação</FormLabel>
+              <Input
+                value={observacao}
+                onChange={(e) => setObservacao(e.target.value)}
+                placeholder="Obs."
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Valor</FormLabel>
+              <Input
+                type="number"
+                value={valor || ''}
+                onChange={(e) => setValor(e.target.value)}
+                placeholder="200,00"
+              />
+            </FormControl>
+
+            <Stack
+              direction={{ base: 'column', sm: 'row' }}
+              spacing={4}
+              align="left"
+            >
+              <FormControl>
+                <FormLabel>Situação</FormLabel>
+                <Select value={situacao} onChange={(e) => setSituacao(e.target.value)}>
+                  <option value="Na fila">Na fila</option>
+                  <option value="Em manutenção">Em manutenção</option>
+                  <option value="Pronto">Pronto</option>
+                </Select>
+              </FormControl>
+
+              <Checkbox mt={{ base: '0', sm: '6' }} isChecked={pago === true || pago === 'Sim'} onChange={(e) => setPago(e.target.checked)}>
+                Pago
+              </Checkbox>
+
+            </Stack>
+
+            {error && (
+              <Text color="red.500" fontSize="sm">
+                {error}
+              </Text>
+            )}
+          </Stack>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            w="100%"
+            rightIcon={<MdArrowForward />}
+            onClick={() => {
               setModalIsOpenConfirm(true);
               setAction('editAp');
-          }}
-          colorScheme='green'
-          width={250}
-          marginTop={15}
-          marginLeft={'2.5%'}>
-              Salvar
-      </Button>
+            }}
+          >
+            Salvar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
-}
+};
 
-export default ModalApEdit
+export default ModalApEdit;

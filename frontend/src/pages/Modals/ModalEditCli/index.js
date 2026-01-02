@@ -1,99 +1,134 @@
-import Modal from 'react-modal';
-import { Button } from '@chakra-ui/react'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  Text,
+} from '@chakra-ui/react';
+
 import { MdArrowForward } from 'react-icons/md';
 import InputMask from 'react-input-mask';
 
-Modal.setAppElement('#root');
-
 const ModalEditCli = (params) => {
   const {
-    modalIsOpenCliEdit, setModalIsOpenCliEdit,
-    nome, setNome,
-    cpf, setCpf,
+    modalIsOpenCliEdit,
+    setModalIsOpenCliEdit,
+    nome, setNome, cpf, setCpf,
     numeroCell, setNumeroCell,
     numeroRes, setNumeroRes,
     endereco, setEndereco,
     cidade, setCidade,
-    setModalIsOpenConfirm, setAction,
-    error, setError } = params
+    setModalIsOpenConfirm,
+    setAction,
+    error, setError,
+  } = params;
+
+  const handleClose = () => {
+    setModalIsOpenCliEdit(false);
+    setError('');
+  };
 
   return (
     <Modal
       isOpen={modalIsOpenCliEdit}
-      onRequestClose={() => {
-        setModalIsOpenCliEdit(false);
-        setError('');
-      }}
-      overlayClassName='modal-overlay'
-      className='modal-content'
+      onClose={handleClose}
+      size="lg"
+      isCentered
+      scrollBehavior="inside"
     >
-      <h1>Alterar dados do cliente</h1>
+      <ModalOverlay />
 
-      <label className='label'>Nome:</label>
-      <input
-          type='text'
-          value={nome}
-          onChange={event => setNome(event.target.value)}
-          name='nome'
-          className='simpleText'
-      />
-      <label className='label'>CPF:</label>
-      <InputMask
-          mask='999.999.999-99'
-          value={cpf}
-          onChange={event => setCpf(event.target.value)}
-          name='cpf'
-          className='simpleText'
-      />
-      <label className='label'>Numero do celular:</label>
-      <InputMask
-          mask='(99) 99999-9999'
-          value={numeroCell}
-          onChange={event => setNumeroCell(event.target.value)}
-          name='numeroCell'
-          className='simpleText'
-      />
-      <label className='label'>Numero residencial:</label>
-      <InputMask
-          mask='(99) 9999-9999'
-          value={numeroRes}
-          onChange={event => setNumeroRes(event.target.value)}
-          name='numeroRes'
-          className='simpleText'
-      />
-      <label className='label'>Endereco:</label>
-      <input
-          type='text'
-          value={endereco}
-          onChange={event => setEndereco(event.target.value)}
-          name='endereco'
-          className='simpleText'
-      />
-      <label className='label'>Cidade:</label>
-      <input
-          type='text'
-          value={cidade}
-          onChange={event => setCidade(event.target.value)}
-          name='cidade'
-          className='simpleText'
-      />
+      <ModalContent borderRadius="xl" mx={{ base: 4, sm: 6 }}>
+        <ModalHeader>Alterar dados do cliente</ModalHeader>
+        <ModalCloseButton />
 
-      <p id='error'>{error}</p>
+        <ModalBody>
+          <VStack spacing={4} align="stretch">
 
-      <Button
-          rightIcon={<MdArrowForward/>}
-          onClick={() => {
+            <FormControl>
+              <FormLabel>Nome</FormLabel>
+              <Input
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>CPF</FormLabel>
+              <Input
+                as={InputMask}
+                mask="999.999.999-99"
+                value={cpf}
+                onChange={(e) => setCpf(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Número do celular</FormLabel>
+              <Input
+                as={InputMask}
+                mask="(99) 99999-9999"
+                value={numeroCell}
+                onChange={(e) => setNumeroCell(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Número residencial</FormLabel>
+              <Input
+                as={InputMask}
+                mask="(99) 9999-9999"
+                value={numeroRes}
+                onChange={(e) => setNumeroRes(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Endereço</FormLabel>
+              <Input
+                value={endereco}
+                onChange={(e) => setEndereco(e.target.value)}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Cidade</FormLabel>
+              <Input
+                value={cidade}
+                onChange={(e) => setCidade(e.target.value)}
+              />
+            </FormControl>
+
+            {error && (
+              <Text color="red.500" fontSize="sm">
+                {error}
+              </Text>
+            )}
+          </VStack>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            rightIcon={<MdArrowForward />}
+            onClick={() => {
               setModalIsOpenConfirm(true);
               setAction('editCli');
-          }}
-          colorScheme='green'
-          width={{base: 200, sm: 250, md: 250}}
-          marginTop={15}
-          marginLeft={{base: 8, sm: 8, md: 50}}>
-              Salvar
-      </Button>
+            }}
+          >
+            Salvar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
-  )
-}
+  );
+};
 
 export default ModalEditCli;

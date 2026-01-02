@@ -38,20 +38,7 @@ const theme = extendTheme({
       },
       defaultProps: {
         colorScheme: 'homecell',
-        variant: 'solid',
       },
-      variants: {
-        solid: {
-            bg: 'homecell.600',
-            color: 'white',
-            _hover: {
-                bg: 'homecell.700',
-            },
-            _active: {
-                bg: 'homecell.800',
-            },
-        },
-        },
     },
 
     Input: {

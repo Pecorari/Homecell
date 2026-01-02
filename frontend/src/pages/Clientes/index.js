@@ -131,18 +131,16 @@ useEffect(() => {
                     <Stack spacing={4} mb={4}>
                         <HStack spacing={3}>
                             <Input
-                                placeholder="Nome / CPF / ID"
+                                placeholder="Buscar"
                                 value={valueSearch}
                                 onChange={(e) => setValueSearch(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && submit(e)}
                             />
 
-                            <Button rightIcon={<MdArrowForward />} px={6} variant="outline" onClick={submit}>Pesquisar</Button>
+                            <Button fontSize={{ base: 12, md: 14 }} rightIcon={<MdArrowForward />} px={6} variant="outline" onClick={submit}>Pesquisar</Button>
                         </HStack>
 
-                        <Button rightIcon={<MdPersonAddAlt />} alignSelf="flex-start" w="100%" onClick={goCadCli}>
-                            Adicionar
-                        </Button>
+                        <Button fontSize={{ base: 12, md: 14 }} rightIcon={<MdPersonAddAlt />} alignSelf="flex-start" w="100%" onClick={goCadCli}>Adicionar</Button>
                     </Stack>
 
                     {/* Cabeçalho da lista */}
