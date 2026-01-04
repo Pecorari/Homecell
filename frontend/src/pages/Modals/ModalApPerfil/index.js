@@ -158,6 +158,7 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                       preview: url,
                       uploaded: true
                     })));
+                    onClose();
                     setModalIsOpenApEdit(true);
                   }}
                 >

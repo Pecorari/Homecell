@@ -208,6 +208,7 @@ const Perfil = () => {
 
             setModalIsOpenApEdit(false);
             setModalIsOpenConfirm(false);
+            setModalIsOpenApPerfil(true);
             setAction('');
             setError('');
         } catch (err) {
@@ -470,6 +471,7 @@ const Perfil = () => {
                             setObservacao={setObservacao}
                             fotos={fotos}
                             setFotos={setFotos}
+                            setModalIsOpenApPerfil={setModalIsOpenApPerfil}
                             setModalIsOpenConfirm={setModalIsOpenConfirm}
                             setAction={setAction}
                             error={error}

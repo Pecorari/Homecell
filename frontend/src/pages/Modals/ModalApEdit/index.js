@@ -2,7 +2,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter,
 import { MdArrowForward } from 'react-icons/md';
 import { CloseIcon } from '@chakra-ui/icons';
 
-const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescricao, valor, setValor, pago, setPago, situacao, setSituacao, observacao, setObservacao, fotos, setFotos, setModalIsOpenConfirm, setAction, error, setError, isSaving }) => {
+const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescricao, valor, setValor, pago, setPago, situacao, setSituacao, observacao, setObservacao, fotos, setFotos, setModalIsOpenApPerfil, setModalIsOpenConfirm, setAction, error, setError, isSaving }) => {
   const MAX_FOTOS = 6;
   const podeAdicionarFotos = fotos.length < MAX_FOTOS;
 
@@ -40,6 +40,7 @@ const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescric
       onClose={() => {
         onClose();
         setError('');
+        setModalIsOpenApPerfil(true);
       }}
       closeOnOverlayClick={!isSaving}
       closeOnEsc={!isSaving}
