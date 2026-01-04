@@ -1,40 +1,76 @@
 const connection = require('../database/connection');
 
-const getAllAp = async (idCli) => {
-    const [aparelhos] = await connection.execute('SELECT * FROM aparelhos WHERE idCli = ?', [idCli]);
+const MAX_FOTOS = 6;
 
-    return aparelhos;
+const normalizeFotos = (fotos) => {
+    if (!Array.isArray(fotos)) return [];
+
+    return fotos
+        .filter(f => typeof f === 'string' && f.trim() !== '')
+        .slice(0, MAX_FOTOS);
+};
+
+const safeParseFotos = (fotos) => {
+    if (!fotos) return [];
+
+    if (Array.isArray(fotos)) return fotos;
+
+    try {
+        const parsed = JSON.parse(fotos);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+};
+
+const getAllAp = async (idCli) => {
+    const [rows] = await connection.execute('SELECT * FROM aparelhos WHERE idCli = ?', [idCli]);
+
+    return rows.map(ap => ({
+        ...ap,
+        fotos: safeParseFotos(ap.fotos)
+    }));;
 };
 
 const getAparelho = async (idAp) => {
-    const [aparelho] = await connection.execute('SELECT * FROM aparelhos WHERE id=?', [idAp]);
+    const [rows] = await connection.execute('SELECT * FROM aparelhos WHERE id=?', [idAp]);
 
-    return aparelho;
+    if (!rows.length) return null;
+
+    return {
+        ...rows[0],
+        fotos: safeParseFotos(rows[0].fotos)
+    };
 };
 
 const addAparelho = async (idCli, dataAp) => {
-    const { modelo, descricao, valor, formatPago, situacao, observacao } = dataAp;
+    let { modelo, descricao, valor, pago, situacao, observacao, fotos } = dataAp;
 
-    const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao, observacao) VALUES(?, ?, ?, ?, ?, ?, ?)';
+    const normalizedFotos = normalizeFotos(fotos);
 
-    const [createdAparelho] = await connection.execute(query, [idCli, modelo, descricao, valor, pago = formatPago, situacao, observacao]);
+    const query = 'INSERT INTO aparelhos(idCli, modelo, descricao, valor, pago, situacao, observacao, fotos) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
+
+    const [result] = await connection.execute(query, [idCli, modelo, descricao, valor, pago, situacao, observacao, JSON.stringify(normalizedFotos)]);
     
-    return createdAparelho;
+    return result;
 };
 
 const delAparelho = async (id) => {
-    const [deletedAparelho] = await connection.execute('DELETE FROM aparelhos WHERE id=?', [id]);
+    const [result] = await connection.execute('DELETE FROM aparelhos WHERE id=?', [id]);
 
-    return deletedAparelho;
+    return result;
 };
 
 const updtAparelho = async (id, dataAp) => {
-    const { modelo, descricao, valor, pago, situacao, observacao } = dataAp;
+    let { modelo, descricao, valor, pago, situacao, observacao, fotos } = dataAp;
 
-    const query = 'UPDATE aparelhos SET modelo=?, descricao=?, valor=?, pago=?, situacao=?, observacao=? WHERE id=?';
-    const [updatedAparelho] = await connection.execute(query, [ modelo, descricao, valor, pago, situacao, observacao, id]);
+    const normalizedFotos = normalizeFotos(fotos);
 
-    return updatedAparelho;
+    const query = 'UPDATE aparelhos SET modelo=?, descricao=?, valor=?, pago=?, situacao=?, observacao=?, fotos=? WHERE id=?';
+
+    const [result] = await connection.execute(query, [ modelo, descricao, valor, pago, situacao, observacao, JSON.stringify(normalizedFotos), id]);
+
+    return result;
 };
 
 module.exports = {

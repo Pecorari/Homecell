@@ -1,72 +1,87 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Select,
-  Checkbox,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { useState } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, Checkbox, Stack, Text, Flex, Box, Image } from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 import useApi from '../../../hooks/useApi';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../../service/firebase';
+import { v4 as uuid } from 'uuid';
+import { CloseIcon } from '@chakra-ui/icons';
+import imageCompression from 'browser-image-compression';
 
-const ModalApAdd = ({
-  isOpen,
-  onClose,
-  modelo, setModelo,
-  descricao, setDescricao,
-  valor, setValor,
-  pago, setPago,
-  situacao, setSituacao,
-  observacao, setObservacao,
-  id,
-  reset,
-  error, setError,
-  setAparelhos,
-}) => {
+const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao, valor, setValor, pago, setPago, situacao, setSituacao, observacao, setObservacao, id, reset, error, setError, setAparelhos,}) => {
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [inputKey, setInputKey] = useState(Date.now());
 
   function formatPagoValue(pagoValue) {
     return pagoValue ? 'Sim' : 'Não';
   }
 
+  async function uploadImages() {
+    const uploads = images.map(async (img) => {
+      const compressedFile = await imageCompression(img.file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1280,
+        useWebWorker: true
+      });
+
+      const storageRef = ref(storage, `aparelhos/${Date.now()}-${uuid()}-${compressedFile.name}`);
+
+      const snapshot = await uploadBytes(storageRef, compressedFile);
+
+      return await getDownloadURL(snapshot.ref);
+    });
+
+    return await Promise.all(uploads);
+  }
+
   async function addAparelho() {
-    const dadosCell = {
-      modelo,
-      descricao,
-      valor,
-      pago: formatPagoValue(pago),
-      situacao,
-      observacao,
-    };
+    if (!modelo || !valor || !descricao) {
+      setError('Preencha os campos obrigatórios');
+      return;
+    }
 
     try {
+      setUploading(true);
+
+      const fotos = images.length > 0 ? await uploadImages() : [];
+
+      const dadosCell = {
+        modelo,
+        descricao,
+        valor,
+        pago: formatPagoValue(pago),
+        situacao,
+        observacao,
+        fotos
+      };
+
       const res = await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, {
         withCredentials: true
       });
 
       setAparelhos(prev => [...prev, res.data]);
-      setError('');
-      reset();
-      onClose();
+      handleClose();
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao cadastrar aparelho');
+    } finally {
+      setUploading(false);
     }
+  }
+
+  function handleClose() {
+    images.forEach(img => URL.revokeObjectURL(img.preview));
+    setImages([]);
+    setInputKey(Date.now());
+    setError('');
+    reset();
+    onClose();
   }
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => {
-        onClose();
-        setError('');
-      }}
+      onClose={handleClose}
       isCentered
       size='lg'
       scrollBehavior="inside"
@@ -93,7 +108,7 @@ const ModalApAdd = ({
             </FormControl>
 
             <FormControl>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel>Serviço</FormLabel>
               <Input
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
@@ -139,8 +154,45 @@ const ModalApAdd = ({
               </Checkbox>
             </Stack>
 
+            <Button as="label" variant="outline"> Selecionar Fotos
+              <Input key={inputKey} type="file" multiple accept="image/*" hidden onChange={(e) => {
+                  const selectedFiles = Array.from(e.target.files);
+
+                  const newImages = selectedFiles.map(file => ({
+                    id: uuid(),
+                    file,
+                    preview: URL.createObjectURL(file)
+                  }));
+
+                  if (images.length + newImages.length > 6) {
+                    setError('Máximo de 6 fotos');
+                    return;
+                  }
+                  
+                  setError('');
+                  setImages(prev => [...prev, ...newImages]);
+                }}
+              />
+            </Button>
+
+            <Flex wrap="wrap" gap={2}>
+              {images.map(img => (
+                <Box mx={'auto'} key={img.id} position="relative" w="70px" h="70px" borderRadius="md" overflow="hidden">
+                  <Image src={img.preview} w="100%" h="100%" objectFit="cover"/>
+
+                  <Button size="xs" position="absolute" top="2px" right="2px" bg="red.500" color="white" borderRadius="full" minW="20px" h="20px" p={0} _hover={{ bg: 'red.600' }} onClick={() => {
+                      URL.revokeObjectURL(img.preview);
+                      setImages(prev => prev.filter(i => i.id !== img.id));
+                    }}
+                  >
+                    <CloseIcon boxSize="10px" />
+                  </Button>
+                </Box>
+              ))}
+            </Flex>
+
             {error && (
-              <Text color="red.500" fontSize="sm">
+              <Text as="span" color="red.500" fontSize="sm">
                 {error}
               </Text>
             )}
@@ -149,6 +201,8 @@ const ModalApAdd = ({
 
         <ModalFooter>
           <Button
+            isLoading={uploading}
+            loadingText="Enviando imagens..."
             w="100%"
             rightIcon={<MdArrowForward />}
             onClick={addAparelho}

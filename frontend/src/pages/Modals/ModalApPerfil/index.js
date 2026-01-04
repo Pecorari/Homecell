@@ -1,39 +1,12 @@
-import { useRef } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Text,
-  Stack,
-  Box,
-  Flex,
-  Checkbox,
-  Divider,
-} from '@chakra-ui/react';
+import { useRef, useState } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Text, Stack, Box, Flex, Checkbox, Divider, Image } from '@chakra-ui/react';
 
 import './notaCliente.css';
 
 import imgHomecell from '../../../utils/logo.png';
 
-const ModalApPerfil = ({
-  isOpen,
-  onClose,
-  aparelho,
-  setModelo,
-  setValor,
-  setPago,
-  setSituacao,
-  setDescricao,
-  setObservacao,
-  setAction,
-  setModalIsOpenApEdit,
-  setModalIsOpenConfirm,
-  cliente,
-}) => {
+const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago, setSituacao, setDescricao, setObservacao, setFotos, setAction, setModalIsOpenApEdit, setModalIsOpenConfirm, cliente }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const notaRef = useRef(null);
 
   function formatDate(dataHora) {
@@ -71,7 +44,7 @@ const ModalApPerfil = ({
           <ModalBody>
             <Stack spacing={4}>
               <Box>
-                <Text fontSize="sm" color="gray.500">Descrição</Text>
+                <Text fontSize="sm" color="gray.500">Serviço</Text>
                 <Text>{aparelho.descricao || '-'}</Text>
               </Box>
 
@@ -85,16 +58,55 @@ const ModalApPerfil = ({
                 <Text fontWeight="medium">R$ {aparelho.valor}</Text>
               </Box>
 
-              <Flex gap={6} flexWrap="wrap">
-                <Checkbox isChecked={aparelho.pago === 'Sim'} isReadOnly>
-                  Pago
-                </Checkbox>
-
+              <Flex gap={12} flexWrap="wrap">
                 <Box>
                   <Text fontSize="sm" color="gray.500">Situação</Text>
                   <Text fontWeight="medium">{aparelho.situacao}</Text>
                 </Box>
+
+                <Checkbox isChecked={aparelho.pago === 'Sim'} isReadOnly>
+                  Pago
+                </Checkbox>
               </Flex>
+
+              <Box>
+                <Text fontSize="sm" color="gray.500" mb={2}>
+                  Imagens
+                </Text>
+
+                {aparelho.fotos && aparelho.fotos.length > 0 ? (
+                  <Flex wrap="wrap" gap={0.5}>
+                    {aparelho.fotos.slice(0, 6).map((foto, index) => (
+                      <Box key={index} w={{ base: '25%', md: '75px' }} h="100px" borderRadius="md" overflow="hidden" cursor="pointer" border="1px solid" borderColor="gray.200" _hover={{ opacity: 0.8 }} onClick={() => setSelectedImage(foto)}>
+                        <Image src={foto} alt={`Imagem ${index + 1}`} w="100%" h="100%" objectFit="cover" />
+                      </Box>
+                    ))}
+                  </Flex>
+                ) : (
+                  <Text fontSize="sm" color="gray.400">
+                    Nenhuma imagem cadastrada
+                  </Text>
+                )}
+              </Box>
+
+              <Modal
+                isOpen={!!selectedImage}
+                onClose={() => setSelectedImage(null)}
+                isCentered
+                size="xl"
+              >
+                <ModalOverlay bg="blackAlpha.800" />
+
+                <ModalContent bg="transparent" boxShadow="none">
+                  <ModalBody display="flex" justifyContent="center">
+                    <Image
+                      src={selectedImage}
+                      maxH="80vh"
+                      borderRadius="lg"
+                    />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
 
               <Divider />
 
@@ -142,6 +154,10 @@ const ModalApPerfil = ({
                     setPago(aparelho.pago);
                     setSituacao(aparelho.situacao);
                     setObservacao(aparelho.observacao);
+                    setFotos(aparelho.fotos.map(url => ({
+                      preview: url,
+                      uploaded: true
+                    })));
                     setModalIsOpenApEdit(true);
                   }}
                 >

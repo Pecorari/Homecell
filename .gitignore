@@ -1,3 +1,4 @@
+backend/serviceAccountKey.json
 backend/node_modules
 backend/.env
 backend/.env.vault
@@ -10,3 +11,4 @@ frontend/.env
 !.env.project
 !.env.vault
 !.env.me
+serviceAccountKey.json

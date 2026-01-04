@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../service/firebase';
+import { v4 as uuid } from 'uuid';
 import ModalConfirm from '../Modals/ModalConfirm';
 import ModalEditCli from '../Modals/ModalEditCli';
 import ModalApAdd from '../Modals/ModalApAdd';
@@ -28,6 +31,7 @@ const Perfil = () => {
     const [pago, setPago] = useState(false);
     const [situacao, setSituacao] = useState('Na fila');
     const [observacao, setObservacao] = useState('');
+    const [fotos, setFotos] = useState([]);
 
     const [action, setAction] = useState('');
 
@@ -39,7 +43,7 @@ const Perfil = () => {
 
     const [idAp, setIdAp] = useState('');
     const [aparelho, setAparelho] = useState({});
-
+    const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -53,25 +57,17 @@ const Perfil = () => {
                 setCliente(dataCli);
             })
             .catch((err) => console.log(err))
-// eslint-disable-next-line
+        // eslint-disable-next-line
     }, [id]);
 
     useEffect(() => {
         useApi.get(`cliente-aparelhos/${id}`, { withCredentials: true })
-        .then((res) => {
-            setAparelhos(res.data);
-        })
-        .catch((err) => console.log(err))
-// eslint-disable-next-line
-    }, [idAp, modalIsOpenApPerfil, modalIsOpenApAdd]);
-
-    useEffect(() => {
-        if (idAp) {
-// eslint-disable-next-line
-            getUniqueAp();
-        }
-// eslint-disable-next-line
-    }, [idAp]);
+            .then((res) => {
+                setAparelhos(res.data);
+            })
+            .catch((err) => console.log(err))
+        // eslint-disable-next-line
+    }, [idAp, modalIsOpenApAdd]);
     
     async function editCliente() {
         const dadosCli = {
@@ -104,15 +100,6 @@ const Perfil = () => {
             navigate('/clientes');
         setAction('');
     };
-    
-    async function getUniqueAp() {
-        await useApi.get(`/cliente-aparelhos/${id}/${idAp}`, { withCredentials: true })
-            .then((res) => {
-                let [result] = res.data;
-                setAparelho(result);
-            })
-            .catch((err) => console.log(err))
-    };
 
     async function delAparelho() {
         await useApi.delete(`apagar-aparelhos/${idAp}`, { withCredentials: true })
@@ -125,34 +112,99 @@ const Perfil = () => {
         window.location.reload();
     };
 
-    async function editAparelho() {
-        const pagoString = pago ? 'Sim' : 'Não';
+    async function prepararFotosParaSalvar(fotos) {
+        const fotosExistentes = fotos
+            .filter(f => f.uploaded)
+            .map(f => f.preview);
 
-        const dadosCellEdit = {
-            modelo,
-            descricao,
-            valor,
-            pago: pagoString,
-            situacao,
-            observacao
+        const fotosNovas = fotos.filter(f => !f.uploaded);
+
+        const urlsNovas = [];
+
+        for (const foto of fotosNovas) {
+            const storageRef = ref(
+            storage,
+            `aparelhos/${uuid()}-${foto.file.name}`
+            );
+
+            const snapshot = await uploadBytes(storageRef, foto.file);
+            const url = await getDownloadURL(snapshot.ref);
+            urlsNovas.push(url);
         }
 
-        await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit, { withCredentials: true })
-            .then((res) => {
-                console.log(res.data);
-                reset();
-                setError('');
-                setModalIsOpenApEdit(false);
-            })
-            .catch((err) => {
-                console.log(err.response.data.message);
-                setError(err.response.data.message);
-            })
+        return [...fotosExistentes, ...urlsNovas];
+    }
+
+    async function editAparelho() {
+        try {
+            setIsSaving(true);
+            const pagoString = pago ? 'Sim' : 'Não';
+
+            const fotosOriginais = aparelho.fotos || [];
+
+            const fotosFinal = await prepararFotosParaSalvar(fotos);
+
+            const fotosRemovidas = fotosOriginais.filter(
+                url => !fotosFinal.includes(url)
+            );
+            
+            const dadosCellEdit = {
+                modelo,
+                descricao,
+                valor,
+                pago: pagoString,
+                situacao,
+                observacao,
+                fotos: fotosFinal,
+                fotosRemovidas
+            };
+
+            await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit, { withCredentials: true });
+            
+            setAparelhos(prev =>
+                prev.map(ap =>
+                    ap.id === idAp
+                    ? {
+                        ...ap,
+                        modelo,
+                        descricao,
+                        valor,
+                        pago: pagoString,
+                        situacao,
+                        observacao,
+                        fotos: fotosFinal
+                        }
+                    : ap
+                )
+            );
+
+            setAparelho(prev => ({
+                ...prev,
+                modelo,
+                descricao,
+                valor,
+                pago: pagoString,
+                situacao,
+                observacao,
+                fotos: fotosFinal
+            }));
+
+
+            setModalIsOpenApEdit(false);
+            setModalIsOpenConfirm(false);
+            setAction('');
+            setError('');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Erro ao editar aparelho');
+        } finally {
+            setIsSaving(false);
+        }
     }
 
     function reset() {
         setModelo('');
         setDescricao('');
+        setObservacao('');
         setValor();
         setSituacao('Na fila');
         setPago(false);
@@ -187,7 +239,6 @@ const Perfil = () => {
     if(loading) return <p>CARREGANDO...</p>;
 
     return(
-
         <Flex minH="100vh" bg="gray.100" direction="column" align="center" px={4}>
             <Header user={user} onLogout={logout} />
 
@@ -310,8 +361,8 @@ const Perfil = () => {
                                     _hover={{ boxShadow: 'md', bg: 'gray.100' }}
                                     cursor="pointer"
                                     onClick={() => {
+                                        setAparelho(aparelho);
                                         setIdAp(aparelho.id);
-                                        getUniqueAp();
                                         setModalIsOpenApPerfil(true);
                                     }}
                                 >
@@ -337,7 +388,7 @@ const Perfil = () => {
                                             {aparelho.situacao}
                                         </Text>
 
-                                        <Text display={{ base: 'none', md: 'block' }} >
+                                        <Text as={'span'} display={{ base: 'none', md: 'block' }} >
                                             Pago: <Text color={aparelho.pago === 'Sim' ? 'green.600' : 'red.500'}>{aparelho.pago}</Text>
                                         </Text>
                                     </Grid>
@@ -377,6 +428,7 @@ const Perfil = () => {
                             setSituacao={setSituacao}
                             setDescricao={setDescricao}
                             setObservacao={setObservacao}
+                            setFotos={setFotos}
                             setAction={setAction}
                             setModalIsOpenApEdit={setModalIsOpenApEdit}
                             setModalIsOpenConfirm={setModalIsOpenConfirm}
@@ -398,19 +450,22 @@ const Perfil = () => {
                             setSituacao={setSituacao}
                             observacao={observacao}
                             setObservacao={setObservacao}
+                            fotos={fotos}
+                            setFotos={setFotos}
                             setModalIsOpenConfirm={setModalIsOpenConfirm}
                             setAction={setAction}
                             error={error}
                             setError={setError}
+                            isSaving={isSaving}
                         />
                         <ModalConfirm
-                        isOpen={modalIsOpenConfirm}
-                        onClose={() => setModalIsOpenConfirm(false)}
-                        action={action}
-                        editCliente={editCliente}
-                        delCliente={delCliente}
-                        editAparelho={editAparelho}
-                        delAparelho={delAparelho}
+                            isOpen={modalIsOpenConfirm}
+                            onClose={() => setModalIsOpenConfirm(false)}
+                            action={action}
+                            editCliente={editCliente}
+                            delCliente={delCliente}
+                            editAparelho={editAparelho}
+                            delAparelho={delAparelho}
                         />
                     </Box>
                 </Grid>
