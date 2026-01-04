@@ -8,6 +8,7 @@ const getAllAp = async (req, res) => {
 
         return res.status(200).json(aparelhos);
     } catch (err) {
+        console.error(err);
         return res.status(500).json({ message: 'Erro ao buscar aparelhos' });
     }
 };
@@ -23,6 +24,7 @@ const getAparelho = async (req, res) => {
 
         return res.status(200).json(aparelho);
     } catch {
+        console.error(err);
         return res.status(500).json({ message: 'Erro ao buscar aparelho' });
     }
 };
@@ -35,6 +37,7 @@ const addAparelho = async (req, res) => {
         
         return res.status(201).json({ message: 'created' });
     } catch {
+        console.error(err);
         return res.status(500).json({ message: 'Erro ao criar aparelho' });
     }
 };
@@ -42,24 +45,20 @@ const addAparelho = async (req, res) => {
 const delAparelho = async (req, res) => {
     try {
         const { id } = req.params;
-
         const aparelho = await aparelhosModel.getAparelho(id);
 
         if (!aparelho) {
             return res.status(404).json({ message: 'Aparelho não encontrado' });
         }
 
-        try {
-            await deletarFotosFirebase(aparelho.fotos);
-        } catch {
-            return res.status(500).json({ message: 'Erro ao deletar imagens' });
-        }
+        await deletarFotosFirebase(aparelho.fotos);
 
         await aparelhosModel.delAparelho(id);
 
         return res.status(204).end();
     } catch {
-        return res.status(500).json({ message: 'Erro ao deletar aparelho' });
+        console.error(err);
+        return res.status(500).json({ message: 'Erro ao deletar aparelho ou imagens' });
     }
 };
 
@@ -73,7 +72,8 @@ const updtAparelho = async (req, res) => {
 
         return res.status(204).end();
     } catch {
-        return res.status(500).json({ message: 'Erro ao atualizar aparelho' });
+        console.error(err);
+        return res.status(500).json({ message: 'Erro ao atualizar aparelho ou imagens' });
     }
 };
 
