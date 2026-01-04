@@ -52,12 +52,15 @@ const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescric
       <ModalContent
         borderRadius="xl"
         mx={{ base: 4, sm: 0 }}
+        display="flex"
+        flexDirection="column"
+        maxH="80vh"
       >
         <ModalHeader textAlign="center">
           Editar aparelho
         </ModalHeader>
 
-        <ModalBody>
+        <ModalBody overflowY="auto" flex="1">
           <Stack spacing={4}>
             <FormControl>
               <FormLabel>Modelo</FormLabel>
@@ -110,7 +113,7 @@ const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescric
                 </Select>
               </FormControl>
 
-              <Checkbox mt={{ base: '0', sm: '6' }} isChecked={pago === true || pago === 'Sim'} onChange={(e) => setPago(e.target.checked)}>
+              <Checkbox mt={{ base: '0', sm: '6' }} isChecked={Boolean(pago)} onChange={(e) => setPago(e.target.checked)}>
                 Pago
               </Checkbox>
 
@@ -121,14 +124,19 @@ const ModalApEdit = ({ isOpen, onClose, modelo, setModelo, descricao, setDescric
                 Imagens
               </Text>
 
-              <Button w="100%" mb="20px" as="label" variant="outline" isDisabled={!podeAdicionarFotos}>
+              <Button w="100%" mb="20px" as="label" variant="outline" isDisabled={!podeAdicionarFotos} _hover={{ cursor: "pointer" }}>
                 {!podeAdicionarFotos ? (
                   <Text>
                     Limite de 6 imagens atingido
                   </Text>
-                ): <Text>Selecionar Fotos</Text>}
-                <Input type="file" multiple accept="image/*" hidden onChange={handleAddFotos} isDisabled={!podeAdicionarFotos}/>
+                ) : <>
+                      <Text display={{ base: "inline", md: "none" }}>Tirar foto ou Selecionar imagens</Text>
+                      <Text display={{ base: "none", md: "inline" }}>Selecionar imagens</Text>
+                    </>
+                }
+                <Input type="file" accept="image/*" capture="environment" multiple hidden onChange={handleAddFotos} isDisabled={!podeAdicionarFotos}/>
               </Button>
+
               {fotos && fotos.length > 0 ? (
                 <Flex wrap="wrap" gap={0.5}>
                   {fotos.slice(0, 6).map((foto, index) => (

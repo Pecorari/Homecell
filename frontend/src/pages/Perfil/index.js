@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../service/firebase';
+import imageCompression from 'browser-image-compression';
 import { v4 as uuid } from 'uuid';
 import ModalConfirm from '../Modals/ModalConfirm';
 import ModalEditCli from '../Modals/ModalEditCli';
@@ -109,7 +110,7 @@ const Perfil = () => {
         setModalIsOpenApPerfil(false);
         setAction('');
         reset();
-        window.location.reload();
+        setAparelhos(prev => prev.filter(ap => ap.id !== idAp));
     };
 
     async function prepararFotosParaSalvar(fotos) {
@@ -117,28 +118,43 @@ const Perfil = () => {
             .filter(f => f.uploaded)
             .map(f => f.preview);
 
-        const fotosNovas = fotos.filter(f => !f.uploaded);
-
-        const urlsNovas = [];
-
-        for (const foto of fotosNovas) {
-            const storageRef = ref(
-            storage,
-            `aparelhos/${uuid()}-${foto.file.name}`
-            );
-
-            const snapshot = await uploadBytes(storageRef, foto.file);
-            const url = await getDownloadURL(snapshot.ref);
-            urlsNovas.push(url);
-        }
+        const urlsNovas = await uploadFotosComprimidas(fotos, id);
 
         return [...fotosExistentes, ...urlsNovas];
+    }
+
+    async function uploadFotosComprimidas(fotos, clienteId) {
+        const novasFotos = fotos.filter(f => !f.uploaded);
+
+        if (!novasFotos.length) return [];
+
+        const compressedFiles = await Promise.all(
+            novasFotos.map(f =>
+            imageCompression(f.file, {
+                maxSizeMB: 0.5,
+                maxWidthOrHeight: 1024,
+                initialQuality: 0.7,
+                useWebWorker: true
+            })
+            )
+        );
+
+        const uploads = compressedFiles.map(async (file, index) => {
+            const originalFile = novasFotos[index].file;
+
+            const storageRef = ref(storage, `aparelhos/cliente-${clienteId}/${uuid()}-${originalFile.name}`);
+
+            const snapshot = await uploadBytes(storageRef, file);
+            return getDownloadURL(snapshot.ref);
+        });
+
+        return Promise.all(uploads);
     }
 
     async function editAparelho() {
         try {
             setIsSaving(true);
-            const pagoString = pago ? 'Sim' : 'Não';
+            const pagoBoolean = Boolean(pago);
 
             const fotosOriginais = aparelho.fotos || [];
 
@@ -152,7 +168,7 @@ const Perfil = () => {
                 modelo,
                 descricao,
                 valor,
-                pago: pagoString,
+                pago: pagoBoolean,
                 situacao,
                 observacao,
                 fotos: fotosFinal,
@@ -169,7 +185,7 @@ const Perfil = () => {
                         modelo,
                         descricao,
                         valor,
-                        pago: pagoString,
+                        pago: pagoBoolean,
                         situacao,
                         observacao,
                         fotos: fotosFinal
@@ -183,7 +199,7 @@ const Perfil = () => {
                 modelo,
                 descricao,
                 valor,
-                pago: pagoString,
+                pago: pagoBoolean,
                 situacao,
                 observacao,
                 fotos: fotosFinal
@@ -363,6 +379,7 @@ const Perfil = () => {
                                     onClick={() => {
                                         setAparelho(aparelho);
                                         setIdAp(aparelho.id);
+                                        setPago(Boolean(aparelho.pago));
                                         setModalIsOpenApPerfil(true);
                                     }}
                                 >
@@ -389,7 +406,8 @@ const Perfil = () => {
                                         </Text>
 
                                         <Text as={'span'} display={{ base: 'none', md: 'block' }} >
-                                            Pago: <Text color={aparelho.pago === 'Sim' ? 'green.600' : 'red.500'}>{aparelho.pago}</Text>
+                                            Pago:{' '}
+                                            <Text as="span" color={aparelho.pago ? 'green.600' : 'red.500'}>{aparelho.pago ? 'Sim' : 'Não'}</Text>
                                         </Text>
                                     </Grid>
                                 </Box>

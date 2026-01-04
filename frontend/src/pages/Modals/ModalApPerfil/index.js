@@ -64,7 +64,7 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                   <Text fontWeight="medium">{aparelho.situacao}</Text>
                 </Box>
 
-                <Checkbox isChecked={aparelho.pago === 'Sim'} isReadOnly>
+                <Checkbox isChecked={Boolean(aparelho.pago)} isReadOnly>
                   Pago
                 </Checkbox>
               </Flex>
@@ -151,7 +151,7 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                     setModelo(aparelho.modelo);
                     setDescricao(aparelho.descricao);
                     setValor(aparelho.valor);
-                    setPago(aparelho.pago);
+                    setPago(Boolean(aparelho.pago));
                     setSituacao(aparelho.situacao);
                     setObservacao(aparelho.observacao);
                     setFotos(aparelho.fotos.map(url => ({
@@ -217,7 +217,7 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                 </div>
                   <p><strong>Preço Manutenção:</strong> R$ {aparelho.valor}</p>
                 <div>
-                  <p><strong>Pago:</strong> {aparelho.pago}</p>
+                  <p><strong>Pago:</strong> {aparelho.pago ? 'Sim' : 'Não'}</p>
                   <p><strong>Situação:</strong> {aparelho.situacao}</p>
                 </div>
                 
@@ -286,7 +286,7 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                 </div>
                   <p><strong>Preço Manutenção:</strong> R$ {aparelho.valor}</p>
                 <div>
-                  <p><strong>Pago:</strong> {aparelho.pago}</p>
+                  <p><strong>Pago:</strong> {aparelho.pago ? 'Sim' : 'Não'}</p>
                   <p><strong>Situação:</strong> {aparelho.situacao}</p>
                 </div>
                 

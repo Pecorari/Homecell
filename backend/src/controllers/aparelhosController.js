@@ -43,6 +43,18 @@ const delAparelho = async (req, res) => {
     try {
         const { id } = req.params;
 
+        const aparelho = await aparelhosModel.getAparelho(id);
+
+        if (!aparelho) {
+            return res.status(404).json({ message: 'Aparelho não encontrado' });
+        }
+
+        try {
+            await deletarFotosFirebase(aparelho.fotos);
+        } catch {
+            return res.status(500).json({ message: 'Erro ao deletar imagens' });
+        }
+
         await aparelhosModel.delAparelho(id);
 
         return res.status(204).end();

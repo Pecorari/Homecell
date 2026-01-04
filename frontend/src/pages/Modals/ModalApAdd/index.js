@@ -13,26 +13,26 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
   const [uploading, setUploading] = useState(false);
   const [inputKey, setInputKey] = useState(Date.now());
 
-  function formatPagoValue(pagoValue) {
-    return pagoValue ? 'Sim' : 'Não';
-  }
-
   async function uploadImages() {
-    const uploads = images.map(async (img) => {
-      const compressedFile = await imageCompression(img.file, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1280,
-        useWebWorker: true
-      });
+    const compressedFiles = await Promise.all(
+      images.map(img =>
+        imageCompression(img.file, {
+          maxSizeMB: 0.6,
+          maxWidthOrHeight: 1280,
+          initialQuality: 0.7,
+          useWebWorker: true
+        })
+      )
+    );
 
-      const storageRef = ref(storage, `aparelhos/${Date.now()}-${uuid()}-${compressedFile.name}`);
+    const uploads = compressedFiles.map(async (file) => {
+      const storageRef = ref(storage, `aparelhos/cliente-${id}/${uuid()}-${file.name}`);
 
-      const snapshot = await uploadBytes(storageRef, compressedFile);
-
-      return await getDownloadURL(snapshot.ref);
+      const snapshot = await uploadBytes(storageRef, file);
+      return getDownloadURL(snapshot.ref);
     });
 
-    return await Promise.all(uploads);
+    return Promise.all(uploads);
   }
 
   async function addAparelho() {
@@ -50,7 +50,7 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
         modelo,
         descricao,
         valor,
-        pago: formatPagoValue(pago),
+        pago: Boolean(pago),
         situacao,
         observacao,
         fotos
@@ -154,8 +154,11 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
               </Checkbox>
             </Stack>
 
-            <Button as="label" variant="outline"> Selecionar Fotos
-              <Input key={inputKey} type="file" multiple accept="image/*" hidden onChange={(e) => {
+            <Button as="label" variant="outline" _hover={{ cursor: "pointer" }}>
+              <Text display={{ base: "inline", md: "none" }}>Tirar foto ou Selecionar imagens</Text>
+              <Text display={{ base: "none", md: "inline" }}>Selecionar imagens</Text>
+              
+              <Input key={inputKey} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => {
                   const selectedFiles = Array.from(e.target.files);
 
                   const newImages = selectedFiles.map(file => ({
