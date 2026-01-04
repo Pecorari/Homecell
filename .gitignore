@@ -11,3 +11,4 @@ frontend/.env
 !.env.project
 !.env.vault
 !.env.me
+serviceAccountKey.json

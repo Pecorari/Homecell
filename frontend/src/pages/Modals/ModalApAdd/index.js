@@ -1,133 +1,221 @@
-import Modal from 'react-modal';
-import { Button } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, Checkbox, Stack, Text, Flex, Box, Image } from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 import useApi from '../../../hooks/useApi';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../../service/firebase';
+import { v4 as uuid } from 'uuid';
+import { CloseIcon } from '@chakra-ui/icons';
+import imageCompression from 'browser-image-compression';
 
-Modal.setAppElement('#root');
+const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao, valor, setValor, pago, setPago, situacao, setSituacao, observacao, setObservacao, id, reset, error, setError, setAparelhos,}) => {
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [inputKey, setInputKey] = useState(Date.now());
 
-const ModalApAdd = (params) => {
-  const {
-    modalIsOpenApAdd, setModalIsOpenApAdd,
-    modelo, setModelo,
-    descricao, setDescricao,
-    valor, setValor,
-    pago, setPago,
-    situacao, setSituacao,
-    observacao, setObservacao,
-    id, reset,
-    error, setError,
-    setAparelhos
-  } = params
+  async function uploadImages() {
+    const compressedFiles = await Promise.all(
+      images.map(img =>
+        imageCompression(img.file, {
+          maxSizeMB: 0.6,
+          maxWidthOrHeight: 1280,
+          initialQuality: 0.7,
+          useWebWorker: true
+        })
+      )
+    );
 
-  function formatPagoValue(pagoValue) {
-    return pagoValue ? 'Sim' : 'Não';
+    const uploads = compressedFiles.map(async (file) => {
+      const storageRef = ref(storage, `aparelhos/cliente-${id}/${uuid()}-${file.name}`);
+
+      const snapshot = await uploadBytes(storageRef, file);
+      return getDownloadURL(snapshot.ref);
+    });
+
+    return Promise.all(uploads);
   }
 
   async function addAparelho() {
-    const formatPago = formatPagoValue(pago);
+    if (!modelo || !valor || !descricao) {
+      setError('Preencha os campos obrigatórios');
+      return;
+    }
 
-    const dadosCell = {
+    try {
+      setUploading(true);
+
+      const fotos = images.length > 0 ? await uploadImages() : [];
+
+      const dadosCell = {
         modelo,
         descricao,
         valor,
-        formatPago,
+        pago: Boolean(pago),
         situacao,
-        observacao
-    }
+        observacao,
+        fotos
+      };
 
-    await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, { withCredentials: true })
-        .then((res) => {
-          console.log(res.data);
-          setAparelhos(prevAparelho => [...prevAparelho, res.data]);
-          setModalIsOpenApAdd(false);
-          setError('');
-          reset();
-        })
-        .catch((err) => {
-          console.log(err.response.data.message);
-          setError(err.response.data.message);
-        })   
-}
+      const res = await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, {
+        withCredentials: true
+      });
+
+      setAparelhos(prev => [...prev, res.data]);
+      handleClose();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Erro ao cadastrar aparelho');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleClose() {
+    images.forEach(img => URL.revokeObjectURL(img.preview));
+    setImages([]);
+    setInputKey(Date.now());
+    setError('');
+    reset();
+    onClose();
+  }
 
   return (
     <Modal
-      isOpen={modalIsOpenApAdd}
-      onRequestClose={() => {
-        setModalIsOpenApAdd(false);
-        setError('')
-      }}
-      overlayClassName='modal-overlay'
-      className='modal-content'
+      isOpen={isOpen}
+      onClose={handleClose}
+      isCentered
+      size='lg'
+      scrollBehavior="inside"
     >
-      <h1>Adicionar novo aparelho</h1>
+      <ModalOverlay bg="blackAlpha.600" />
 
-      <label className='label'>Modelo:</label>
-      <input
-          type='text'
-          value={modelo}
-          onChange={event => setModelo(event.target.value)}
-          name='modelo'
-          placeholder='Samsung S20+'
-          className='simpleText'
-      />
-      <label className='label'>Descrição:</label>
-      <input
-          type='text'
-          value={descricao}
-          onChange={event => setDescricao(event.target.value)}
-          name='descricao'
-          placeholder='Troca do Touch e Software'
-          className='simpleText'
-      />
-      <label className='label'>observação:</label>
-      <input
-          type='text'
-          value={observacao}
-          onChange={event => setObservacao(event.target.value)}
-          name='observacao'
-          placeholder='Obs.'
-          className='simpleText'
-      />
-      <label className='label'>Valor:</label>
-      <input
-          type='number'
-          value={valor}
-          onChange={event => setValor(event.target.value)}
-          name='valor'
-          placeholder='200,00'
-          className='simpleText'
-      />
+      <ModalContent
+        borderRadius="xl"
+        mx={{ base: 4, sm: 0 }}
+      >
+        <ModalHeader textAlign="center">
+          Adicionar novo aparelho
+        </ModalHeader>
 
-      <div className='box'>
-          <label className='label'>Pago:</label>
-          <input
-              type='checkbox'
-              checked={pago}
-              onChange={(e) => setPago(e.target.checked)}
-              name='pago'
-              className='checkInput'
-          />
-          <label className='label'>Situação:</label>
-          <select onChange={event => setSituacao(event.target.value)}>
-              <option value='Na fila'>Na fila</option>
-              <option value='Em manutenção'>Em manutenção</option>
-              <option value='Pronto'>Pronto</option>
-          </select>
-      </div>
+        <ModalBody>
+          <Stack spacing={4}>
+            <FormControl>
+              <FormLabel>Modelo</FormLabel>
+              <Input
+                value={modelo}
+                onChange={(e) => setModelo(e.target.value)}
+                placeholder="Aparelho"
+              />
+            </FormControl>
 
-      <p id='error'>{error}</p>
+            <FormControl>
+              <FormLabel>Serviço</FormLabel>
+              <Input
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+                placeholder="Serviço"
+              />
+            </FormControl>
 
-      <Button
-          rightIcon={<MdArrowForward/>}
-          onClick={addAparelho}
-          colorScheme='green'
-          width={250}
-          marginTop={15}
-          marginLeft={{base: 3, sm: 8, md: 50}}>
-              Adicionar
-      </Button>
+            <FormControl>
+              <FormLabel>Observação</FormLabel>
+              <Input
+                value={observacao}
+                onChange={(e) => setObservacao(e.target.value)}
+                placeholder="Obs."
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Valor</FormLabel>
+              <Input
+                type="number"
+                value={valor || ''}
+                onChange={(e) => setValor(e.target.value)}
+                placeholder="Preço"
+              />
+            </FormControl>
+
+            <Stack
+              direction={{ base: 'column', sm: 'row' }}
+              spacing={4}
+              align="left"
+            >
+              <FormControl>
+                <FormLabel>Situação</FormLabel>
+                <Select value={situacao} onChange={(e) => setSituacao(e.target.value)}>
+                  <option value="Na fila">Na fila</option>
+                  <option value="Em manutenção">Em manutenção</option>
+                  <option value="Pronto">Pronto</option>
+                </Select>
+              </FormControl>
+
+              <Checkbox mt={{ base: '0', sm: '6' }} isChecked={pago} onChange={(e) => setPago(e.target.checked)}>
+                Pago
+              </Checkbox>
+            </Stack>
+
+            <Button as="label" variant="outline" _hover={{ cursor: "pointer" }}>
+              <Text display={{ base: "inline", md: "none" }}>Tirar foto ou Selecionar imagens</Text>
+              <Text display={{ base: "none", md: "inline" }}>Selecionar imagens</Text>
+              
+              <Input key={inputKey} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => {
+                  const selectedFiles = Array.from(e.target.files);
+
+                  const newImages = selectedFiles.map(file => ({
+                    id: uuid(),
+                    file,
+                    preview: URL.createObjectURL(file)
+                  }));
+
+                  if (images.length + newImages.length > 6) {
+                    setError('Máximo de 6 fotos');
+                    return;
+                  }
+                  
+                  setError('');
+                  setImages(prev => [...prev, ...newImages]);
+                }}
+              />
+            </Button>
+
+            <Flex wrap="wrap" gap={2}>
+              {images.map(img => (
+                <Box mx={'auto'} key={img.id} position="relative" w="70px" h="70px" borderRadius="md" overflow="hidden">
+                  <Image src={img.preview} w="100%" h="100%" objectFit="cover"/>
+
+                  <Button size="xs" position="absolute" top="2px" right="2px" bg="red.500" color="white" borderRadius="full" minW="20px" h="20px" p={0} _hover={{ bg: 'red.600' }} onClick={() => {
+                      URL.revokeObjectURL(img.preview);
+                      setImages(prev => prev.filter(i => i.id !== img.id));
+                    }}
+                  >
+                    <CloseIcon boxSize="10px" />
+                  </Button>
+                </Box>
+              ))}
+            </Flex>
+
+            {error && (
+              <Text as="span" color="red.500" fontSize="sm">
+                {error}
+              </Text>
+            )}
+          </Stack>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button
+            isLoading={uploading}
+            loadingText="Enviando imagens..."
+            w="100%"
+            rightIcon={<MdArrowForward />}
+            onClick={addAparelho}
+          >
+            Adicionar
+          </Button>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
-}
+};
 
 export default ModalApAdd;

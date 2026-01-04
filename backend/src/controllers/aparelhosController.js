@@ -1,42 +1,80 @@
 const aparelhosModel = require('../models/aparelhosModel');
+const { deletarFotosFirebase } = require('./firebaseController');
 
 const getAllAp = async (req, res) => {
-    const { idCli } = req.params;
-    const aparelhos = await aparelhosModel.getAllAp(idCli);
+    try {
+        const { idCli } = req.params;
+        const aparelhos = await aparelhosModel.getAllAp(idCli);
 
-    return res.status(200).json(aparelhos);
+        return res.status(200).json(aparelhos);
+    } catch (err) {
+        return res.status(500).json({ message: 'Erro ao buscar aparelhos' });
+    }
 };
 
 const getAparelho = async (req, res) => {
-    const { id } = req.params;
-    const aparelho = await aparelhosModel.getAparelho(id);
+    try {
+        const { id } = req.params;
+        const aparelho = await aparelhosModel.getAparelho(id);
 
-    return res.status(200).json(aparelho);
+        if (!aparelho) {
+            return res.status(404).json({ message: 'Aparelho não encontrado' });
+        }
+
+        return res.status(200).json(aparelho);
+    } catch {
+        return res.status(500).json({ message: 'Erro ao buscar aparelho' });
+    }
 };
 
 const addAparelho = async (req, res) => {
-    const { idCli } = req.params;
+    try {
+        const { idCli } = req.params;
 
-    const createdAparelho = await aparelhosModel.addAparelho(idCli, req.body);
-    console.log({ insertId: createdAparelho.insertId });
-    
-    return res.status(201).json({ message: 'created' });
+        await aparelhosModel.addAparelho(idCli, req.body);
+        
+        return res.status(201).json({ message: 'created' });
+    } catch {
+        return res.status(500).json({ message: 'Erro ao criar aparelho' });
+    }
 };
 
 const delAparelho = async (req, res) => {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    await aparelhosModel.delAparelho(id);
+        const aparelho = await aparelhosModel.getAparelho(id);
 
-    return res.status(204).json();
+        if (!aparelho) {
+            return res.status(404).json({ message: 'Aparelho não encontrado' });
+        }
+
+        try {
+            await deletarFotosFirebase(aparelho.fotos);
+        } catch {
+            return res.status(500).json({ message: 'Erro ao deletar imagens' });
+        }
+
+        await aparelhosModel.delAparelho(id);
+
+        return res.status(204).end();
+    } catch {
+        return res.status(500).json({ message: 'Erro ao deletar aparelho' });
+    }
 };
 
 const updtAparelho = async (req, res) => {
-    const { id } = req.params;
+    try {
+        const { id } = req.params;
 
-    await aparelhosModel.updtAparelho(id, req.body);
+        await deletarFotosFirebase(req.body.fotosRemovidas);
 
-    return res.status(204).json();
+        await aparelhosModel.updtAparelho(id, req.body);
+
+        return res.status(204).end();
+    } catch {
+        return res.status(500).json({ message: 'Erro ao atualizar aparelho' });
+    }
 };
 
 module.exports = {

@@ -1,117 +1,175 @@
-import { useRef } from 'react';
-import Modal from 'react-modal';
-import { Button } from '@chakra-ui/react';
+import { useRef, useState } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Text, Stack, Box, Flex, Checkbox, Divider, Image } from '@chakra-ui/react';
 
-import './stylesApPerfil.css';
 import './notaCliente.css';
 
 import imgHomecell from '../../../utils/logo.png';
 
-Modal.setAppElement('#root');
-
-const ModalApPerfil = (params) => {
-  const {
-    modalIsOpenApPerfil,
-    setModalIsOpenApPerfil,
-    aparelho,
-    setModelo,
-    setValor,
-    setPago,
-    setSituacao,
-    setDescricao,
-    setObservacao,
-    setAction,
-    setModalIsOpenApEdit,
-    setModalIsOpenConfirm,
-    cliente
-  } = params
-
+const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago, setSituacao, setDescricao, setObservacao, setFotos, setAction, setModalIsOpenApEdit, setModalIsOpenConfirm, cliente }) => {
+  const [selectedImage, setSelectedImage] = useState(null);
   const notaRef = useRef(null);
 
   function formatDate(dataHora) {
     const data = new Date(dataHora);
-    return data.toLocaleDateString("pt-br", {
-      timeZone: "UTC",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-  });
-  };
+    return data.toLocaleDateString('pt-br', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
 
   const dataNota = new Date();
 
+  if (!aparelho) return null;
+
   return (
-    <div>
+    <>
       <Modal
-        isOpen={modalIsOpenApPerfil}
-        onRequestClose={() => setModalIsOpenApPerfil(false)}
-        overlayClassName='modal-overlay'
-        className='modal-content-ApPerfil'>
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+        size='lg'
+        scrollBehavior="inside"
+      >
+        <ModalOverlay bg="blackAlpha.600" />
 
-        <h1>{aparelho.modelo}</h1>
+        <ModalContent borderRadius="xl" mx={{ base: 3, md: 0 }}>
+          <ModalHeader textAlign="center">
+            {aparelho.modelo}
+          </ModalHeader>
 
-        <label className='label'>Descrição:</label>
-        <p className='txtApPerfil'>{aparelho.descricao}</p>
-        <label className='label'>Observação:</label>
-        <p className='txtApPerfil'>{aparelho.observacao}</p>
+          <ModalBody>
+            <Stack spacing={4}>
+              <Box>
+                <Text fontSize="sm" color="gray.500">Serviço</Text>
+                <Text>{aparelho.descricao || '-'}</Text>
+              </Box>
 
-        <label className='label'>Valor:</label>
-        <p className='txtApPerfil'>R$ {aparelho.valor}</p>
+              <Box>
+                <Text fontSize="sm" color="gray.500">Observação</Text>
+                <Text>{aparelho.observacao || '-'}</Text>
+              </Box>
 
-        <div className='box'>
-            <label className='label'>Pago:</label>
-            <input
-                type='checkbox'
-                name='pago'
-                className='checkInput'
-                checked={aparelho.pago === 'Sim'}
-            />
-        </div>
-        <div className='box'>
-            <label className='label'>Situação:</label>
-            <p className='situacao'>{aparelho.situacao}</p>
-        </div>
-        <div className='createdUpdated'>
-            <div>
-            <label>Criado em:</label>
-            <p>{formatDate(aparelho.created_at)}</p>
-            </div>
-            <div>
-            <label>Ultima edição:</label>
-            <p>{formatDate(aparelho.updated_at)}</p>
-            </div>
-        </div>
-        <div className='btnFichaCli'>
-            <Button onClick={() => {window.print()}}
-            width={250}
-            marginBottom={3}
-            marginTop={5}
-            colorScheme='green'
-            variant={'outline'}>Imprimir</Button>
-        </div>
-        <div className='btnApPerfil'>
-            <Button onClick={() => {
-                setModalIsOpenConfirm(true);
-                setAction('delAp');
-                console.log(aparelho.modelo);
-            }} width={100} marginLeft={0} colorScheme='red'>Apagar</Button>
-            <Button onClick={() => {
-                setModelo(aparelho.modelo);
-                setDescricao(aparelho.descricao);
-                setValor(aparelho.valor);
-                setPago(aparelho.pago);
-                setSituacao(aparelho.situacao);
-                setObservacao(aparelho.observacao);
-                setModalIsOpenApEdit(true);
-        }} width={100} marginLeft={50} colorScheme='blue'>Editar</Button>
-        </div>
+              <Box>
+                <Text fontSize="sm" color="gray.500">Valor</Text>
+                <Text fontWeight="medium">R$ {aparelho.valor}</Text>
+              </Box>
+
+              <Flex gap={12} flexWrap="wrap">
+                <Box>
+                  <Text fontSize="sm" color="gray.500">Situação</Text>
+                  <Text fontWeight="medium">{aparelho.situacao}</Text>
+                </Box>
+
+                <Checkbox isChecked={Boolean(aparelho.pago)} isReadOnly>
+                  Pago
+                </Checkbox>
+              </Flex>
+
+              <Box>
+                <Text fontSize="sm" color="gray.500" mb={2}>
+                  Imagens
+                </Text>
+
+                {aparelho.fotos && aparelho.fotos.length > 0 ? (
+                  <Flex wrap="wrap" gap={0.5}>
+                    {aparelho.fotos.slice(0, 6).map((foto, index) => (
+                      <Box key={index} w={{ base: '25%', md: '75px' }} h="100px" borderRadius="md" overflow="hidden" cursor="pointer" border="1px solid" borderColor="gray.200" _hover={{ opacity: 0.8 }} onClick={() => setSelectedImage(foto)}>
+                        <Image src={foto} alt={`Imagem ${index + 1}`} w="100%" h="100%" objectFit="cover" />
+                      </Box>
+                    ))}
+                  </Flex>
+                ) : (
+                  <Text fontSize="sm" color="gray.400">
+                    Nenhuma imagem cadastrada
+                  </Text>
+                )}
+              </Box>
+
+              <Modal
+                isOpen={!!selectedImage}
+                onClose={() => setSelectedImage(null)}
+                isCentered
+                size="xl"
+              >
+                <ModalOverlay bg="blackAlpha.800" />
+
+                <ModalContent bg="transparent" boxShadow="none">
+                  <ModalBody display="flex" justifyContent="center">
+                    <Image
+                      src={selectedImage}
+                      maxH="80vh"
+                      borderRadius="lg"
+                    />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+
+              <Divider />
+
+              <Flex gap={6} fontSize="sm" color="gray.500" flexWrap="wrap">
+                <Box>
+                  <Text>Criado em</Text>
+                  <Text>{formatDate(aparelho.created_at)}</Text>
+                </Box>
+                <Box>
+                  <Text>Última edição</Text>
+                  <Text>{formatDate(aparelho.updated_at)}</Text>
+                </Box>
+              </Flex>
+            </Stack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Stack w="100%" spacing={3}>
+              <Button
+                variant="outline"
+                onClick={() => window.print()}
+              >
+                Imprimir
+              </Button>
+
+              <Flex gap={3}>
+                <Button
+                  w="100%"
+                  colorScheme="red"
+                  onClick={() => {
+                    setAction('delAp');
+                    setModalIsOpenConfirm(true);
+                  }}
+                >
+                  Apagar
+                </Button>
+
+                <Button
+                  w="100%"
+                  colorScheme="blue"
+                  onClick={() => {
+                    setModelo(aparelho.modelo);
+                    setDescricao(aparelho.descricao);
+                    setValor(aparelho.valor);
+                    setPago(Boolean(aparelho.pago));
+                    setSituacao(aparelho.situacao);
+                    setObservacao(aparelho.observacao);
+                    setFotos(aparelho.fotos.map(url => ({
+                      preview: url,
+                      uploaded: true
+                    })));
+                    setModalIsOpenApEdit(true);
+                  }}
+                >
+                  Editar
+                </Button>
+              </Flex>
+            </Stack>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
 
-
-      {/* Nota a ser imprimida */}
-
+      {/* ===== NOTA DO CLIENTE ===== */}
       <div ref={notaRef} className="nota-container">
         <div className='viaUm'>
           <img className='logo' src={imgHomecell} alt='HOME CELL' />
@@ -159,7 +217,7 @@ const ModalApPerfil = (params) => {
                 </div>
                   <p><strong>Preço Manutenção:</strong> R$ {aparelho.valor}</p>
                 <div>
-                  <p><strong>Pago:</strong> {aparelho.pago}</p>
+                  <p><strong>Pago:</strong> {aparelho.pago ? 'Sim' : 'Não'}</p>
                   <p><strong>Situação:</strong> {aparelho.situacao}</p>
                 </div>
                 
@@ -179,7 +237,6 @@ const ModalApPerfil = (params) => {
               <p>Assinatura do Cliente</p>
           </div>
         </div>
-        <br/>
         --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         <br/>
         <br/>
@@ -229,7 +286,7 @@ const ModalApPerfil = (params) => {
                 </div>
                   <p><strong>Preço Manutenção:</strong> R$ {aparelho.valor}</p>
                 <div>
-                  <p><strong>Pago:</strong> {aparelho.pago}</p>
+                  <p><strong>Pago:</strong> {aparelho.pago ? 'Sim' : 'Não'}</p>
                   <p><strong>Situação:</strong> {aparelho.situacao}</p>
                 </div>
                 
@@ -254,8 +311,8 @@ const ModalApPerfil = (params) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-}
+};
 
 export default ModalApPerfil;

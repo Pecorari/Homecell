@@ -1,21 +1,19 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
-import { MdAdd, MdWest } from 'react-icons/md';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Button } from '@chakra-ui/react';
-import imgHomecell from '../../utils/logo.png';
+import { MdAdd } from 'react-icons/md';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Flex, Text, Grid, Button } from '@chakra-ui/react';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../../service/firebase';
+import imageCompression from 'browser-image-compression';
+import { v4 as uuid } from 'uuid';
 import ModalConfirm from '../Modals/ModalConfirm';
 import ModalEditCli from '../Modals/ModalEditCli';
 import ModalApAdd from '../Modals/ModalApAdd';
 import ModalApPerfil from '../Modals/ModalApPerfil';
 import ModalApEdit from '../Modals/ModalApEdit';
 import useApi from '../../hooks/useApi';
-import Modal from 'react-modal';
+import Header from '../../components/Header';
 import useAuth from '../../utils/useAuth';
-
-import './stylesPer.css';
-
-Modal.setAppElement('#root');
 
 const Perfil = () => {
     const [cliente, setCliente] = useState({});
@@ -34,6 +32,7 @@ const Perfil = () => {
     const [pago, setPago] = useState(false);
     const [situacao, setSituacao] = useState('Na fila');
     const [observacao, setObservacao] = useState('');
+    const [fotos, setFotos] = useState([]);
 
     const [action, setAction] = useState('');
 
@@ -45,7 +44,7 @@ const Perfil = () => {
 
     const [idAp, setIdAp] = useState('');
     const [aparelho, setAparelho] = useState({});
-
+    const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -59,48 +58,17 @@ const Perfil = () => {
                 setCliente(dataCli);
             })
             .catch((err) => console.log(err))
-// eslint-disable-next-line
+        // eslint-disable-next-line
     }, [id]);
 
     useEffect(() => {
         useApi.get(`cliente-aparelhos/${id}`, { withCredentials: true })
-        .then((res) => {
-            setAparelhos(res.data);
-        })
-        .catch((err) => console.log(err))
-// eslint-disable-next-line
-    }, [idAp, modalIsOpenApPerfil, modalIsOpenApAdd]);
-
-    useEffect(() => {
-        if (idAp) {
-// eslint-disable-next-line
-            getUniqueAp();
-        }
-// eslint-disable-next-line
-    }, [idAp]);
-    
-    const ListAp = aparelhos.map(aparelho => 
-        <Link onClick={() => {
-            setIdAp(aparelho.id);
-            getUniqueAp();
-            setModalIsOpenApPerfil(true);
-        }} key={aparelho.id}>
-            <div className='cell-inf'>
-                <div className='cellModDate'>
-                    <p><strong>{aparelho.modelo}</strong></p>
-                    <p>{formatDate(aparelho.created_at)}</p>
-                </div>
-                <div className='cellP'>
-                    <p>Situação:</p>
-                    <p>Pago:</p>
-                </div>
-                <div className='cellPagSit'>
-                    <p>{aparelho.situacao}</p>
-                    <p>{aparelho.pago}</p>
-                </div>
-            </div>
-        </Link>
-    )
+            .then((res) => {
+                setAparelhos(res.data);
+            })
+            .catch((err) => console.log(err))
+        // eslint-disable-next-line
+    }, [idAp, modalIsOpenApAdd]);
     
     async function editCliente() {
         const dadosCli = {
@@ -133,15 +101,6 @@ const Perfil = () => {
             navigate('/clientes');
         setAction('');
     };
-    
-    async function getUniqueAp() {
-        await useApi.get(`/cliente-aparelhos/${id}/${idAp}`, { withCredentials: true })
-            .then((res) => {
-                let [result] = res.data;
-                setAparelho(result);
-            })
-            .catch((err) => console.log(err))
-    };
 
     async function delAparelho() {
         await useApi.delete(`apagar-aparelhos/${idAp}`, { withCredentials: true })
@@ -151,37 +110,117 @@ const Perfil = () => {
         setModalIsOpenApPerfil(false);
         setAction('');
         reset();
-        window.location.reload();
+        setAparelhos(prev => prev.filter(ap => ap.id !== idAp));
     };
 
+    async function prepararFotosParaSalvar(fotos) {
+        const fotosExistentes = fotos
+            .filter(f => f.uploaded)
+            .map(f => f.preview);
+
+        const urlsNovas = await uploadFotosComprimidas(fotos, id);
+
+        return [...fotosExistentes, ...urlsNovas];
+    }
+
+    async function uploadFotosComprimidas(fotos, clienteId) {
+        const novasFotos = fotos.filter(f => !f.uploaded);
+
+        if (!novasFotos.length) return [];
+
+        const compressedFiles = await Promise.all(
+            novasFotos.map(f =>
+            imageCompression(f.file, {
+                maxSizeMB: 0.5,
+                maxWidthOrHeight: 1024,
+                initialQuality: 0.7,
+                useWebWorker: true
+            })
+            )
+        );
+
+        const uploads = compressedFiles.map(async (file, index) => {
+            const originalFile = novasFotos[index].file;
+
+            const storageRef = ref(storage, `aparelhos/cliente-${clienteId}/${uuid()}-${originalFile.name}`);
+
+            const snapshot = await uploadBytes(storageRef, file);
+            return getDownloadURL(snapshot.ref);
+        });
+
+        return Promise.all(uploads);
+    }
+
     async function editAparelho() {
-        const pagoString = pago ? 'Sim' : 'Não';
+        try {
+            setIsSaving(true);
+            const pagoBoolean = Boolean(pago);
 
-        const dadosCellEdit = {
-            modelo,
-            descricao,
-            valor,
-            pago: pagoString,
-            situacao,
-            observacao
+            const fotosOriginais = aparelho.fotos || [];
+
+            const fotosFinal = await prepararFotosParaSalvar(fotos);
+
+            const fotosRemovidas = fotosOriginais.filter(
+                url => !fotosFinal.includes(url)
+            );
+            
+            const dadosCellEdit = {
+                modelo,
+                descricao,
+                valor,
+                pago: pagoBoolean,
+                situacao,
+                observacao,
+                fotos: fotosFinal,
+                fotosRemovidas
+            };
+
+            await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit, { withCredentials: true });
+            
+            setAparelhos(prev =>
+                prev.map(ap =>
+                    ap.id === idAp
+                    ? {
+                        ...ap,
+                        modelo,
+                        descricao,
+                        valor,
+                        pago: pagoBoolean,
+                        situacao,
+                        observacao,
+                        fotos: fotosFinal
+                        }
+                    : ap
+                )
+            );
+
+            setAparelho(prev => ({
+                ...prev,
+                modelo,
+                descricao,
+                valor,
+                pago: pagoBoolean,
+                situacao,
+                observacao,
+                fotos: fotosFinal
+            }));
+
+
+            setModalIsOpenApEdit(false);
+            setModalIsOpenConfirm(false);
+            setAction('');
+            setError('');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Erro ao editar aparelho');
+        } finally {
+            setIsSaving(false);
         }
-
-        await useApi.put(`/editar-aparelhos/${idAp}`, dadosCellEdit, { withCredentials: true })
-            .then((res) => {
-                console.log(res.data);
-                reset();
-                setError('');
-                setModalIsOpenApEdit(false);
-            })
-            .catch((err) => {
-                console.log(err.response.data.message);
-                setError(err.response.data.message);
-            })
     }
 
     function reset() {
         setModelo('');
         setDescricao('');
+        setObservacao('');
         setValor();
         setSituacao('Na fila');
         setPago(false);
@@ -204,185 +243,254 @@ const Perfil = () => {
             return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
         }
     };
-    function formatNumCell(numCell) {
-        if(numCell) {
-            numCell = numCell.replace(/[^\d]/g, "");
-            return numCell.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-        }
-    };
-    function formatNumRes(numRes) {
-        if(numRes) {
-            numRes = numRes.replace(/[^\d]/g, "");
-            return numRes.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
-        }
-    };
 
-    const { loading } = useAuth();
+    async function logout() {
+        const response = await useApi.post('/logout', { withCredentials: true });
+        window.location.href = '/login';
+        console.log(response.data.message);
+    }
+
+
+    const { loading, user } = useAuth();
     if(loading) return <p>CARREGANDO...</p>;
 
     return(
-        <div className='containerPerfil'>
-            <div className='divLogo'>
-                <Link to={'/clientes'}>
-                    <img className='logo' src={imgHomecell} alt='HOME CELL' />
-                </Link>
-            </div>
+        <Flex minH="100vh" bg="gray.100" direction="column" align="center" px={4}>
+            <Header user={user} onLogout={logout} />
 
-            <div className='divs'>
-                <div className='container-perfil'>
-                    <div className='top'>
-                        <Link to={'/clientes'}>
-                            <MdWest className='icon'/>
-                        </Link>
-                        <h1>Perfil</h1>
-                    </div>
+            <Box w="100%" maxW="1200px" mt={4} mb={6}>
+                <Grid
+                    templateColumns={{ base: '1fr', md: '1fr 1fr' }}
+                    gap={6}
+                >
 
-                    <div className='perfil'>
-                        <label>Nome:</label>
-                        <p>{cliente.nome}</p>
-                        <label>CPF:</label>
-                        <p>{(cliente.cpf && cliente.cpf.length > 0) ? formatCPF(cliente.cpf) : '000.000.000-00'}</p>
-                        <label>Número do Celular:</label>
-                        <p>{formatNumCell(cliente.numeroCell)}</p>
-                        <label>Número Residencial:</label>
-                        <p>{formatNumRes(cliente.numeroRes)}</p>
-                        <label>Endereço:</label>
-                        <p>{cliente.endereco}</p>
-                        <label>Cidade:</label>
-                        <p>{cliente.cidade}</p>
-                    </div>
+                    <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="xl" boxShadow="lg">
+                        <Box mb={8}>
+                            <Text fontSize="2xl" fontWeight="bold" mb={4}>Dados do Cliente</Text>
 
-                    <div className='createdUpdated'>
-                        <div>
-                            <label>Criado em:</label>
-                            <p>{formatDate(cliente.created_at)}</p>
-                        </div>
-                        <div>
-                            <label>Ultima edição:</label>
-                            <p>{formatDate(cliente.updated_at)}</p>
-                        </div>
-                    </div>
+                            <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap={4}>
+                                {/* Nome */}
+                                <Box>
+                                    <Text fontSize="sm" color="gray.500">Nome</Text>
+                                    <Text fontWeight="medium">{cliente.nome}</Text>
+                                </Box>
 
-                    <Button onClick={() => {
-                        setModalIsOpenConfirm(true);
-                        setAction('delCli');
-                    }}
-                    width={{base: 100, sm: 150, md: 150}}
-                    colorScheme='red'>Apagar</Button>
+                                {/* CPF */}
+                                <Box>
+                                    <Text fontSize="sm" color="gray.500">CPF</Text>
+                                    <Text>{formatCPF(cliente.cpf)}</Text>
+                                </Box>
 
-                    <Button onClick={() => {
-                        setNome(cliente.nome);
-                        setCpf(cliente.cpf);
-                        setNumeroCell(cliente.numeroCell);
-                        setNumeroRes(cliente.numeroRes);
-                        setEndereco(cliente.endereco);
-                        setCidade(cliente.cidade);
-                        setModalIsOpenCliEdit(true);
-                    }}
-                    width={{base: 100, sm: 150, md: 150}}
-                    marginLeft={{base: 10, sm: 50, md: 150}}
-                    colorScheme='blue'>Editar</Button>
+                                {/* Celular */}
+                                <Box>
+                                    <Text fontSize="sm" color="gray.500">Celular</Text>
+                                    <Text>{cliente.numeroCell || '-'}</Text>
+                                </Box>
 
-                    <ModalEditCli 
-                        modalIsOpenCliEdit={modalIsOpenCliEdit}
-                        setModalIsOpenCliEdit={setModalIsOpenCliEdit}
-                        nome={nome}
-                        setNome={setNome}
-                        cpf={cpf}
-                        setCpf={setCpf}
-                        numeroCell={numeroCell}
-                        setNumeroCell={setNumeroCell}
-                        numeroRes={numeroRes}
-                        setNumeroRes={setNumeroRes}
-                        endereco={endereco}
-                        setEndereco={setEndereco}
-                        cidade={cidade}
-                        setCidade={setCidade}
-                        setModalIsOpenConfirm={setModalIsOpenConfirm}
-                        setAction={setAction}
-                        error={error}
-                        setError={setError}
-                    />
-                </div>
+                                {/* Telefone */}
+                                <Box>
+                                    <Text fontSize="sm" color="gray.500">Telefone</Text>
+                                    <Text>{cliente.numeroRes || '-'}</Text>
+                                </Box>
 
-                <div className="cell-details">
-                    <h2>Aparelhos</h2>
-                    {ListAp}
+                                {/* Endereço */}
+                                <Box gridColumn={{ base: 'auto', md: '1 / -1' }}>
+                                    <Text fontSize="sm" color="gray.500">Endereço</Text>
+                                    <Text>{cliente.endereco || '-'}</Text>
+                                </Box>
 
-                    <Button onClick={() => setModalIsOpenApAdd(true)} leftIcon={<MdAdd />} colorScheme='green'>Novo aparelho</Button>
-                    <ModalApAdd
-                        modalIsOpenApAdd={modalIsOpenApAdd}
-                        setModalIsOpenApAdd={setModalIsOpenApAdd}
-                        modelo={modelo}
-                        setModelo={setModelo}
-                        descricao={descricao}
-                        setDescricao={setDescricao}
-                        valor={valor}
-                        setValor={setValor}
-                        pago={pago}
-                        setPago={setPago}
-                        situacao={situacao}
-                        setSituacao={setSituacao}
-                        observacao={observacao}
-                        setObservacao={setObservacao}
-                        id={id}
-                        reset={reset}
-                        error={error}
-                        setError={setError}
-                        setAparelhos={setAparelhos}
-                    />
-                    {aparelho ? 
-                    <ModalApPerfil
-                        modalIsOpenApPerfil={modalIsOpenApPerfil}
-                        setModalIsOpenApPerfil={setModalIsOpenApPerfil}
-                        aparelho={aparelho}
-                        setModelo={setModelo}
-                        setValor={setValor}
-                        setPago={setPago}
-                        setSituacao={setSituacao}
-                        setDescricao={setDescricao}
-                        setObservacao={setObservacao}
-                        setAction={setAction}
-                        setModalIsOpenApEdit={setModalIsOpenApEdit}
-                        setModalIsOpenConfirm={setModalIsOpenConfirm}
-                        cliente={cliente}
-                    />
-                    : <p/>}
-                    <ModalApEdit
-                        modalIsOpenApEdit={modalIsOpenApEdit}
-                        setModalIsOpenApEdit={setModalIsOpenApEdit}
-                        modelo={modelo}
-                        setModelo={setModelo}
-                        descricao={descricao}
-                        setDescricao={setDescricao}
-                        valor={valor}
-                        setValor={setValor}
-                        pago={pago}
-                        setPago={setPago}
-                        situacao={situacao}
-                        setSituacao={setSituacao}
-                        observacao={observacao}
-                        setObservacao={setObservacao}
-                        setModalIsOpenConfirm={setModalIsOpenConfirm}
-                        setAction={setAction}
-                        error={error}
-                        setError={setError}
-                    />
-                    <ModalConfirm 
-                        modalIsOpenConfirm={modalIsOpenConfirm}
-                        setModalIsOpenConfirm={setModalIsOpenConfirm}
-                        action={action}
-                        editCliente={editCliente}
-                        delCliente={delCliente}
-                        editAparelho={editAparelho}
-                        delAparelho={delAparelho}
-                    />
-                </div>
-            </div>
-        </div>
+                                {/* Cidade */}
+                                <Box>
+                                    <Text fontSize="sm" color="gray.500">Cidade</Text>
+                                    <Text>{cliente.cidade || '-'}</Text>
+                                </Box>
+                            </Grid>
+                        </Box>
+
+                        <Flex gap={3} justify="space-between" flexWrap="wrap">
+                            <Button variant="outline" onClick={() => navigate('/clientes')}>
+                                Voltar
+                            </Button>
+                            
+                            <Flex gap={3}>
+                                <Button colorScheme='blue' onClick={() => { setNome(cliente.nome); setCpf(cliente.cpf); setNumeroCell(cliente.numeroCell); setNumeroRes(cliente.numeroRes); setEndereco(cliente.endereco); setCidade(cliente.cidade); setModalIsOpenCliEdit(true); }}>
+                                    Editar
+                                </Button>
+
+                                <Button colorScheme='red' onClick={() => { setModalIsOpenConfirm(true); setAction('delCli'); }}>
+                                    Excluir
+                                </Button>
+                            </Flex>
+                        </Flex>
+                        
+                        <ModalEditCli 
+                            modalIsOpenCliEdit={modalIsOpenCliEdit}
+                            setModalIsOpenCliEdit={setModalIsOpenCliEdit}
+                            nome={nome}
+                            setNome={setNome}
+                            cpf={cpf}
+                            setCpf={setCpf}
+                            numeroCell={numeroCell}
+                            setNumeroCell={setNumeroCell}
+                            numeroRes={numeroRes}
+                            setNumeroRes={setNumeroRes}
+                            endereco={endereco}
+                            setEndereco={setEndereco}
+                            cidade={cidade}
+                            setCidade={setCidade}
+                            setModalIsOpenConfirm={setModalIsOpenConfirm}
+                            setAction={setAction}
+                            error={error}
+                            setError={setError}
+                        />
+                    </Box>
+
+
+                    <Box bg="white" p={{ base: 4, md: 6 }} borderRadius="xl" boxShadow="lg">
+                        <Flex justify="space-between" align="center" mb={4}>
+                            <Text fontSize="xl" fontWeight="bold">
+                                Aparelhos
+                            </Text>
+
+                            <Button
+                                size="sm"
+                                leftIcon={<MdAdd />}
+                                onClick={() => {
+                                    reset();
+                                    setError('');
+                                    setModalIsOpenApAdd(true);
+                                }}
+                            >
+                                Novo Aparelho
+                            </Button>
+                        </Flex>
+
+                        <Box maxH="500px" overflowY="auto">
+                            {aparelhos.map((aparelho) => (
+                                <Box
+                                    key={aparelho.id}
+                                    mb={3}
+                                    p={4}
+                                    bg="gray.50"
+                                    borderRadius="md"
+                                    boxShadow="sm"
+                                    _hover={{ boxShadow: 'md', bg: 'gray.100' }}
+                                    cursor="pointer"
+                                    onClick={() => {
+                                        setAparelho(aparelho);
+                                        setIdAp(aparelho.id);
+                                        setPago(Boolean(aparelho.pago));
+                                        setModalIsOpenApPerfil(true);
+                                    }}
+                                >
+                                    <Grid
+                                        templateColumns={{ base: '1fr', md: '3fr 1fr auto' }}
+                                        gap={4}
+                                        alignItems="center"
+                                    >
+                                        <Box>
+                                            <Text fontWeight="medium" noOfLines={1}>
+                                                {aparelho.modelo}
+                                            </Text>
+                                            <Text fontSize="sm" color="gray.500">
+                                                {formatDate(aparelho.created_at)}
+                                            </Text>
+                                        </Box>
+
+                                        <Text
+                                            display={{ base: 'none', md: 'block' }}
+                                            fontSize="sm"
+                                            color="gray.600"
+                                        >
+                                            {aparelho.situacao}
+                                        </Text>
+
+                                        <Text as={'span'} display={{ base: 'none', md: 'block' }} >
+                                            Pago:{' '}
+                                            <Text as="span" color={aparelho.pago ? 'green.600' : 'red.500'}>{aparelho.pago ? 'Sim' : 'Não'}</Text>
+                                        </Text>
+                                    </Grid>
+                                </Box>
+                            ))}
+                        </Box>
+                    
+                        <ModalApAdd
+                            isOpen={modalIsOpenApAdd}
+                            onClose={() => setModalIsOpenApAdd(false)}
+                            modelo={modelo}
+                            setModelo={setModelo}
+                            descricao={descricao}
+                            setDescricao={setDescricao}
+                            valor={valor}
+                            setValor={setValor}
+                            pago={pago}
+                            setPago={setPago}
+                            situacao={situacao}
+                            setSituacao={setSituacao}
+                            observacao={observacao}
+                            setObservacao={setObservacao}
+                            id={id}
+                            reset={reset}
+                            error={error}
+                            setError={setError}
+                            setAparelhos={setAparelhos}
+                        />
+                        {aparelho ? 
+                        <ModalApPerfil
+                            isOpen={modalIsOpenApPerfil}
+                            onClose={() => setModalIsOpenApPerfil(false)}
+                            aparelho={aparelho}
+                            setModelo={setModelo}
+                            setValor={setValor}
+                            setPago={setPago}
+                            setSituacao={setSituacao}
+                            setDescricao={setDescricao}
+                            setObservacao={setObservacao}
+                            setFotos={setFotos}
+                            setAction={setAction}
+                            setModalIsOpenApEdit={setModalIsOpenApEdit}
+                            setModalIsOpenConfirm={setModalIsOpenConfirm}
+                            cliente={cliente}
+                        />
+                        : <p/>}
+                        <ModalApEdit
+                            isOpen={modalIsOpenApEdit}
+                            onClose={() => setModalIsOpenApEdit(false)}
+                            modelo={modelo}
+                            setModelo={setModelo}
+                            descricao={descricao}
+                            setDescricao={setDescricao}
+                            valor={valor}
+                            setValor={setValor}
+                            pago={pago}
+                            setPago={setPago}
+                            situacao={situacao}
+                            setSituacao={setSituacao}
+                            observacao={observacao}
+                            setObservacao={setObservacao}
+                            fotos={fotos}
+                            setFotos={setFotos}
+                            setModalIsOpenConfirm={setModalIsOpenConfirm}
+                            setAction={setAction}
+                            error={error}
+                            setError={setError}
+                            isSaving={isSaving}
+                        />
+                        <ModalConfirm
+                            isOpen={modalIsOpenConfirm}
+                            onClose={() => setModalIsOpenConfirm(false)}
+                            action={action}
+                            editCliente={editCliente}
+                            delCliente={delCliente}
+                            editAparelho={editAparelho}
+                            delAparelho={delAparelho}
+                        />
+                    </Box>
+                </Grid>
+            </Box>
+        </Flex>
     );
 }
+
 // Desenvolvido por Thiago Pecorari Clemente - GitHub: https://github.com/Pecorari
 export default Perfil;
-
-
