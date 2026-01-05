@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion'
-import './HomeStyles.css';
-import logo from '../../utils/logo.png';
 import { Button } from '@chakra-ui/react';
 import { SlArrowDown , SlSocialInstagram , SlSocialFacebook, SlSocialGoogle  } from "react-icons/sl";
 import { FaWrench, FaMobileAlt, FaShieldAlt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+
+import logo from '../../utils/logo.png';
 import LojaSquare from '../../utils/LojaSquare.jpeg';
 import CapaSquare from '../../utils/CapasSquare.jpeg';
 import AssistenciaTecnica from '../../utils/AssistenciaTecnica.jpg';
 
-const Home = () =>  {// eslint-disable-next-line
+import './HomeStyles.css';
+
+const Home = () =>  {
   const navigate = useNavigate();
   const sectionsRef = useRef([]);
 
@@ -30,7 +32,7 @@ const Home = () =>  {// eslint-disable-next-line
     });
     
     return () => {
-// eslint-disable-next-line
+      // eslint-disable-next-line
       sectionsRef.current.forEach((section) => {
         if(section) myObserver.unobserve(section);
       });
@@ -56,7 +58,6 @@ const Home = () =>  {// eslint-disable-next-line
           <a target="_blank" rel="noopener noreferrer" href='https://g.co/kgs/DDYcRgz'>
             <SlSocialGoogle className='emai'/>
           </a>
-
         </div>
 
         <motion.div className='motion'
@@ -124,9 +125,7 @@ const Home = () =>  {// eslint-disable-next-line
           </div>
         </div>
 
-        <a target="_blank"
-        rel="noopener noreferrer" 
-        href='https://api.whatsapp.com/send/?phone=551936294813&text=Ol%C3%A1+%21+Gostaria+de+fazer+um+orçamento+%21&type=phone_number&app_absent=0'>
+        <a target="_blank" rel="noopener noreferrer" href='https://api.whatsapp.com/send/?phone=551936294813&text=Ol%C3%A1+%21+Gostaria+de+fazer+um+orçamento+%21&type=phone_number&app_absent=0'>
           <Button colorScheme="green" size="lg" mt="20px" marginBottom={100}>
             Solicitar Orçamento
           </Button>

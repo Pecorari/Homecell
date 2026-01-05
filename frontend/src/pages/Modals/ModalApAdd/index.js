@@ -56,9 +56,7 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
         fotos
       };
 
-      const res = await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, {
-        withCredentials: true
-      });
+      const res = await useApi.post(`/cadastrar-aparelhos/${id}`, dadosCell, { withCredentials: true });
 
       setAparelhos(prev => [...prev, res.data]);
       handleClose();
