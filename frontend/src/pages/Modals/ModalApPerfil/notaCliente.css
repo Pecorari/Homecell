@@ -205,30 +205,69 @@
 }
 
 
-
-
-/* Esconde tudo na impressão exceto a nota */
 @media print {
-  .nota-container {
-      display: block;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      border: none;
-      box-shadow: none;
-  }
-  body * {
-      visibility: hidden;
-  }
-  .nota-container, .nota-container * {
-      visibility: visible;
-  }
   @page {
-      margin: 0;
+    size: A4;
+    margin: 0;
   }
+
   body {
-      margin: 0;
-      padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .nota-container,
+  .nota-container * {
+    visibility: visible;
+  }
+
+  .nota-container {
+    display: block;
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    border: none;
+    box-shadow: none;
+    box-sizing: border-box;
+  }
+
+  .nota-container .info,
+  .nota-container .dadosEmpresa,
+  .nota-container .dadosCliente2,
+  .nota-container .dadosAparelho2 {
+    display: block !important;
+  }
+
+  .nota-container .logo,
+  .nota-container .descFlutuante {
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin-bottom: 10px;
+  }
+
+  .viaDois {
+    page-break-before: always;
+    margin-top: 40px;
+  }
+
+  .dadosEmpresa,
+  .dadosCliente,
+  .dadosAparelho,
+  .termo,
+  .assinatura {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .assinatura p {
+    margin: 40px auto 0 auto !important;
+    width: 60% !important;
   }
 }

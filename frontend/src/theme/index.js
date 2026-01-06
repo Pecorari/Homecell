@@ -7,6 +7,17 @@ const theme = extendTheme({
         bg: 'gray.100',
         color: 'gray.700',
       },
+      
+      '@keyframes pop': {
+        from: {
+          transform: 'scale(0.5)',
+          opacity: 0,
+        },
+        to: {
+          transform: 'scale(1)',
+          opacity: 1,
+        },
+      }
     },
   },
 

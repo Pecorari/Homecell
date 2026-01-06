@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, FormControl, FormLabel, Input, Select, Checkbox, Stack, Text, Flex, Box, Image } from '@chakra-ui/react';
 import { MdArrowForward } from 'react-icons/md';
 import useApi from '../../../hooks/useApi';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../../service/firebase';
 import { v4 as uuid } from 'uuid';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -25,14 +25,50 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
       )
     );
 
-    const uploads = compressedFiles.map(async (file) => {
-      const storageRef = ref(storage, `aparelhos/cliente-${id}/${uuid()}-${file.name}`);
+    const uploadPromises = compressedFiles.map((file, index) => {
+      return new Promise((resolve, reject) => {
+        const imageId = images[index].id;
+        const storageRef = ref(
+          storage,
+          `aparelhos/cliente-${id}/${uuid()}-${file.name}`
+        );
 
-      const snapshot = await uploadBytes(storageRef, file);
-      return getDownloadURL(snapshot.ref);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+
+            setImages(prev =>
+              prev.map(img =>
+                img.id === imageId
+                  ? { ...img, progress, status: 'uploading' }
+                  : img
+              )
+            );
+          },
+          reject,
+          async () => {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+
+            setImages(prev =>
+              prev.map(img =>
+                img.id === imageId
+                  ? { ...img, progress: 100, status: 'done' }
+                  : img
+              )
+            );
+
+            resolve(url);
+          }
+        );
+      });
     });
 
-    return Promise.all(uploads);
+    return Promise.all(uploadPromises);
   }
 
   async function addAparelho() {
@@ -75,6 +111,19 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
     reset();
     onClose();
   }
+
+  const ProgressCircle = ({ progress }) => {
+    const radius = 14;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (progress / 100) * circumference;
+
+    return (
+      <svg width="36" height="36">
+        <circle cx="18" cy="18" r={radius} stroke="rgba(255,255,255,0.3)" strokeWidth="4" fill="none" />
+        <circle cx="18" cy="18" r={radius} stroke="white" strokeWidth="4" fill="none" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" style={{ transition: 'stroke-dashoffset 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }} />
+      </svg>
+    );
+  };
 
   return (
     <Modal
@@ -162,7 +211,9 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
                   const newImages = selectedFiles.map(file => ({
                     id: uuid(),
                     file,
-                    preview: URL.createObjectURL(file)
+                    preview: URL.createObjectURL(file),
+                    progress: 0,
+                    status: 'pending'
                   }));
 
                   if (images.length + newImages.length > 6) {
@@ -180,6 +231,19 @@ const ModalApAdd = ({isOpen, onClose, modelo, setModelo, descricao, setDescricao
               {images.map(img => (
                 <Box mx={'auto'} key={img.id} position="relative" w="70px" h="70px" borderRadius="md" overflow="hidden">
                   <Image src={img.preview} w="100%" h="100%" objectFit="cover"/>
+
+                  {/* Overlay */}
+                  {(img.status === 'uploading' || img.status === 'done') && (
+                    <Flex position="absolute" inset="0" align="center" justify="center" bg="blackAlpha.600">
+                      {img.status === 'done' ? (
+                        <Box w="30px" h="30px" borderRadius="full" bg="green.500" display="flex" alignItems="center" justifyContent="center" color="white" fontSize="16px" fontWeight="bold" animation="pop 0.2s ease-out">
+                          ✓
+                        </Box>
+                      ) : (
+                        <ProgressCircle progress={img.progress} />
+                      )}
+                    </Flex>
+                  )}
 
                   <Button size="xs" position="absolute" top="2px" right="2px" bg="red.500" color="white" borderRadius="full" minW="20px" h="20px" p={0} _hover={{ bg: 'red.600' }} onClick={() => {
                       URL.revokeObjectURL(img.preview);

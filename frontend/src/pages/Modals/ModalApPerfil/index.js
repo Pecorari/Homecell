@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Text, Stack, Box, Flex, Checkbox, Divider, Image } from '@chakra-ui/react';
+import loadingImg from '../../../utils/loadingImg.webp';
 
 import './notaCliente.css';
 
@@ -7,7 +8,15 @@ import imgHomecell from '../../../utils/logo.png';
 
 const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago, setSituacao, setDescricao, setObservacao, setFotos, setAction, setModalIsOpenApEdit, setModalIsOpenConfirm, cliente }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [loadingImages, setLoadingImages] = useState({});
+
   const notaRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLoadingImages({});
+    }
+  }, [isOpen]);
 
   function formatDate(dataHora) {
     const data = new Date(dataHora);
@@ -22,6 +31,13 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
   }
 
   const dataNota = new Date();
+
+  const handleImageLoad = (index) => {
+    setLoadingImages(prev => ({
+      ...prev,
+      [index]: true
+    }));
+  };
 
   if (!aparelho) return null;
 
@@ -77,8 +93,14 @@ const ModalApPerfil = ({ isOpen, onClose, aparelho, setModelo, setValor, setPago
                 {aparelho.fotos && aparelho.fotos.length > 0 ? (
                   <Flex wrap="wrap" gap={0.5}>
                     {aparelho.fotos.slice(0, 6).map((foto, index) => (
-                      <Box key={index} w={{ base: '25%', md: '75px' }} h="100px" borderRadius="md" overflow="hidden" cursor="pointer" border="1px solid" borderColor="gray.200" _hover={{ opacity: 0.8 }} onClick={() => setSelectedImage(foto)}>
-                        <Image src={foto} alt={`Imagem ${index + 1}`} w="100%" h="100%" objectFit="cover" />
+                      <Box key={index} w={{ base: '25%', md: '75px' }} h="100px" borderRadius="md" overflow="hidden" cursor="pointer" border="1px solid" borderColor="gray.200" position="relative" _hover={{ opacity: 0.8 }} onClick={() => setSelectedImage(foto)}>
+                        {/* LOADING */}
+                        {!loadingImages[index] && (
+                          <Flex position="absolute" inset="0" align="center" justify="center" bg="gray.50" zIndex={1}>
+                            <Image src={loadingImg} alt="Carregando imagem" w="30px" h="30px" />
+                          </Flex>
+                        )}
+                        <Image src={foto} alt={`Imagem ${index + 1}`} w="100%" h="100%" objectFit="cover" onLoad={() => handleImageLoad(index)} onError={() => handleImageLoad(index)} opacity={loadingImages[index] ? 1 : 0} transition="opacity 0.2s ease" />
                       </Box>
                     ))}
                   </Flex>

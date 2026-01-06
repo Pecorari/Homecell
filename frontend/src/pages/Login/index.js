@@ -61,7 +61,7 @@ const Login = () => {
       </Box>
 
       <Text position="absolute" bottom={4} fontSize="sm" color="gray.500" textAlign="center">
-        Desenvolvido por{' '}<a href="https://github.com/Pecorari" target="_blank" rel="noreferrer">Thiago Pecorari Clemente</a> | Sistema de controle v2.0
+        Desenvolvido por{' '}<a href="https://github.com/Pecorari" target="_blank" rel="noreferrer">Thiago Pecorari Clemente</a> | v2.0
       </Text>
     </Flex>
   );
